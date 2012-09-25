@@ -13,11 +13,17 @@
 #import "EZBlockWrapper.h"
 #import "EZCoord.h"
 #import "EZSoundPlayer.h"
+#import "EZExtender.h"
+
 
 
 @interface  EZActionPlayer(){
     NSTimer* actionTimer;
     EZSoundPlayer* soundPlayer;
+    //The purpose of this is to pervent the timer get released.
+    //See if the problem can be solved.
+    //Will remove it after the test is done
+    NSMutableArray* timerArray;
 }
 
 
@@ -44,16 +50,33 @@
         _board = bd;
         _currentAction = 0;
         _playingStatus = kPause;
+        timerArray = [[NSMutableArray alloc] init];
     }
     return self;
 }
 
+
+//Once the step completed
+//Or the whole activity get completed, this method will get called
+- (void) stepCompleted
+{
+    [_completedHandler completed:_actions.count - 1];
+    if(_completeBlock){
+        _completeBlock();
+    }
+}
 
 //When to call this method?
 //Start from a place we stopped.
 - (void) play
 {
     [self playFrom:_currentAction];
+}
+
+- (void) play:(EZOperationBlock)completeBlock
+{
+    _completeBlock = completeBlock;
+    [self play];
 }
 //Mean client clicked play.
 //So I will play from current to the end.
@@ -62,6 +85,13 @@
     _playingStatus = kPlaying;
     _currentAction = begin;
     [self resume];
+}
+
+- (void) playFrom:(NSInteger)begin completeBlock:(EZOperationBlock)block
+{
+    EZDEBUG(@"Play from:%i", begin);
+    _completeBlock = block;
+    [self playFrom:begin];
 }
 
 //Only play in a stepwise fashion.
@@ -79,24 +109,47 @@
     [self resume];
 }
 
+- (void) next:(EZOperationBlock)completBlock
+{
+    _completeBlock = completBlock;
+    [self next];
+}
+
+- (BOOL) isEnd
+{
+    if(_currentAction >= _actions.count){
+        return true;
+    }
+    return false;
+}
+
+
+//Once you set actions, mean you will start all things from the beginning
+//You have to take care of cleaning the board by yourself. 
+- (void) setActions:(NSArray *)actions
+{
+    _currentAction = 0;
+    _actions = actions;
+}
+
+//Start from beginning;
+//What's assumption I should make?
+//It maybe called at any place.
+//So what should we do?
+- (void) rewind
+{
+    NSInteger endPos = _currentAction;
+    _currentAction = 0;
+    for(int i = (endPos-1); i >= 0; --i){
+        EZAction* action = [_actions objectAtIndex:i];
+        [self undoAction:action];
+    }
+}
 
 //Only need to handle presetting and moves
 - (void) undoAction:(EZAction*)action
 {
-    EZDEBUG(@"Will undo action for type:%i,name:%@",action.actionType, action.name);
-    switch (action.actionType) {
-        case kPreSetting:{
-            [self cleanActionMove:action.preSetMoves];
-            break;
-        }
-         
-        case kPlantMoves:{
-            [self cleanActionMove:action.plantMoves];
-            break;
-        }
-        default:
-            break;
-    }
+    [action undoAction:self];
 }
 
 //So far, for clean no need to distinguish what kind of move it is.
@@ -119,6 +172,8 @@
     --_currentAction;
     if(_currentAction < 0){
         //assert(@"Should not call when no step have been played." == nil);
+        //Be a good citizen. Don't left inconsistent status.
+        _currentAction = 0;
         return;
     }
     
@@ -143,6 +198,10 @@
     //Let's play the first step
     //What's user case will have this happened?
     //Not played but hit this button directly.
+    if(_currentAction < 0){
+        _currentAction = 0;
+    }
+    
     if(_currentAction == 0){
         [self resume];
     }else{
@@ -154,6 +213,12 @@
     }
 }
 
+- (void) replay:(EZOperationBlock)completeBlock
+{
+    _completeBlock = completeBlock;
+    [self replay];
+}
+
 //Only play one step. then stop
 - (void) playOneStep:(NSInteger)begin
 {
@@ -162,6 +227,11 @@
     [self resume];
 }
 
+- (void) playOneStep:(NSInteger)begin completeBlock:(EZOperationBlock)block
+{
+    _completeBlock = block;
+    [self playOneStep:begin];
+}
 
 - (void) resume{
     if(_playingStatus != kPlaying && _playingStatus != kStepWisePlaying){
@@ -173,47 +243,16 @@
     if(_currentAction >= _actions.count){
         _playingStatus = kEnd;
         EZDEBUG(@"Quit for get the end of actions");
+        [self stepCompleted];
         return;
     }
+    
+    //Only truly started will get called. Otherwise it will not get called
+    [_completedHandler started:_currentAction];
     EZAction* action = [_actions objectAtIndex:_currentAction];
     EZDEBUG(@"Will play action:%i, name:%@",_currentAction, action.name);
     ++_currentAction;
-    switch (action.actionType) {
-        case kPreSetting:
-            [_board putChessmans:action.preSetMoves animated:NO];
-            if(_playingStatus == kPlaying){
-                [self resume];
-            }
-            break;
-            
-        case kLectures:{
-            //Why do I do this?
-            //To pervent the stange error with the blocks
-            CallbackBlock block = ^(){
-                if(_playingStatus == kPlaying){
-                    [self resume];
-                }
-            };
-            EZAction* cloned = [action clone];
-            [self playSound:cloned completeBlock:block];
-            break;
-            
-        }
-        case kPlantMoves:{
-            CallbackBlock block = ^(){
-                if(_playingStatus == kPlaying){
-                    [self resume];
-                }
-            };
-            EZAction* cloned = [action clone];
-            cloned.currentMove = 0;
-            [self playMoves:cloned completeBlock:block withDelay:cloned.unitDelay];
-            break;
-        }
-        default:
-            break;
-    }
-
+    [action doAction:self];
 }
 
 // How to concel this?
@@ -236,10 +275,16 @@
     CallBackBlock block =  ^(){
         [self playSound:action completeBlock:blk];
     };
-    NSString* aFile = [action.audioFiles objectAtIndex:action.currentAudio];
+    id aFile = [action.audioFiles objectAtIndex:action.currentAudio];
     action.currentAudio = action.currentAudio + 1;
-    soundPlayer = [[EZSoundPlayer alloc] initWithFile:aFile completeCall:
+    if([[[aFile class]description] isEqualToString:@"NSURL"]){
+        EZDEBUG(@"Play URL directly:%@",aFile);
+        soundPlayer = [[EZSoundPlayer alloc] initWithURL:aFile completeCall:block];
+    }else{
+        EZDEBUG(@"Play fileName:%@",aFile);
+        soundPlayer = [[EZSoundPlayer alloc] initWithFile:aFile completeCall:
                   block];
+    }
     
 }
 
@@ -247,10 +292,12 @@
 {
     EZDEBUG(@"Get into playMoves with delay,play moves:%i, currentMove:%i, object pointer:%i, name:%@",action.plantMoves.count, action.currentMove, (int)action, action.name);
     EZAction* localAct = action;
-    CallBackBlock block = ^(){
+    EZOperationBlock block = ^(){
         [self playMoves:localAct completeBlock:blk];
     };
     EZBlockWrapper* bw = [[EZBlockWrapper alloc] initWithBlock:block];
+    
+    
     
     actionTimer = [NSTimer scheduledTimerWithTimeInterval:action.unitDelay target:bw selector:@selector(runBlock) userInfo:nil repeats:NO];
 }
@@ -260,6 +307,7 @@
 - (void) playMoves:(EZAction*)action completeBlock:(void(^)())blk
 {
     EZDEBUG(@"in playMoves,currentMove:%i, total move:%i, object pointer:%i, name:%@", action.currentMove, action.plantMoves.count, (int)action, action.name);
+    
     if(actionTimer){
         [actionTimer invalidate];
         actionTimer = nil;

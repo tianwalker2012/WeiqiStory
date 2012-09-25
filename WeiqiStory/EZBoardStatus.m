@@ -20,7 +20,7 @@
     CGRect boardRect;
     
     //All the moved buttons
-    //We just forget all the remoed buttons
+    //We just forget all the removed buttons
     NSMutableDictionary* coordToChess;
 
     //All the moves will be recorded here.
@@ -187,7 +187,7 @@
 //Returned value will be all removed buttons
 - (NSInteger) checkAndRemove:(EZCoord*)coord isBlack:(BOOL)black animated:(BOOL)animated
 {
-    EZDEBUG(@"CheckAndRemove started");
+    //EZDEBUG(@"CheckAndRemove started");
     NSArray* neighbors = [self availableNeigbor:coord];
     NSInteger res = 0;
     for(EZCoord* ncoord in neighbors){
@@ -199,7 +199,7 @@
             //EZDEBUG(@"Remove start:%@, removed:%i", ncoord, curCount);
         }
     }
-    EZDEBUG(@"Totally removed:%i", res);
+    //EZDEBUG(@"Totally removed:%i", res);
     return res;
 }
 
@@ -287,17 +287,17 @@
 //Check 3 cases, now keep it simple and stupid
 - (ChessPutStatus) tryPutButton:(EZCoord*) bd isBlack:(BOOL)black
 {
-    EZDEBUG(@"check for occupid");
+    //EZDEBUG(@"check for occupid");
     if([coordToChess objectForKey:[NSString stringWithFormat:@"%i",bd.toNumber]]){
         return EZOccupied;
     }
     
-    EZDEBUG(@"check for robbery");
+    //EZDEBUG(@"check for robbery");
     if([bd.getKey isEqualToString:robberPosition.coord.getKey] && ((steps-1) == robberyStep)){
         return EZJustRobber;
     }
     
-    EZDEBUG(@"check for Qi");
+    //EZDEBUG(@"check for Qi");
     if(![self checkAvailableQi:bd isBlack:black]){
         return EZLackQi;
     }
@@ -317,7 +317,7 @@
 //The It will call EZBoardFront to plant the button on screen accordingly.
 - (ChessPutStatus) putButtonByCoord:(EZCoord*)coord animated:(BOOL)animated
 {
-    EZDEBUG(@"put button on:%@",coord);
+    //EZDEBUG(@"put button on:%@",coord);
     ChessPutStatus putStatus = [self tryPutButton:coord isBlack:[self isCurrentBlack]];
     if(putStatus != EZPutOk){
         return putStatus;
@@ -335,6 +335,7 @@
     return putStatus;
 }
 
+
 - (BOOL) isCurrentBlack
 {
     BOOL isBlackChess = TRUE;
@@ -344,6 +345,29 @@
         isBlackChess = !initialBlack;
     }
     return isBlackChess;
+}
+
+- (NSArray*) plantedChesses
+{
+    return plantedChess;
+}
+
+
+//great responsibility assignment.
+- (EZCoord*) coordForStep:(NSInteger)step
+{
+    EZChessPosition* chessPos = [plantedChess objectAtIndex:step];
+    return chessPos.coord;
+}
+
+- (NSArray*) getAllChessMoves
+{
+    NSMutableArray* res = [[NSMutableArray alloc] initWithCapacity:plantedChess.count];
+    for(int i = 0; i < plantedChess.count; i++){
+        [res addObject:[self coordForStep:i]];
+    }
+    EZDEBUG(@"All ChessMoves:%i", res.count);
+    return res;
 }
 
 //What's the purpose of this functionality?
@@ -369,6 +393,17 @@
         [coordToChess setValue:removed forKey:removed.coord.getKey];
         [front putButton:removed.coord isBlack:removed.isBlack animated:NO];
     }
+}
+
+//Will add a clean all the marks.
+- (void) cleanAllMoves
+{
+    [plantedChess removeAllObjects];
+    NSArray* postions = coordToChess.allValues;
+    for(EZChessPosition* cp in postions){
+        [front clean:cp.coord animated:NO];
+    }
+    [coordToChess removeAllObjects];
 }
 
 @end

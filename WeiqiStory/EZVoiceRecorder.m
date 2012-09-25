@@ -7,6 +7,8 @@
 //
 
 #import "EZVoiceRecorder.h"
+#import "EZFileUtil.h"
+#import "EZConstants.h"
 
 @interface EZVoiceRecorder(){
     AVAudioRecorder* audioRecorder;
@@ -21,6 +23,7 @@
 
 
 @implementation EZVoiceRecorder
+
 
 - (id) initWithFile:(NSString*)fileName
 {
@@ -41,7 +44,7 @@
         
         NSError *error = nil;
         recordedFile = fileName;
-        NSURL* soundFileURL = [self fileToURL:fileName];
+        NSURL* soundFileURL = [EZFileUtil fileToURL:fileName dirType:NSDocumentDirectory];
         
         audioRecorder = [[AVAudioRecorder alloc]
                          initWithURL:soundFileURL
@@ -60,23 +63,12 @@
     return self;
 }
 
-- (NSURL*) fileToURL:(NSString *)fileName
+//Hide the detail within us.
+- (NSURL*) getRecordedFileURL
 {
-    NSArray *dirPaths;
-    NSString *docsDir;
-    
-    dirPaths = NSSearchPathForDirectoriesInDomains(
-                                                   NSDocumentDirectory, NSUserDomainMask, YES);
-    docsDir = [dirPaths objectAtIndex:0];
-    
-    NSLog(@"dirPath count:%i, first one:%@",dirPaths.count, docsDir);
-    NSString *soundFilePath = [docsDir
-                               stringByAppendingPathComponent:fileName];
-    //recordedFile = fileName;
-    
-    NSURL *soundFileURL = [NSURL fileURLWithPath:soundFilePath];
-    return soundFileURL;
+    return [EZFileUtil fileToURL:recordedFile dirType:NSDocumentDirectory];
 }
+
 
 - (void) stop
 {
@@ -88,7 +80,8 @@
 - (void) start
 {
     if(!audioRecorder.isRecording){
-        [audioRecorder record];
+        BOOL recordResult = [audioRecorder record];
+        EZDEBUG(@"RecordedResult %@", recordResult?@"True":@"Failure");
     }else{
         NSLog(@"Warning: are recording");
     }

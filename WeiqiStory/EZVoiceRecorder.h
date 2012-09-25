@@ -24,4 +24,6 @@
 
 - (BOOL) isRecording;
 
+- (NSURL*) getRecordedFileURL;
+
 @end

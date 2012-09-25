@@ -133,6 +133,8 @@
 		1810EDC51606DA1F0061FF70 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1810EDC41606DA1F0061FF70 /* AppDelegate.m */; };
 		1810EDC81606DA1F0061FF70 /* HelloWorldLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1810EDC71606DA1F0061FF70 /* HelloWorldLayer.m */; };
 		1810EDCB1606DA1F0061FF70 /* IntroLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1810EDCA1606DA1F0061FF70 /* IntroLayer.m */; };
+		182F59521611AFE000A53B9A /* EZMarkAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 182F59511611AFE000A53B9A /* EZMarkAction.m */; };
+		182F59551611B0BC00A53B9A /* EZCharMark.m in Sources */ = {isa = PBXBuildFile; fileRef = 182F59541611B0BC00A53B9A /* EZCharMark.m */; };
 		18451D801609C42D00BF530C /* libarclite_iphoneos.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18451D7F1609C42D00BF530C /* libarclite_iphoneos.a */; };
 		18451DBF1609C68300BF530C /* NSObject+SBJson.m in Sources */ = {isa = PBXBuildFile; fileRef = 18451DA71609C68300BF530C /* NSObject+SBJson.m */; };
 		18451DC01609C68300BF530C /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 18451DAA1609C68300BF530C /* SBJsonParser.m */; };
@@ -177,8 +179,13 @@
 		18451E3E160B0A6A00BF530C /* EZBlockWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 18451E3D160B0A6A00BF530C /* EZBlockWrapper.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		18451E45160B103000BF530C /* EZVoiceRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 18451E44160B103000BF530C /* EZVoiceRecorder.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		18451E48160B113E00BF530C /* EZSoundPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 18451E47160B113D00BF530C /* EZSoundPlayer.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
-		18451E4B160C951D00BF530C /* EZLecturePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 18451E4A160C951A00BF530C /* EZLecturePlayer.m */; };
-		18451E4E160EE1D800BF530C /* EZExtender.m in Sources */ = {isa = PBXBuildFile; fileRef = 18451E4D160EE1D600BF530C /* EZExtender.m */; };
+		18451E4B160C951D00BF530C /* EZLecturePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 18451E4A160C951A00BF530C /* EZLecturePlayer.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		18451E4E160EE1D800BF530C /* EZExtender.m in Sources */ = {isa = PBXBuildFile; fileRef = 18451E4D160EE1D600BF530C /* EZExtender.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		18451E51160F09FD00BF530C /* EZPlayerStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 18451E50160F09FA00BF530C /* EZPlayerStatus.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		18451E54160F22C100BF530C /* EZChessEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = 18451E53160F22BF00BF530C /* EZChessEditor.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		18451E57160F2AD000BF530C /* EZEditorStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 18451E56160F2ACE00BF530C /* EZEditorStatus.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		18F37CB616115919004B18A0 /* EZChessMark.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F37CB516115919004B18A0 /* EZChessMark.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		18F37CBA161191D5004B18A0 /* EZCleanAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F37CB9161191D5004B18A0 /* EZCleanAction.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -444,6 +451,10 @@
 		1810EDC71606DA1F0061FF70 /* HelloWorldLayer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HelloWorldLayer.m; sourceTree = "<group>"; };
 		1810EDC91606DA1F0061FF70 /* IntroLayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IntroLayer.h; sourceTree = "<group>"; };
 		1810EDCA1606DA1F0061FF70 /* IntroLayer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IntroLayer.m; sourceTree = "<group>"; };
+		182F59501611AFE000A53B9A /* EZMarkAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZMarkAction.h; sourceTree = "<group>"; };
+		182F59511611AFE000A53B9A /* EZMarkAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZMarkAction.m; sourceTree = "<group>"; };
+		182F59531611B0BC00A53B9A /* EZCharMark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZCharMark.h; sourceTree = "<group>"; };
+		182F59541611B0BC00A53B9A /* EZCharMark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZCharMark.m; sourceTree = "<group>"; };
 		18451D7F1609C42D00BF530C /* libarclite_iphoneos.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libarclite_iphoneos.a; sourceTree = "<group>"; };
 		18451DA61609C68300BF530C /* NSObject+SBJson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+SBJson.h"; sourceTree = "<group>"; };
 		18451DA71609C68300BF530C /* NSObject+SBJson.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+SBJson.m"; sourceTree = "<group>"; };
@@ -528,6 +539,16 @@
 		18451E4A160C951A00BF530C /* EZLecturePlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZLecturePlayer.m; sourceTree = "<group>"; };
 		18451E4C160EE1D500BF530C /* EZExtender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZExtender.h; sourceTree = "<group>"; };
 		18451E4D160EE1D600BF530C /* EZExtender.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZExtender.m; sourceTree = "<group>"; };
+		18451E4F160F09F800BF530C /* EZPlayerStatus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZPlayerStatus.h; sourceTree = "<group>"; };
+		18451E50160F09FA00BF530C /* EZPlayerStatus.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZPlayerStatus.m; sourceTree = "<group>"; };
+		18451E52160F22BD00BF530C /* EZChessEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZChessEditor.h; sourceTree = "<group>"; };
+		18451E53160F22BF00BF530C /* EZChessEditor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZChessEditor.m; sourceTree = "<group>"; };
+		18451E55160F2ACB00BF530C /* EZEditorStatus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZEditorStatus.h; sourceTree = "<group>"; };
+		18451E56160F2ACE00BF530C /* EZEditorStatus.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZEditorStatus.m; sourceTree = "<group>"; };
+		18F37CB416115919004B18A0 /* EZChessMark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZChessMark.h; sourceTree = "<group>"; };
+		18F37CB516115919004B18A0 /* EZChessMark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZChessMark.m; sourceTree = "<group>"; };
+		18F37CB8161191D5004B18A0 /* EZCleanAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZCleanAction.h; sourceTree = "<group>"; };
+		18F37CB9161191D5004B18A0 /* EZCleanAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZCleanAction.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1042,6 +1063,14 @@
 				18451E181609E48100BF530C /* EZChessman.m */,
 				18451E49160C951500BF530C /* EZLecturePlayer.h */,
 				18451E4A160C951A00BF530C /* EZLecturePlayer.m */,
+				18451E4F160F09F800BF530C /* EZPlayerStatus.h */,
+				18451E50160F09FA00BF530C /* EZPlayerStatus.m */,
+				18451E52160F22BD00BF530C /* EZChessEditor.h */,
+				18451E53160F22BF00BF530C /* EZChessEditor.m */,
+				18451E55160F2ACB00BF530C /* EZEditorStatus.h */,
+				18451E56160F2ACE00BF530C /* EZEditorStatus.m */,
+				18F37CB416115919004B18A0 /* EZChessMark.h */,
+				18F37CB516115919004B18A0 /* EZChessMark.m */,
 			);
 			name = Boards;
 			sourceTree = "<group>";
@@ -1131,6 +1160,12 @@
 				18451E35160AF77500BF530C /* EZActionPlayer.m */,
 				18451E3C160B0A6A00BF530C /* EZBlockWrapper.h */,
 				18451E3D160B0A6A00BF530C /* EZBlockWrapper.m */,
+				18F37CB8161191D5004B18A0 /* EZCleanAction.h */,
+				18F37CB9161191D5004B18A0 /* EZCleanAction.m */,
+				182F59501611AFE000A53B9A /* EZMarkAction.h */,
+				182F59511611AFE000A53B9A /* EZMarkAction.m */,
+				182F59531611B0BC00A53B9A /* EZCharMark.h */,
+				182F59541611B0BC00A53B9A /* EZCharMark.m */,
 			);
 			name = Actions;
 			sourceTree = "<group>";
@@ -1357,6 +1392,13 @@
 				18451E48160B113E00BF530C /* EZSoundPlayer.m in Sources */,
 				18451E4B160C951D00BF530C /* EZLecturePlayer.m in Sources */,
 				18451E4E160EE1D800BF530C /* EZExtender.m in Sources */,
+				18451E51160F09FD00BF530C /* EZPlayerStatus.m in Sources */,
+				18451E54160F22C100BF530C /* EZChessEditor.m in Sources */,
+				18451E57160F2AD000BF530C /* EZEditorStatus.m in Sources */,
+				18F37CB616115919004B18A0 /* EZChessMark.m in Sources */,
+				18F37CBA161191D5004B18A0 /* EZCleanAction.m in Sources */,
+				182F59521611AFE000A53B9A /* EZMarkAction.m in Sources */,
+				182F59551611B0BC00A53B9A /* EZCharMark.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1378,7 +1420,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
 			};
@@ -1397,7 +1439,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
 			};
@@ -1413,7 +1455,7 @@
 				GCC_PREFIX_HEADER = WeiqiStory/Prefix.pch;
 				HEADER_SEARCH_PATHS = "\"WeiqiStory/libs/kazmath/include\"";
 				INFOPLIST_FILE = WeiqiStory/Resources/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -1437,7 +1479,7 @@
 				GCC_PREFIX_HEADER = WeiqiStory/Prefix.pch;
 				HEADER_SEARCH_PATHS = "\"WeiqiStory/libs/kazmath/include\"";
 				INFOPLIST_FILE = WeiqiStory/Resources/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",

@@ -98,7 +98,7 @@
     //[EZTestSuites testIterateAllDirectory];
     //[EZTestSuites testCurrentDirectory];
     //[EZTestSuites listAllRecource];
-    [EZTestSuites testRecuringBlockIssue];
+    //[EZTestSuites testRecuringBlockIssue];
 }
 
 //What's the purpose of this method, I encounter problem during using the block.

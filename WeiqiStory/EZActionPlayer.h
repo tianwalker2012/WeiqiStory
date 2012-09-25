@@ -7,6 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "EZConstants.h"
+#import "cocos2d.h"
+
 
 typedef void (^CallbackBlock) ();
 
@@ -27,6 +30,7 @@ typedef enum {
 //@class EZChessBoard;
 
 @class EZCoord;
+@class EZAction;
 @protocol EZBoardDelegate <NSObject>
 
 - (void) putChessman:(EZCoord*)coord animated:(BOOL)animated;
@@ -37,6 +41,34 @@ typedef enum {
 //How many steps I will regret.
 - (void) regretSteps:(NSInteger)steps  animated:(BOOL)animated;
 
+//What's the purpose of this method?
+//I will put a specified mark on the board.
+- (void) putMark:(CCNode*)mark coord:(EZCoord*)coord animAction:(CCAction*)action;
+
+//If the mark exist I wll run the action,
+//Of course I will attach a Remove from parent to get it remove from board when it is done.
+//I will not clean it up, so It could be reused.
+- (void) removeMark:(EZCoord*)coord animAction:(CCAction*)action;
+
+- (NSArray*) getAllChessMoves;
+
+- (void) cleanAllMoves;
+
+- (void) cleanAllMarks;
+
+@end
+
+
+//What's the purpose of this protocol
+//Provide a complete callback, so that I could notify the caller that one action completed.
+//The UI component could be disabled or enabled accordingly.
+//Another option is to pass complete block with it.
+@protocol EZActionCompleted <NSObject>
+
+- (void) completed:(NSInteger)completedStep;
+
+- (void) started:(NSInteger)step;
+
 @end
 
 
@@ -46,12 +78,19 @@ typedef enum {
 
 - (void) playFrom:(NSInteger)begin;
 
+- (void) playFrom:(NSInteger)begin completeBlock:(EZOperationBlock)block;
+
 - (void) play;
+
+- (void) play:(EZOperationBlock)block;
+
 //Only play one step. then stop
-- (void) playOneStep:(NSInteger)begin;
+- (void) playOneStep:(NSInteger)begin completeBlock:(EZOperationBlock)block;
 
 //It means play the current steps once more.
 - (void) replay;
+
+- (void) replay:(EZOperationBlock)block;
 
 - (void) pause;
 
@@ -62,6 +101,8 @@ typedef enum {
 //I will adjust the status to stepwise.
 - (void) next;
 
+- (void) next:(EZOperationBlock)block;
+
 //What's the meaning of prev?
 //Once this was called, I will play the previous action.
 //For the prev to work?
@@ -69,10 +110,26 @@ typedef enum {
 //Prev mean to undo the effects of current action.
 - (void) prev;
 
+- (void) prev:(EZOperationBlock)block;
+
+- (BOOL) isEnd;
+
+//Start from beginning;
+- (void) rewind;
+
+
+//Protected
+- (void) cleanActionMove:(NSArray*)moves;
+- (void) stepCompleted;
+- (void) playSound:(EZAction*)action completeBlock:(void(^)())blk;
+- (void) playMoves:(EZAction*)action completeBlock:(void (^)())blk withDelay:(CGFloat)delay;
+
 
 @property (assign, nonatomic) NSInteger currentAction;
 @property (assign, nonatomic) EZActionPlayerStatus playingStatus;
 @property (strong, nonatomic) NSArray* actions;
 @property (strong, nonatomic) NSObject<EZBoardDelegate>* board;
+@property (strong, nonatomic) NSObject<EZActionCompleted>* completedHandler;
+@property (strong, nonatomic) EZOperationBlock completeBlock;
 
 @end

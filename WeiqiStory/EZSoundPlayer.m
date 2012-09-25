@@ -21,11 +21,16 @@
 
 - (EZSoundPlayer*) initWithFile:(NSString*)fileName completeCall:(void(^)())blk
 {
+    NSURL* fileURL = [EZFileUtil fileToURL:fileName];
+    return [self initWithURL:fileURL completeCall:blk];
+}
+
+- (EZSoundPlayer*) initWithURL:(NSURL*)url completeCall:(EZOperationBlock)blk
+{
     self = [super init];
     NSError *error;
-    NSURL* fileURL = [EZFileUtil fileToURL:fileName];
     audioPlayer = [[AVAudioPlayer alloc]
-                   initWithContentsOfURL:fileURL
+                   initWithContentsOfURL:url
                    error:&error];
     if(error){
         EZDEBUG(@"Sound load Error:%@",error);
@@ -33,8 +38,9 @@
     audioPlayer.delegate = self;
     block = blk;
     [audioPlayer play];
-    EZDEBUG(@"start playing:%@, url:%@",fileName,fileURL);
+    EZDEBUG(@"start playing url:%@",url);
     return self;
+    
 }
 
 /* audioPlayerDidFinishPlaying:successfully: is called when a sound has finished playing. This method is NOT called if the player is stopped due to an interruption. */

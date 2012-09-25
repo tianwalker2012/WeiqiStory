@@ -180,4 +180,13 @@ typedef enum ChessPutStatus{
 
 - (void) regretOneStep;
 
+- (NSArray*) plantedChesses;
+
+
+- (EZCoord*) coordForStep:(NSInteger)step;
+
+- (NSArray*) getAllChessMoves;
+
+- (void) cleanAllMoves;
+
 @end

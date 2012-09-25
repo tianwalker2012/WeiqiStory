@@ -18,8 +18,13 @@
 //Without putting your mind to it doesn't enable you to understand them automatically.
 //Intentionality.
 //Grow by slowly learn and appreciate the facts around you.
+@class EZActionPlayer;
 @interface EZChessPlay : CCLayer
 
 + (CCScene*) scene;
+
++ (CCScene*) sceneWithActions:(NSArray*)actions;
+
+@property (strong, nonatomic) EZActionPlayer* actPlayer;
 
 @end

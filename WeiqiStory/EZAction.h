@@ -9,12 +9,18 @@
 #import <Foundation/Foundation.h>
 
 typedef enum {
-    kPreSetting,//What's the meaning, Mean I will have no animation. I just do some preparation job.
+    kActionNone=-1,//Invalid action type, make easy to program to detect errors
+    kPreSetting=1,//What's the meaning, Mean I will have no animation. I just do some preparation job.
     kLectures,//Play back some voice.
-    kPlantMoves//Marks are kind of move. 
+    kPlantMoves,//Marks are kind of move.
+    kCleanBoard,//Clean all
+    kCleanMarks,//Clean marks
+    kPlantMarks//Will add marks
+    
 } EZActionType;
 
 //The default type is kPreSetting
+@class EZActionPlayer;
 @interface EZAction : NSObject
 
 @property (assign, nonatomic) EZActionType actionType;
@@ -52,5 +58,16 @@ typedef enum {
 @property (assign, nonatomic) NSInteger currentAudio;
 
 - (EZAction*) clone;
+
+//Do NOT override this method.
+//Otherwise, the action will not continue
+//If you override this method, you have to implement
+//All the logic in this method.
+- (void) doAction:(EZActionPlayer*)player;
+
+- (void) undoAction:(EZActionPlayer*)player;
+
+//For the subclass, override this method.
+- (void) actionBody:(EZActionPlayer*)player;
 
 @end

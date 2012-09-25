@@ -13,11 +13,13 @@
 #import "EZSoundManager.h"
 #import "EZAction.h"
 #import "EZActionPlayer.h"
+#import "EZPlayerStatus.h"
 
 @interface EZChessPlay()
 {
-    EZActionPlayer* actPlayer;
+    //EZActionPlayer* actPlayer;
     EZChessBoard* chessBoard;
+    EZPlayerStatus* playerStatus;
 }
 
 @end
@@ -36,6 +38,19 @@
     return scene;
 }
 
++ (CCScene*) sceneWithActions:(NSArray*)actions
+{
+    CCScene* scene = [[CCScene alloc] init];
+    
+    EZChessPlay* playLayer = [[EZChessPlay alloc] init];
+    
+    [playLayer.actPlayer setActions:actions];
+    
+    [scene addChild:playLayer];
+    
+    return scene;
+
+}
 
 - (void) initScript
 {
@@ -70,7 +85,7 @@
     EZDEBUG(@"Start playing actions");
     
     
-    actPlayer = [[EZActionPlayer alloc] initWithActions:@[preAction,action,action1,action2,actionV1,action3] chessBoard:chessBoard];
+    _actPlayer = [[EZActionPlayer alloc] initWithActions:@[preAction,action,action1,action2,actionV1,action3] chessBoard:chessBoard];
 }
 //What's the meaning init?
 //Initialize the the class.
@@ -115,22 +130,37 @@
         
         
         CCMenuItem* prevMenu = [CCMenuItemFont itemWithString:@"后退" block:^(id sender){
-            [actPlayer prev];
+            [_actPlayer prev];
         }];
         
         CCMenuItem* replayMenu = [CCMenuItemFont itemWithString:@"重放" block:^(id sender){
-            [actPlayer replay];
+            [_actPlayer replay];
         }];
         
         CCMenuItem* nextMenu = [CCMenuItemFont itemWithString:@"前进" block:^(id sender){
-            [actPlayer next];
+            [_actPlayer next];
         }];
         
+        CCMenuItem* backToEditorMenu = [CCMenuItemFont itemWithString:@"回到编辑界面" block:^(id sender){
+            [[CCDirector sharedDirector] popScene];
+            //Important, otherwise will not get event.
+            chessBoard.touchEnabled = false;
+        }];
+        
+        playerStatus = [[EZPlayerStatus alloc] initWithPlay:nil prev:prevMenu next:nextMenu replay:replayMenu];
         CCMenuItem* playMenu = [CCMenuItemFont itemWithString:@"播放" block:^(id sender){
-            [actPlayer play];
+            [playerStatus play];
         }];
         
-        CCMenu* menu = [CCMenu menuWithItems:introduction,regret,showSteps,showStepStart,replayMenu, prevMenu, nextMenu, playMenu,nil];
+        
+        playerStatus.playButton = playMenu;
+        playerStatus.player = _actPlayer;
+        
+        _actPlayer.completedHandler = playerStatus;
+        
+        
+        
+        CCMenu* menu = [CCMenu menuWithItems:introduction,regret,showSteps,showStepStart,replayMenu, prevMenu, nextMenu, playMenu, backToEditorMenu, nil];
         [menu alignItemsVerticallyWithPadding:40];
         
         menu.position = ccp(900, 400);
