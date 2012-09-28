@@ -71,6 +71,7 @@
         bounds = bd;
         totalLines = rows;
         boardRect = bounds;
+        initialBlack = true;
         steps = 0;
         coordToChess = [[NSMutableDictionary alloc] initWithCapacity:100];
         plantedChess = [[NSMutableArray alloc] initWithCapacity:100];
@@ -155,8 +156,32 @@
     //return res;
 }
 
+//Is this ok to each neighbor see if any of them have more than zero connection
+- (NSInteger) countConnectedNeighbor:(EZCoord*)coord isBlack:(BOOL)black checked:(NSMutableDictionary*)checked
+{
+    if([checked objectForKey:coord.getKey]){
+        return 0;//duplicated button contribute nothing
+    }
+    [checked setValue:coord forKey:coord.getKey];
+    
+    EZChessPosition* cur = [coordToChess objectForKey:coord.getKey];
+    if(!cur){//Empty space;
+        return 0;
+    }
+    if(cur.isBlack != black){
+        return 0;
+    }
+    
+    NSArray* neighbors = [self availableNeigbor:coord];
+    NSInteger res = 1;
+    for(EZCoord* ncoord in neighbors){
+        res += [self countConnectedNeighbor:ncoord isBlack:black checked:checked];
+    }
+    return res;
+}
+
 //Remove this coord plus all it's connected neighor
-- (NSInteger) cascadeRemoveEaten:(EZCoord*)coord isBlack:(BOOL)black animated:(BOOL)animated
+- (NSInteger) cascadeRemoveEaten:(EZCoord*)coord isBlack:(BOOL)black animated:(BOOL)animated removed:(EZChessPosition**)removed
 {
     EZChessPosition* cur = [coordToChess objectForKey:coord.getKey];
     if(!cur){//Empty space;
@@ -166,16 +191,12 @@
     if(cur.isBlack != black){
         return 0;
     }
-    
+    *removed = cur;
     [self removeEaten:coord animated:animated];
     NSArray* neighbors = [self availableNeigbor:coord];
     NSInteger res = 1;
     for(EZCoord* ncoord in neighbors){
-        res += [self cascadeRemoveEaten:ncoord isBlack:black animated:animated];
-    }
-    if(res == 1){
-        robberyStep = steps;
-        robberPosition = cur;
+        res += [self cascadeRemoveEaten:ncoord isBlack:black animated:animated removed:removed];
     }
     return res;
 }
@@ -190,14 +211,21 @@
     //EZDEBUG(@"CheckAndRemove started");
     NSArray* neighbors = [self availableNeigbor:coord];
     NSInteger res = 0;
+    EZChessPosition* removed = nil;
     for(EZCoord* ncoord in neighbors){
         //Check the neighor with reversed color
         int qi = [self detectQi:ncoord isBlack:!black];
         if(qi == 0){
-            int curCount = [self cascadeRemoveEaten:ncoord isBlack:!black animated:animated];
+            int curCount = [self cascadeRemoveEaten:ncoord isBlack:!black animated:animated removed:&removed];
             res += curCount;
             //EZDEBUG(@"Remove start:%@, removed:%i", ncoord, curCount);
         }
+    }
+    
+    if(res == 1){
+        EZDEBUG(@"Found robbery position:%@", removed.coord);
+        robberyStep = steps;
+        robberPosition = removed;
     }
     //EZDEBUG(@"Totally removed:%i", res);
     return res;
@@ -216,25 +244,54 @@
 //Cool.
 //If we remove the side effect checkAndRemove we are perfect.
 //Assume this button is not in the coord yet.
-- (BOOL) checkAvailableQi:(EZCoord*)coord isBlack:(BOOL)black
+- (BOOL) checkAvailableQi:(EZCoord*)coord isBlack:(BOOL)black isRobbery:(BOOL)robbery
 {
     [coordToChess setValue:[[EZChessPosition alloc]initWithCoord:coord isBlack:black step:steps] forKey:coord.getKey];
+    BOOL res = [self checkAvailableQiInner:coord isBlack:black isRobbery:robbery];
+    //Why not remove it?
+    [coordToChess removeObjectForKey:coord.getKey];
+    return res;
+}
+
+- (BOOL) checkAvailableQiInner:(EZCoord *)coord isBlack:(BOOL)black isRobbery:(BOOL)robbery
+{
     int qi = [self detectQi:coord isBlack:black];
     if(qi > 0){
         return true;
     }
     NSArray* neighbors = [self availableNeigbor:coord];
-    for(EZCoord* ncoord in neighbors){
-        //Check the neighor with reversed color
-        int qi = [self detectQi:ncoord isBlack:!black];
-        if(qi == 0){//Find zero Qi neighbor. Great news
-            EZChessPosition* ep = [coordToChess objectForKey:ncoord.getKey];
-            if(ep.isBlack == !black){//Seems it is opponent's button. We win
-                return true;
+    
+    if(!robbery){//Normal
+        for(EZCoord* ncoord in neighbors){
+            //Check the neighor with reversed color
+            int qi = [self detectQi:ncoord isBlack:!black];
+            if(qi == 0){//Find zero Qi neighbor. Great news
+                EZChessPosition* ep = [coordToChess objectForKey:ncoord.getKey];
+                if(ep.isBlack == !black){//Seems it is opponent's button. We win
+                    return true;
+                }
             }
         }
+        
+    }else{
+        NSInteger eatenCount = 0;
+        for(EZCoord* ncoord in neighbors){
+            //Check the neighor with reversed color
+            NSMutableDictionary* checked = [[NSMutableDictionary alloc] init];
+            int qi = [self detectQi:ncoord isBlack:!black];
+            if(qi == 0){//Find zero Qi neighbor. Great news
+                EZChessPosition* ep = [coordToChess objectForKey:ncoord.getKey];
+                if(ep.isBlack == !black){//Seems it is opponent's button. We win
+                    eatenCount = +[self countConnectedNeighbor:ncoord isBlack:!black checked:checked];
+                }
+            }
+        }
+        EZDEBUG(@"Eaten %i ", eatenCount);
+        if(eatenCount > 1){
+            EZDEBUG(@"It is not robbery, I eat more than one");
+            return true;
+        }
     }
-    [coordToChess removeObjectForKey:coord.getKey];
     return false;
 }
 
@@ -293,12 +350,16 @@
     }
     
     //EZDEBUG(@"check for robbery");
+    BOOL isRobbery = false;
     if([bd.getKey isEqualToString:robberPosition.coord.getKey] && ((steps-1) == robberyStep)){
-        return EZJustRobber;
+        isRobbery = true;
     }
     
     //EZDEBUG(@"check for Qi");
-    if(![self checkAvailableQi:bd isBlack:black]){
+    if(![self checkAvailableQi:bd isBlack:black isRobbery:isRobbery]){
+        if(isRobbery){
+            return EZJustRobber;
+        }
         return EZLackQi;
     }
     
@@ -317,17 +378,22 @@
 //The It will call EZBoardFront to plant the button on screen accordingly.
 - (ChessPutStatus) putButtonByCoord:(EZCoord*)coord animated:(BOOL)animated
 {
-    //EZDEBUG(@"put button on:%@",coord);
     ChessPutStatus putStatus = [self tryPutButton:coord isBlack:[self isCurrentBlack]];
     if(putStatus != EZPutOk){
         return putStatus;
     }
-    
-    EZChessPosition* pos = [[EZChessPosition alloc]initWithCoord:coord isBlack:[self isCurrentBlack] step:steps] ;
+    BOOL isBlack = [self isCurrentBlack];
+    if(coord.chessType == kBlackChess){
+        isBlack = true;
+    }else if(coord.chessType == kWhiteChess){
+        isBlack = false;
+    }
+
+    EZChessPosition* pos = [[EZChessPosition alloc]initWithCoord:coord isBlack:isBlack step:steps] ;
     [coordToChess setValue:pos forKey:coord.getKey];
     [plantedChess addObject:pos];
-    [front putButton:coord isBlack:[self isCurrentBlack] animated:animated];
-    [self checkAndRemove:coord isBlack:self.isCurrentBlack animated:animated];
+    [front putButton:coord isBlack:isBlack animated:animated];
+    [self checkAndRemove:coord isBlack:isBlack animated:animated];
     ++steps;
     
     
@@ -357,9 +423,19 @@
 - (EZCoord*) coordForStep:(NSInteger)step
 {
     EZChessPosition* chessPos = [plantedChess objectAtIndex:step];
-    return chessPos.coord;
+    EZCoord* coord = [chessPos.coord clone];
+    //Why do we do this?
+    //So that what do we see is what do we get. 
+    coord.chessType = chessPos.isBlack?kBlackChess:kWhiteChess;
+    return coord;
 }
 
+//All chess move enable you to modify it.
+//This is really confusing.
+//Let's stop the confusion here.
+//One is stored the EZChessPosition.
+//Another will return the coord to outside world.
+//Great. That's the difference.
 - (NSArray*) getAllChessMoves
 {
     NSMutableArray* res = [[NSMutableArray alloc] initWithCapacity:plantedChess.count];
@@ -378,7 +454,7 @@
 //This is it, let's experiment.
 - (void) regretOneStep
 {
-    //Too defensive?   
+    //Too defensive?
     if(plantedChess.count == 0){
         return;
     }
@@ -393,6 +469,7 @@
         [coordToChess setValue:removed forKey:removed.coord.getKey];
         [front putButton:removed.coord isBlack:removed.isBlack animated:NO];
     }
+
 }
 
 //Will add a clean all the marks.
@@ -404,6 +481,7 @@
         [front clean:cp.coord animated:NO];
     }
     [coordToChess removeAllObjects];
+    steps = 0;
 }
 
 @end

@@ -9,22 +9,31 @@
 #import "EZCoord.h"
 
 @implementation EZCoord
-@synthesize x, y;
 
-- (id) init:(short)wd y:(short)ht
+
+- (id) clone
+{
+    EZCoord* res = [[EZCoord alloc] initChessType:_chessType x:_x y:_y];
+    return res;
+}
+
+- (id) initChessType:(EZChessmanSetType)chessType x:(short)x y:(short)y
 {
     self = [super init];
-    if(self != nil){
-        x = wd;
-        y = ht;
-    }
-    
+    _x = x;
+    _y = y;
+    _chessType = chessType;
     return self;
+}
+
+- (id) init:(short)x y:(short)y
+{
+    return [self initChessType:kDetermineByBoard x:x y:y];
 }
 
 - (NSString*) description
 {
-    return [NSString stringWithFormat:@"width:%i, height:%i",x ,y];
+    return [NSString stringWithFormat:@"width:%i, height:%i",_x ,_y];
 }
 
 //Can be stored as a short or convert from short
@@ -35,7 +44,7 @@
 
 - (short) toNumber
 {
-    return (x << 8) + y;
+    return (_x << 8) + _y;
 }
 
 - (NSString*) getKey

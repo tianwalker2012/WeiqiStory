@@ -175,11 +175,14 @@ typedef enum ChessPutStatus{
 //Or if we can remove any thing.
 //Cool.
 //If we remove the side effect checkAndRemove we are perfect.
-- (BOOL) checkAvailableQi:(EZCoord*)coord isBlack:(BOOL)black;
+//If it is the robbery position. Will only return true if can eat more than 1 chessman.
+- (BOOL) checkAvailableQi:(EZCoord*)coord isBlack:(BOOL)black isRobbery:(BOOL)robbery;
 
 
 - (void) regretOneStep;
 
+//What's the difference between planted and getAllChessMoves?
+//Make it clear. 
 - (NSArray*) plantedChesses;
 
 

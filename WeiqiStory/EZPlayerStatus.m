@@ -18,7 +18,7 @@
     EZDEBUG(@"Completed get called");
     [_playButton setIsEnabled:YES];
     if(_player.isEnd){
-        [_player rewind];
+        //[_player rewind];
     }
     
     [_prevButton setIsEnabled:YES];

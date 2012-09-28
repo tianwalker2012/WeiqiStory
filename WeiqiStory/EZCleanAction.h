@@ -9,6 +9,13 @@
 #import <Foundation/Foundation.h>
 #import "EZAction.h"
 
+
+typedef enum {
+    kCleanMarks,
+    kCleanChessman,
+    kCleanAll
+} EZCleanType;
+
 //What's the purpose of this class
 //Initially, I am thinking about add a presetting action which have a clean ability.
 //Later I realize, clean is not as simple as clean.
@@ -22,6 +29,8 @@
 //Since we could store them all. 
 @interface EZCleanAction : EZAction
 
-@property (assign, nonatomic) 
+@property (strong, nonatomic) NSArray* cleanedMoves;
+@property (strong, nonatomic) NSArray* cleanedMarks;
+@property (assign, nonatomic) EZCleanType cleanType;
 
 @end

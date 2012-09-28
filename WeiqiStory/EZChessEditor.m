@@ -25,6 +25,11 @@
     CCLabelAtlas* statusText;
     EZActionPlayer* actPlayer;
     
+    //The ActPlayer will work on current actor.
+    //So that once I add clean or preset, I could immediately see the effects.
+    EZActionPlayer* currActPlayer;
+    EZAction* presetAction;
+    
 }
 
 @end
@@ -83,6 +88,7 @@
         [previewBoard setPosition:ccp(previewBoard.boundingBox.size.width/4, previewBoard.boundingBox.size.height/4)];
         [previewBoard setScale:0.5];
         previewBoard.touchEnabled = false;
+        CCLabelTTF* statusLabel = [CCLabelTTF labelWithString:@"Status label" fontName:@"Arial" fontSize:30];
         
         NSInteger popupZOrder = 200;
         //[self addChild:previewBoard z:popupZOrder];
@@ -90,6 +96,8 @@
         //Will change the chessBoard later
         actPlayer = [[EZActionPlayer alloc] initWithActions:nil chessBoard:previewBoard];
                 
+        
+        currActPlayer = [[EZActionPlayer alloc] initWithActions:nil chessBoard:chessBoard];
         //One test cover all the functionality
         
         [chessBoard setScale:0.7];
@@ -111,31 +119,73 @@
             [editorStatus start:kPlantMoves];
         }];
         
-        CCMenuItem* startMark = [CCMenuItemFont itemWithString:@"开始Mark" block:^(id sender){
-            [editorStatus start:kPlantMarks];
-        }];
         
         CCMenuItem* save = [CCMenuItemFont itemWithString:@"保存" block:^(id sender){
             [editorStatus save];
         }];
         
+        //One menu handle all the color switch
+        CCMenuItemFont* selectChessColor = [CCMenuItemFont itemWithString:@"正常落子" block:^(id sender){
+                if(chessBoard.chessmanSetType == kDetermineByBoard){
+                    [sender setString:@"落黑子"];
+                    chessBoard.chessmanSetType = kBlackChess;
+                }else if(chessBoard.chessmanSetType == kBlackChess){
+                    [sender setString:@"落白子"];
+                    chessBoard.chessmanSetType = kWhiteChess;
+                }else{
+                    [sender setString:@"正常落子"];
+                    chessBoard.chessmanSetType = kDetermineByBoard;
+                }
+        }];
         
-        CCMenuItem* addCleanAction = [CCMenuItemFont itemWithString:@"增加清除步骤" block:^(id sender){
+        CCMenuItem* toggleBoardColor = [CCMenuItemFont itemWithString:chessBoard.isCurrentBlack?@"下一手黑色":@"下一手白色" block:^(id sender){
+            [chessBoard toggleColor];
+            //[statusLabel setString:[NSString stringWithFormat:@"Next chess color:%@",chessBoard.isCurrentBlack?@"Black":@"White"]];
+            [sender setString:chessBoard.isCurrentBlack?@"下一手黑色":@"下一手白色"];
+        }];
+        
+        CCMenuItem* toggleMark = [CCMenuItemFont itemWithString:@"落子类型：棋子" block:^(id sender){
+            if(chessBoard.chessmanType == kChessMan){
+                [sender setString:@"落子类型：Mark"];
+                chessBoard.chessmanType = kChessMark;
+            }else{
+                [sender setString:@"落子类型：棋子"];
+                chessBoard.chessmanType = kChessMan;
+            }
+        }];
+        
+        CCMenuItem* showHand = [CCMenuItemFont itemWithString:editorStatus.showStep?@"显示手数":@"不显示手数" block:^(id sender){
+            editorStatus.showStep = !editorStatus.showStep;
+            [sender setString:editorStatus.showStep?@"显示手数":@"不显示手数"];
+            [editorStatus insertShowHand];
+            [chessBoard setShowStepStarted:chessBoard.allSteps.count];
+            [chessBoard setShowStep:editorStatus.showStep];
+        }];
+        
+        
+        CCMenuItem* addPreset = [CCMenuItemFont itemWithString:@"回到本节开始" block:^(id sender){
+            [editorStatus insertPreset];
+            currActPlayer.actions = @[editorStatus.presetAction];
+            [currActPlayer playOneStep:0 completeBlock:nil];
+            
+        }];
+        
+       
+        
+        
+        CCMenuItem* addCleanAction = [CCMenuItemFont itemWithString:@"增加清盘动作" block:^(id sender){
             [editorStatus addCleanAction];
+            [statusLabel setString:@"Added clean actions"];
+            [chessBoard cleanAllMoves];
             EZDEBUG(@"Added clean Action");
         }];
         
-        CCMenuItem* cleanMarkAction = [CCMenuItemFont itemWithString:@"清除Mark" block:^(id sender){
-            [editorStatus addCleanMark];
-            EZDEBUG(@"Add cleanMark action");
-        }];
-        
-        CCMenuItem* delete = [CCMenuItemFont itemWithString:@"删除近一条" block:^(id sender){
+        CCMenuItem* delete = [CCMenuItemFont itemWithString:@"删除当前Action" block:^(id sender){
             [editorStatus removeLast];
         }];
         
         
-        CCMenuItem* preView = [CCMenuItemFont itemWithString:@"预览最近一条" block:^(id sender){
+        CCMenuItem* preView = [CCMenuItemFont itemWithString:@"预览当前Action" block:^(id sender){
             EZDEBUG(@"Will play:%i",editorStatus.actions.count);
             actPlayer.actions = editorStatus.actions;
             [self addChild:previewBoard z:popupZOrder];
@@ -146,7 +196,7 @@
             
         }];
         
-        
+       /**
         CCMenuItem* preViewAll = [CCMenuItemFont itemWithString:@"预览全部" block:^(id sender){
             EZDEBUG(@"Review all");
             actPlayer.actions = editorStatus.actions;
@@ -157,7 +207,7 @@
             }];
             
         }];
-        
+        **/
         CCMenuItem* regretMove = [CCMenuItemFont itemWithString:@"回退一步棋" block:^(id sender){
             EZDEBUG(@"Back on step");
             [chessBoard regretSteps:1 animated:YES];
@@ -185,17 +235,20 @@
             [chessBoard removeMark:[[EZCoord alloc] init:10 y:10] animAction:nil];
         }];
          **/
+       
         CCMenuItem* goToPlayer = [CCMenuItemFont itemWithString:@"去播放界面" block:^(id sender){
             EZDEBUG(@"Will go to player interface");
             CCScene* playFace = [EZChessPlay sceneWithActions:editorStatus.actions];
             [[CCDirector sharedDirector] pushScene:playFace];
         }];
-        [editorStatus setBtnPreset:startPresetting audio:recording plantMove:startPlainMove save:save remove:delete preview:preView previewAll:preViewAll];
-        editorStatus.statusText = statusText;
+        [editorStatus setBtnPreset:startPresetting audio:recording plantMove:startPlainMove save:save remove:delete preview:preView previewAll:nil];
+        //editorStatus.statusText = statusText;
+        editorStatus.statusLabel = statusLabel;
+        [statusLabel setPosition:ccp(500, 34)];
+        [self addChild:statusLabel];
+        CCMenu* menu = [CCMenu menuWithItems:recording,startPresetting,startPlainMove,save,selectChessColor,toggleBoardColor,toggleMark,showHand,addPreset,addCleanAction, preView,delete,regretMove,goToPlayer,nil];
         
-        CCMenu* menu = [CCMenu menuWithItems:recording,startPresetting,startPlainMove,save,addCleanAction, preView,delete, preViewAll,regretMove,goToPlayer,nil];
-        
-        [menu alignItemsVerticallyWithPadding:40];
+        [menu alignItemsVerticallyWithPadding:15];
         
         menu.position = ccp(900, 400);
         [self addChild:menu z:-2];

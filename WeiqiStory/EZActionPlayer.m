@@ -14,6 +14,8 @@
 #import "EZCoord.h"
 #import "EZSoundPlayer.h"
 #import "EZExtender.h"
+#import "EZSoundAction.h"
+#import "EZChessMoveAction.h"
 
 
 
@@ -260,10 +262,11 @@
 // Let's wite a test. test the whole thing accordingly.
 - (void) playSound:(EZAction*)action completeBlock:(void(^)())blk
 {
+    EZSoundAction* soundAction = (EZSoundAction*)action;
     if(soundPlayer){
         soundPlayer = nil;
     }
-    if(action.currentAudio >= action.audioFiles.count){
+    if(soundAction.currentAudio >= soundAction.audioFiles.count){
         EZDEBUG(@"Complete audio playback");
         if(blk){
             blk();
@@ -275,8 +278,8 @@
     CallBackBlock block =  ^(){
         [self playSound:action completeBlock:blk];
     };
-    id aFile = [action.audioFiles objectAtIndex:action.currentAudio];
-    action.currentAudio = action.currentAudio + 1;
+    id aFile = [soundAction.audioFiles objectAtIndex:soundAction.currentAudio];
+    soundAction.currentAudio = soundAction.currentAudio + 1;
     if([[[aFile class]description] isEqualToString:@"NSURL"]){
         EZDEBUG(@"Play URL directly:%@",aFile);
         soundPlayer = [[EZSoundPlayer alloc] initWithURL:aFile completeCall:block];
@@ -288,9 +291,10 @@
     
 }
 
-- (void) playMoves:(EZAction*)action completeBlock:(void (^)())blk withDelay:(CGFloat)delay
+- (void) playMoves:(EZAction*)act completeBlock:(void (^)())blk withDelay:(CGFloat)delay
 {
-    EZDEBUG(@"Get into playMoves with delay,play moves:%i, currentMove:%i, object pointer:%i, name:%@",action.plantMoves.count, action.currentMove, (int)action, action.name);
+    EZChessMoveAction* action = (EZChessMoveAction*)act;
+    EZDEBUG(@"Get into playMoves with delay %f,play moves:%i, currentMove:%i, object pointer:%i, name:%@",action.unitDelay, action.plantMoves.count, action.currentMove, (int)action, action.name);
     EZAction* localAct = action;
     EZOperationBlock block = ^(){
         [self playMoves:localAct completeBlock:blk];
@@ -304,8 +308,9 @@
 
 //The logic is clean and nice.
 //Let's complete the clone method.
-- (void) playMoves:(EZAction*)action completeBlock:(void(^)())blk
+- (void) playMoves:(EZAction*)act completeBlock:(void(^)())blk
 {
+    EZChessMoveAction* action = (EZChessMoveAction*)act;
     EZDEBUG(@"in playMoves,currentMove:%i, total move:%i, object pointer:%i, name:%@", action.currentMove, action.plantMoves.count, (int)action, action.name);
     
     if(actionTimer){

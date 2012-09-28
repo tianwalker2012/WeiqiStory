@@ -52,6 +52,7 @@
 
 }
 
+/**
 - (void) initScript
 {
     EZAction* preAction = [[EZAction alloc] init];
@@ -84,9 +85,10 @@
     
     EZDEBUG(@"Start playing actions");
     
-    
-    _actPlayer = [[EZActionPlayer alloc] initWithActions:@[preAction,action,action1,action2,actionV1,action3] chessBoard:chessBoard];
+
 }
+**/
+ 
 //What's the meaning init?
 //Initialize the the class.
 - (id) init
@@ -97,7 +99,8 @@
         [chessBoard setPosition:ccp(chessBoard.boundingBox.size.width/2, chessBoard.boundingBox.size.height/2)];
         [self addChild:chessBoard];
         
-        [self initScript];
+        //[self initScript];
+        _actPlayer = [[EZActionPlayer alloc] initWithActions:nil chessBoard:chessBoard];
         /**
         CCSprite* board2 = [CCSprite spriteWithFile:@"weiqi-board-pad.png" rect:CGRectMake(800, 500, 100, 100)];
         board2.position = CGPointMake(500, 500);
@@ -105,6 +108,8 @@
         **/
         
         //One test cover all the functionality
+        
+         //I will use this to test my preset on the beginning of the game.
         [chessBoard putChessmans:[NSArray arrayWithObjects:[[EZCoord alloc] init:1 y:2],[[EZCoord alloc] init:2 y:5],[[EZCoord alloc]init:8 y:9], nil] animated:NO];
         [chessBoard setScale:0.7];
         
@@ -138,6 +143,7 @@
         }];
         
         CCMenuItem* nextMenu = [CCMenuItemFont itemWithString:@"前进" block:^(id sender){
+            EZDEBUG(@"Will play next");
             [_actPlayer next];
         }];
         

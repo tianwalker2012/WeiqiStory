@@ -8,16 +8,24 @@
 
 #import "EZMarkAction.h"
 #import "cocos2d.h"
-#import "EZCharMark.h"
+#import "EZChessMark.h"
 #import "EZActionPlayer.h"
 //#import "EZCoord.h"
 
 @implementation EZMarkAction
 
 
+- (id) init
+{
+    self = [super init];
+    self.syncType = kSync;
+    return self;
+}
+
 - (void) undoAction:(EZActionPlayer*)player
 {
-    for(EZCharMark* mark in _marks){
+    EZDEBUG(@"Will undo all the marks, current count:%i", _marks.count);
+    for(EZChessMark* mark in _marks){
         [player.board removeMark:mark.coord animAction:nil];
     }
 }
@@ -25,10 +33,9 @@
 //For the subclass, override this method.
 - (void) actionBody:(EZActionPlayer*)player
 {
-    for(EZCharMark* mark in _marks){
-        EZDEBUG(@"Add mark get called");
-        CCLabelTTF*  markText = [CCLabelTTF labelWithString:mark.content fontName:@"Arial" fontSize:40];
-        [player.board putMark:markText coord:mark.coord animAction:nil];
+    for(EZChessMark* mark in _marks){
+        EZDEBUG(@"Add mark get called, character:%@", mark.text);
+        [player.board putCharMark:mark.text fontSize:mark.fontSize coord:mark.coord animAction:false];
     }
 }
 

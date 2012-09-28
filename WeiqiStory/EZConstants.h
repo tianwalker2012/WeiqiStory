@@ -53,7 +53,14 @@ typedef enum {
 } CoordTransformType;
 
 
+#define ChessMarkColor ccc3(122, 190, 83)
+
 #define AUDIO_MAX_WAITTIME 1.0
+
+#define ChessRemoveAnimateInterval 0.3
+
+#define ChessPlantAnimateInterval 0.6
+
 
 #define SFX_NOTLOADED NO
 #define SFX_LOADED YES

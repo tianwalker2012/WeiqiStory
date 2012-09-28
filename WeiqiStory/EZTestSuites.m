@@ -105,7 +105,7 @@
 //I need this test to help me understand the block thoroughly. 
 + (void) testRecuringBlockIssue
 {
-    EZActionPlayer* player = [EZTestSuites initScript];
+    EZActionPlayer* player;// = [EZTestSuites initScript];
     [player next];
     
     [player next];
@@ -130,7 +130,7 @@
     [player performBlock:^(){assert(false);} withDelay:24];
 }
 
-
+/**
 + (EZActionPlayer*) initScript
 {
     EZAction* preAction = [[EZAction alloc] init];
@@ -169,6 +169,8 @@
     
     return [[EZActionPlayer alloc] initWithActions:@[preAction,action,action1,action2,actionV1,action3] chessBoard:[[MyTestBoard alloc] init]];
 }
+ 
+ **/
 
 
 + (void) testCurrentDirectory

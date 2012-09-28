@@ -26,6 +26,7 @@
     NSMutableDictionary* coordToButtons;
     NSMutableDictionary* coordToMarks;
     NSArray* chessMarkChar;
+    CCSprite* cursor;
 }
 
 - (void) initializeCursor;
@@ -49,9 +50,11 @@
 {
     self = [super initWithFile:filename];
     if(self){
-        chessMarkChar = @[@"A",@"B",@"C"];
+        chessMarkChar = @[@"A",@"B",@"C",@"D",@"E",@"F",@"G",@"H",@"I",@"J",@"K",@"L",@"M",@"N",@"O",@"P",@"Q",@"R",@"S",@"T",@"U",@"V",@"W",@"X",@"Y",@"Z"];
         //Why am I doing this?
         //So that the edge of the board coud detect the touch too
+        _chessmanType = kChessMan;
+        _chessmanSetType = kDetermineByBoard;
         CGFloat extendedGap = -(rect.size.width/(rws-1))/2;
         EZDEBUG(@"The extended gap:%f", extendedGap);
         touchRect = CGRectInset(rect, extendedGap, extendedGap);
@@ -61,6 +64,7 @@
         //I assume I can calculate the lineGap, simply by rect.size.width/rows
         coordToButtons = [[NSMutableDictionary alloc] init];
         coordToMarks = [[NSMutableDictionary alloc] init];
+        _allMarks = [[NSMutableArray alloc] init];
         boardStatus = [[EZBoardStatus alloc] initWithBound:rect rows:rws cols:cls];
         boardStatus.front = self;
         [self initializeCursor];
@@ -90,6 +94,12 @@
     showStep = show;
 }
 
+- (void) setChessmanSetType:(EZChessmanSetType)chessmanSetType
+{
+    //EZDEBUG(@"Drag the caller:%@",[NSThread callStackSymbols]);
+    _chessmanSetType = chessmanSetType;
+}
+
 - (void) setShowStepStarted:(NSInteger)started
 {
     showStepStarted = started;
@@ -97,15 +107,6 @@
         self.showStep = NO;
         self.showStep = YES;
     }
-}
-
-//Clean all the button on the board, animated or not.
-//Will clean all the button from the board
-//What's the expectation from the client?
-//Should include the data too.
-- (void) cleanAllButton:(BOOL)animated
-{
-    
 }
 
 //Coord is better and more stable than point
@@ -138,7 +139,9 @@
         [coordToMarks setValue:marks forKey:coord.getKey];
     }
     //EZDEBUG(@"coordMarks size:%i, object pointer:%i, marks size:%i",coordToMarks.count, (int)coordToMarks, marks.count);
-    [marks addObject:[[EZChessMark alloc] initWithNode:mark coord:coord]];
+    EZChessMark* markObj = [[EZChessMark alloc] initWithNode:mark coord:coord];
+    [marks addObject:markObj];
+    [_allMarks addObject:markObj];
     CGPoint pt = [boardStatus bcToPoint:coord];
     [mark setPosition:pt];
     [self addChild:mark z:MarkZOrder+marks.count];
@@ -147,6 +150,50 @@
     }
 }
 
+
+//Put marks on the board.
+- (void) putMarks:(NSArray*) marks
+{
+    for(EZChessMark* mark in marks){
+        [self putCharMark:mark.text fontSize:mark.fontSize coord:mark.coord animAction:nil];
+    }
+}
+
+- (void) putCharMark:(NSString*)str fontSize:(NSInteger)fontSize coord:(EZCoord*)coord animAction:(CCAction*)action
+{
+    //NSString* markStr = [chessMarkChar objectAtIndex:(coordToMarks.count % chessMarkChar.count)];
+    CCLabelTTF*  markText = [CCLabelTTF labelWithString:str fontName:@"Arial" fontSize:fontSize];
+    markText.color = ChessMarkColor;
+    NSMutableArray* marks = [coordToMarks objectForKey:coord.getKey];
+    if(!marks){
+        marks = [[NSMutableArray alloc] init];
+        [coordToMarks setValue:marks forKey:coord.getKey];
+    }
+    //EZDEBUG(@"coordMarks size:%i, object pointer:%i, marks size:%i",coordToMarks.count, (int)coordToMarks, marks.count);
+    EZChessMark* markObj = [[EZChessMark alloc] initWithText:str fontSize:fontSize coord:coord];
+    markObj.mark = markText;
+    [marks addObject:markObj];
+    [_allMarks addObject:markObj];
+    CGPoint pt = [boardStatus bcToPoint:coord];
+    [markText setPosition:pt];
+    [self addChild:markText z:MarkZOrder+marks.count];
+    if(action){
+        [markText runAction:action];
+    }
+    
+}
+
+- (BOOL) isCurrentBlack
+{
+    return boardStatus.isCurrentBlack;
+}
+
+//Change the board color
+//Change the board color to fit my needs
+- (void) toggleColor
+{
+    boardStatus.initialBlack = !boardStatus.initialBlack;
+}
 //If the mark exist I wll run the action,
 //Of course I will attach a Remove from parent to get it remove from board when it is done.
 //I will not clean it up, so It could be reused.
@@ -156,8 +203,8 @@
 {
     
     EZDEBUG(@"Will remove marks at %@", coord);
-    NSArray* marks = [coordToMarks objectForKey:coord.getKey];
-    //EZDEBUG(@"Fetched marks:%@",marks);
+    NSMutableArray* marks = [coordToMarks objectForKey:coord.getKey];
+    EZDEBUG(@"Fetched marks:%@",marks);
     if(marks){
         for(EZChessMark* mk in marks){
             if(action){
@@ -166,23 +213,31 @@
                 }]];
                 [mk.mark runAction:removeAction];
             }else{
-                //EZDEBUG(@"Will remove from parent");
+                EZDEBUG(@"Will remove from parent, mark:%@",mk.mark);
                 [mk.mark removeFromParentAndCleanup:NO];
             }
+            [_allMarks removeObject:mk];
         }
+        [marks removeAllObjects];
     }
 }
 
+//The key is that I didn't reuse any of the marks.
+//Defer it. Focus to get the whole thing up and run.
+- (void) removeMarks:(EZChessMark*)mark
+{
+    [_allMarks removeObject:mark];
+    //[_allMarks removeObjectAtIndex:position];
+    EZCoord* coord = mark.coord;
+    NSMutableArray* marks = [coordToMarks objectForKey:coord];
+    [marks removeObject:marks];
+    [mark.mark removeFromParentAndCleanup:NO];
+}
 //Cool
 //Now I knew why I need to store all the marks
 - (void) cleanAllMarks
 {
-    NSArray* values = coordToMarks.allValues;
-    for(NSArray*  arr in values){
-        for(EZChessMark* mark in arr){
-            [self removeMark:mark.coord animAction:nil];
-        }
-    }
+    [self regretMarks:_allMarks.count animated:NO];
 }
 
 - (void) putButton:(EZCoord*)coord isBlack:(BOOL)isBlack animated:(BOOL)animated
@@ -217,15 +272,20 @@
 - (void) putCursorButton:(CGPoint)regularizedPt
 {
     //if(_chessmanType == kChessMan){
+    cursor = nil;
+    if(_chessmanSetType == kDetermineByBoard){
         if(boardStatus.isCurrentBlack){
-            [virtualBlack setPosition:regularizedPt];
-            [self addChild:virtualBlack];
+            cursor = virtualBlack;
         }else{
-            [virtualWhite setPosition:regularizedPt];
-            [self addChild:virtualWhite];
+            cursor = virtualWhite;
         }
-    //}
-    
+    }else if(_chessmanSetType == kBlackChess){
+        cursor = virtualBlack;
+    }else{
+        cursor = virtualWhite;
+    }
+    [cursor setPosition:regularizedPt];
+    [self addChild:cursor];
 }
 
 - (void) initializeCursor
@@ -248,22 +308,14 @@
 
 - (void) moveCursorButton:(CGPoint)point
 {
-    if(boardStatus.isCurrentBlack){
-        [virtualBlack setPosition:point];
-    }else{
-        [virtualWhite setPosition:point];
-    }
+    [cursor setPosition:point];
 }
 
 
 //Remove the cursor as the name implied.
 - (void) removeCursorButton
 {
-    if(boardStatus.isCurrentBlack){
-        [virtualBlack removeFromParentAndCleanup:YES];
-    }else{
-        [virtualWhite removeFromParentAndCleanup:YES];
-    }
+    [cursor removeFromParentAndCleanup:YES];
 }
 
 
@@ -306,9 +358,7 @@
 //How many steps I will regret.
 - (void) regretSteps:(NSInteger)steps
 {
-    for(int i = 0; i < steps; i++){
-        [boardStatus regretOneStep];
-    }
+    [self regretSteps:steps animated:false];
 }
 
 //Will get all the steps ever put on this board
@@ -322,10 +372,32 @@
     return [boardStatus coordForStep:step];
 }
 
-- (void) regretSteps:(NSInteger)steps  animated:(BOOL)animated
+- (void) regretChess:(NSInteger)steps  animated:(BOOL)animated
 {
     for(int i = 0; i < steps; i++){
         [boardStatus regretOneStep];
+    }
+}
+
+- (void) regretSteps:(NSInteger)steps animated:(BOOL)animated
+{
+    if(_chessmanType == kChessMan){
+        [self regretChess:steps animated:animated];
+    }else{
+        [self regretMarks:steps animated:animated];
+    }
+}
+
+
+- (void) regretMarks:(NSInteger)steps animated:(BOOL)animated
+{
+    for(int i = 0; i < steps; i++){
+        if(_allMarks.count > 0){
+            EZChessMark* cm = _allMarks.lastObject;
+            [self removeMarks:cm];
+        }else{
+            break;
+        }
     }
 }
 
@@ -363,15 +435,25 @@
     EZDEBUG(@"Touch ended at:%@, adjusted: %@", NSStringFromCGPoint(localPoint), NSStringFromCGPoint(regularizedPt));
     [self removeCursorButton];
     if(_chessmanType == kChessMan){
-        [boardStatus putButton:localPoint animated:YES];
+        EZCoord* coord = [boardStatus pointToBC:localPoint];
+        //Basically, the color are determined by the
+        coord.chessType = _chessmanSetType;
+        [boardStatus putButtonByCoord:coord animated:YES];
     }else{
-        
+        NSString* markStr = [chessMarkChar objectAtIndex:(coordToMarks.count % chessMarkChar.count)];
+        //CCLabelTTF*  markText = [CCLabelTTF labelWithString:markStr fontName:@"Arial" fontSize:40];
+        EZCoord* coord = [boardStatus pointToBC:localPoint];
+        //[chessBoard putMark:markText coord:[[EZCoord alloc] init:10 y:10] animAction:nil];
+        //[self putCharMark:markText coord:coord animAction:nil];
+        [self putCharMark:markStr fontSize:30 coord:coord animAction:nil];
     }
     
 }
 //Will set chessMan type.
 - (void) setChessmanType:(EZChessmanType)chessmanType
 {
+    //What do we need to do?
+    EZDEBUG(@"chessmanType:%i", chessmanType);
     if(chessmanType == kChessMark){
         
     }

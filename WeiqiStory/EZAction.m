@@ -18,13 +18,9 @@
 - (EZAction*) clone
 {
     EZAction* cloned = [[EZAction alloc] init];
-    cloned.actionType = _actionType;
-    cloned.preSetMoves = _preSetMoves;
-    cloned.audioFiles = _audioFiles;
-    cloned.plantMoves = _plantMoves;
     cloned.unitDelay = _unitDelay;
-    cloned.currentMove = _currentMove;
     cloned.name = _name;
+    cloned.syncType = _syncType;
     return cloned;
 }
 
@@ -38,45 +34,26 @@
 //the code is much more clean and more understandable to me. 
 - (void) doAction:(EZActionPlayer*)player
 {
-    CallbackBlock block = ^(){
+    _nextBlock = ^(){
         if(player.playingStatus == kPlaying){
             [player resume];
         }else{
             [player stepCompleted];
         }
     };
-    EZAction* cloned = [self clone];
     
-    switch (_actionType) {
-        case kPreSetting:
-            [player.board putChessmans:_preSetMoves animated:NO];
-            block();
-            break;
-            
-        case kLectures:{
-           
-            [player playSound:cloned completeBlock:block];
-            break;
-            
-        }
-        case kPlantMoves:{
-            cloned.currentMove = 0;
-            [player playMoves:cloned completeBlock:block withDelay:cloned.unitDelay];
-            break;
-        }
-        default:{
-            //EZAction* cloned = [self clone];
-            //Whether we need to use cloned version, this decision should maked by the Action subclass itself.
-            [self actionBody:player];
-            block();
-            break;
-        }
+    [self actionBody:player];
+    
+    //Mean I will call directly.
+    if(_syncType == kSync){
+        _nextBlock();
     }
-
 }
 
 - (void) undoAction:(EZActionPlayer*)player
 {
+    EZDEBUG(@"undoAction:Please override me");
+   /**
     EZDEBUG(@"Will undo action for type:%i,name:%@",_actionType, _name);
     switch (_actionType) {
         case kPreSetting:{
@@ -91,14 +68,44 @@
         default:
             break;
     }
+    **/
 
 }
 
+- (void) actionBody:(EZActionPlayer *)player
+{
+    EZDEBUG(@"Should override");
+}
 
 //For the subclass, override this method.
-- (void) actionBody:(EZActionPlayer*)player
+//I assume this will be ok. Let's try. 
+- (void) oldActionBody:(EZActionPlayer*)player
 {
-    EZDEBUG(@"Please override me. Type:%i", _actionType);
+    EZDEBUG(@"Please override me");
+    /**
+    EZAction* cloned = [self clone];
+    switch (_actionType) {
+        case kPreSetting:
+            [player.board putChessmans:_preSetMoves animated:NO];
+            //self.nextBlock();
+            break;
+            
+        case kLectures:{
+            
+            [player playSound:cloned completeBlock:self.nextBlock];
+            break;
+            
+        }
+        case kPlantMoves:{
+            cloned.currentMove = 0;
+            [player playMoves:cloned completeBlock:self.nextBlock withDelay:cloned.unitDelay];
+            break;
+        }
+        default:{
+            break;
+        }
+    }
+     **/
 }
 
 @end

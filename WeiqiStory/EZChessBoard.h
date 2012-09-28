@@ -14,6 +14,8 @@
 //Now Let's keep it as it is. 
 #import "EZActionPlayer.h"
 
+#import "EZCoord.h"
+
 
 #define  OverExistingChess 30
 
@@ -23,10 +25,18 @@
 //The mark on the Chess board, make sure it is covering the chessman.
 #define  MarkZOrder 11
 
+//What's the purpose of this?
+//It is use by the board to differentiate whether we are planting chess or we are planting marks
+//Should we add to this?
+//Not appropriate way.
+//Why?
+//Messup with the functionality.
 typedef enum {
     kChessMan = 1,
     kChessMark
 } EZChessmanType;
+
+
 //What the purpose of this class?
 //It will act as a chess board on the screen.
 //It will turn user's touch on this board into
@@ -52,6 +62,8 @@ typedef enum {
 
 @property (assign, nonatomic) EZChessmanType chessmanType;
 
+@property (assign, nonatomic) EZChessmanSetType chessmanSetType;
+
 @property (assign, nonatomic) NSInteger chessMarkCount;
 
 //@property (assign, nonatomic) EZChessmanType chessmanType;
@@ -63,6 +75,8 @@ typedef enum {
 //Think about it now.
 //I will not grantee this will be recoverable.
 @property (assign, nonatomic) NSInteger showStepStarted;
+
+@property (strong, nonatomic) NSMutableArray* allMarks;
 
 //The touch Rect determined what's the region for chess board.
 - (id)initWithFile:(NSString*)filename touchRect:(CGRect)rect rows:(NSInteger)rows cols:(NSInteger)cols;
@@ -81,5 +95,7 @@ typedef enum {
 - (NSArray*) allSteps;
 
 - (EZCoord*) coordForStep:(NSInteger)step;
+
+- (void) toggleColor;
 
 @end

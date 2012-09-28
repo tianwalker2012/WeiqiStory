@@ -21,7 +21,11 @@
 
 @property (strong, nonatomic) CCNode* mark;
 @property (strong, nonatomic) EZCoord* coord;
+@property (strong, nonatomic) NSString* text;
+@property (assign, nonatomic) NSInteger fontSize;
 
 - (id) initWithNode:(CCNode*)mark coord:(EZCoord*)coord;
+
+- (id) initWithText:(NSString*)text fontSize:(NSInteger)fontSize coord:(EZCoord*)coord ;
 
 @end

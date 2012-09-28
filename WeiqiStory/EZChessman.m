@@ -60,16 +60,18 @@
         numberText = nil;
     }
     if(show){
-        CGRect boundBox = self.boundingBox;
-        EZDEBUG(@"Will show the text:%@, color:%@, step:%i", NSStringFromCGRect(boundBox), isBlack?@"black":@"white", step);
+        if((showedStep+1)>0){
+            CGRect boundBox = self.boundingBox;
+            EZDEBUG(@"Will show the text:%@, color:%@, step:%i", NSStringFromCGRect(boundBox), isBlack?@"black":@"white", step);
         
-        numberText = [CCLabelTTF labelWithString:[NSString stringWithFormat:@"%i",showedStep+1] fontName:@"Arial" fontSize:(step>9)?((step>99)?18:20):25];
-        //I assume the default color is White
-        if(!isBlack){
-            numberText.color = ccc3(0,0,0);
+            numberText = [CCLabelTTF labelWithString:[NSString stringWithFormat:@"%i",showedStep+1] fontName:@"Arial" fontSize:(step>9)?((step>99)?18:20):25];
+            //I assume the default color is White
+            if(!isBlack){
+                numberText.color = ccc3(0,0,0);
+            }
+            numberText.position = ccp(boundBox.size.width/2, boundBox.size.height/2);
+            [self addChild:numberText];
         }
-        numberText.position = ccp(boundBox.size.width/2, boundBox.size.height/2);
-        [self addChild:numberText];
     }
     
     showStep = show;

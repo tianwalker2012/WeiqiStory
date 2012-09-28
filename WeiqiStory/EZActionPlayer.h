@@ -45,16 +45,35 @@ typedef enum {
 //I will put a specified mark on the board.
 - (void) putMark:(CCNode*)mark coord:(EZCoord*)coord animAction:(CCAction*)action;
 
+
+- (void) putMarks:(NSArray*) marks;
+
+- (void) putCharMark:(NSString*)str fontSize:(NSInteger)fontSize coord:(EZCoord*)coord animAction:(CCAction*)action;
+
 //If the mark exist I wll run the action,
 //Of course I will attach a Remove from parent to get it remove from board when it is done.
 //I will not clean it up, so It could be reused.
 - (void) removeMark:(EZCoord*)coord animAction:(CCAction*)action;
+
+- (void) setShowStepStarted:(NSInteger)step;
+
+- (NSInteger) showStepStarted;
+
+- (BOOL) showStep;
+
+- (void) setShowStep:(BOOL)show;
 
 - (NSArray*) getAllChessMoves;
 
 - (void) cleanAllMoves;
 
 - (void) cleanAllMarks;
+
+- (BOOL) isCurrentBlack;
+
+- (NSArray*) allSteps;
+
+- (NSArray*) allMarks;
 
 @end
 

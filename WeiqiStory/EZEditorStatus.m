@@ -12,6 +12,13 @@
 #import "EZActionPlayer.h"
 #import "EZChessBoard.h"
 #import "EZCleanAction.h"
+#import "EZMarkAction.h"
+#import "EZCombinedAction.h"
+#import "EZShowNumberAction.h"
+#import "EZSoundAction.h"
+#import "EZChessMoveAction.h"
+#import "EZChessPresetAction.h"
+
 
 @interface EZEditorStatus()
 {
@@ -21,6 +28,13 @@
     
     //When click started how many move in the board;
     NSInteger currentBoardSteps;
+    NSInteger beginMarks;
+    
+    //This is already preset with CleanAction Before it.
+    //My clean action should also clean the marks.
+    //Cool. 
+    //EZAction* presetAction;
+    EZShowNumberAction* showHandAction;
 }
 
 @end
@@ -33,6 +47,7 @@
     if(self){
         _actions = [[NSMutableArray alloc] init];
         //player.actions = _actions;
+        _showStep = false;
     }
     return self;
 }
@@ -52,7 +67,8 @@
 
 - (void) updateStatusText:(NSString*)info
 {
-    [_statusText setString:info];
+    //[_statusText setString:info];
+    [_statusLabel setString:info];
 }
 
 - (void) resetStatus
@@ -95,12 +111,16 @@
         }
         case kPlantMoves:{
             currentBoardSteps = _chessBoard.allSteps.count;
+            beginMarks = _chessBoard.allMarks.count;
+            
             [self updateStatusText:@"201"];
             break;
         }
             
         case kPreSetting:{
             currentBoardSteps = _chessBoard.allSteps.count;
+            beginMarks = _chessBoard.allMarks.count;
+            
             [self updateStatusText:@"301"];
             break;
         }
@@ -119,36 +139,79 @@
     //Why do I do this?
     //So I can clean the mark by the clean action Type
     EZCleanAction* action = [[EZCleanAction alloc] init];
-    action.actionType = actionType;
+    //action.actionType = actionType;
     [_actions addObject:action];
 }
 
+//I don't need clean mark?
+//I need it.
+//When I regret, I need to check what is the mark status or not
 - (void) addCleanMark
 {
     EZCleanAction* action = [[EZCleanAction alloc] init];
-    action.actionType = kPlantMarks;
+    //action.actionType = kPlantMarks;
     [_actions addObject:action];
 }
 
+- (void) removeLast
+{
+    [_actions removeLastObject];
+}
+
+- (void) insertShowHand
+{
+    showHandAction = [[EZShowNumberAction alloc] init];
+    showHandAction.curShowStep = _showStep;
+    showHandAction.curStartStep = self.chessBoard.allSteps.count;
+}
+
 //No defensive coding, just generate the action accordingly.
+- (EZAction*) createMarkActions
+{
+    NSInteger addedMarks = _chessBoard.allMarks.count;
+    NSInteger deltaMarks = addedMarks - beginMarks;
+    if(deltaMarks > 0){
+        NSMutableArray* steps = [[NSMutableArray alloc] initWithCapacity:deltaMarks];
+        EZMarkAction* markAction = [[EZMarkAction alloc] init];
+        for(NSInteger i = 0; i < deltaMarks; i++){
+            [steps addObject:[_chessBoard.allMarks objectAtIndex:beginMarks+i]];
+        }
+        markAction.marks = steps;
+        //[_actions addObject:markAction];
+        return markAction;
+    }
+    EZDEBUG(@"Saved marks from:%i, marks number:%i", beginMarks, deltaMarks);
+    return nil;
+    
+}
+
+- (void) insertPreset
+{
+    EZDEBUG(@"Will insert a preset:%@", _presetAction);
+    if(_presetAction){
+        [_actions addObject:_presetAction];
+    }
+}
 - (void) save
 {
-    EZAction* action = [[EZAction alloc]init];
-    action.actionType = _curEditType;
+    //EZAction* action = nil;//[[EZAction alloc]init];
+    //action.actionType = _curEditType;
 
     
     switch (_curEditType) {
         case kLectures:{
             [recorder stop];
+            EZSoundAction* sa = [[EZSoundAction alloc] init];
             NSURL* storedFileURL = recorder.getRecordedFileURL;
-            action.audioFiles = @[storedFileURL];
+            sa.audioFiles = @[storedFileURL];
             EZDEBUG(@"Will store a lectures action with URL:%@", storedFileURL);
-            [_actions addObject:action];
+            [_actions addObject:sa];
             break;
         }
             
         case kPreSetting:
         case kPlantMoves:{
+            EZAction* action = nil;
             NSInteger addedSteps = _chessBoard.allSteps.count;
             NSInteger deltaStep = addedSteps - currentBoardSteps;
             EZDEBUG(@"previous:%i, current:%i",currentBoardSteps, addedSteps);
@@ -157,23 +220,55 @@
                 for(NSInteger i = 0; i < deltaStep; i++){
                     [steps addObject:[_chessBoard coordForStep:currentBoardSteps+i]];
                 }
+                
+                EZAction* markAction = [self createMarkActions];
                 if(_curEditType == kPlantMoves){
-                    action.plantMoves = steps;
+                    EZChessMoveAction* ca = [[EZChessMoveAction alloc] init];
+                    ca.plantMoves = steps;
                     //Will add settings to setup the delay per steps.
-                    action.unitDelay = 0.5;
+                    ca.unitDelay = ChessPlantAnimateInterval;
+                    action = ca;
+                    
+                    if(markAction){
+                        EZCombinedAction* cb = [[EZCombinedAction alloc] init];
+                        cb.actions = @[action, markAction];
+                        //[_actions addObject:cb];
+                        action = cb;
+                        
+                    }
+                
                 }else{
-                    action.preSetMoves = steps;
+                    EZChessPresetAction* pa = [[EZChessPresetAction alloc] init];
+                    EZDEBUG(@"Add one combined action");
+                    EZAction* markAction = [self createMarkActions];
+                    pa.preSetMoves = steps;
+                    action = pa;
+                    EZCombinedAction* cb = [[EZCombinedAction alloc] init];
+                    EZCleanAction* ca = [[EZCleanAction alloc] init];
+                    ca.cleanType = kCleanAll;
+                    if(markAction){
+                         cb.actions = @[ca,action,markAction];
+                    }else{
+                         cb.actions = @[ca,action];
+                    }
+                    _presetAction = cb;
+                    action = cb;
+                    //[_actions addObject:action];
+                    
+                }
+                //Will add the showNumber action
+                if(showHandAction){
+                    EZCombinedAction* cb = [[EZCombinedAction alloc] init];
+                    cb.actions = @[showHandAction, action];
+                    action = cb;
+                    showHandAction = nil;
                 }
                 [_actions addObject:action];
             }
-            
+            //[self saveMarks];
             break;
         }
             
-        case kPlantMarks:{
-            
-            break;
-        }
         default:
             break;
     }

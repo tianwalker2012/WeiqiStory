@@ -10,6 +10,14 @@
 #import "cocos2d.h"
 #import "EZAction.h"
 
+typedef enum {
+    kPreSetting,
+    kPlantMoves,
+    kLectures,
+    kActionNone
+} EZActionType;
+
+
 //What's the purpose of this class
 //All the editor interface will be manipulated my this class
 //Make my life easier.
@@ -28,10 +36,16 @@
 
 @property (weak, nonatomic) CCLabelAtlas* statusText;
 
+@property (weak, nonatomic) CCLabelTTF* statusLabel;
+
 @property (assign, nonatomic) EZActionType curEditType;
 
 @property (strong, nonatomic) NSMutableArray* actions;
 
+@property (strong, nonatomic) EZAction* presetAction;
+
+//Keep the record,
+@property (assign, nonatomic) BOOL showStep;
 //This chessBoard will be used to capture the move of the chess
 @property (weak, nonatomic) EZChessBoard* chessBoard;
 
@@ -41,12 +55,19 @@
 
 - (void) start:(EZActionType)editType;
 
+//When this will get called?
+//I go to another branch.
+- (void) insertPreset;
 
 - (void) save;
 
 - (void) addCleanAction;
 
+- (void) addCleanMark;
+
 - (void) removeLast;
+
+- (void) insertShowHand;
 
 //- (id) initWithPlayer:(EZActionPlayer*)player;
 
