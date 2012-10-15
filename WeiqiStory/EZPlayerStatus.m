@@ -83,9 +83,11 @@
     if(_playing){
         EZDEBUG(@"Clicked to pause");
         _playButton.isEnabled = false;
+        [_playButton setString:@"暂停"];
         _player.playingStatus = kStepWisePlaying;
     }else{
         EZDEBUG(@"Clicked to start");
+        [_playButton setString:@"开始"];
         [_player play];
     }
 }

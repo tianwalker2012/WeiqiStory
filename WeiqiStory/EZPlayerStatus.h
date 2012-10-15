@@ -15,13 +15,13 @@
 //Will add the decouple refractor later.
 @interface EZPlayerStatus : NSObject<EZActionCompleted>
 
-@property (weak, nonatomic) CCMenuItem* playButton;
+@property (weak, nonatomic) CCMenuItemFont* playButton;
 
-@property (weak, nonatomic) CCMenuItem* prevButton;
+@property (weak, nonatomic) CCMenuItemFont* prevButton;
 
-@property (weak, nonatomic) CCMenuItem* replayButton;
+@property (weak, nonatomic) CCMenuItemFont* replayButton;
 
-@property (weak, nonatomic) CCMenuItem* nextButton;
+@property (weak, nonatomic) CCMenuItemFont* nextButton;
 
 @property (weak, nonatomic) EZActionPlayer* player;
 

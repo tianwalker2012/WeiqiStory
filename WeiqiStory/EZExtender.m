@@ -20,6 +20,36 @@
 @end
 
 
+@implementation UIView(EZPrivate)
+
+- (UIInterfaceOrientation) currentOrientation
+{
+    UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
+    
+    return orientation;
+}
+
+- (NSString*) orientationToStr
+{
+    UIInterfaceOrientation orientation = [self currentOrientation];
+    if(orientation == UIInterfaceOrientationPortrait){
+        return @"Portrait";
+    }
+    else if(orientation == UIDeviceOrientationPortraitUpsideDown){
+        return @"PortraitUpsideDown";
+    }
+        //Do something if the orientation is in Portrait
+    else if(orientation == UIInterfaceOrientationLandscapeLeft){
+        return @"LandscapeLeft";
+    }
+            // Do something if Left
+    else {// if(orientation == UIInterfaceOrientationLandscapeRight){
+        return @"LandscapeRight";
+    }
+                //Do something if right
+}
+
+@end
 
 
 @implementation NSObject(EZPrivate)

@@ -28,4 +28,8 @@
 
 - (id) initWithText:(NSString*)text fontSize:(NSInteger)fontSize coord:(EZCoord*)coord ;
 
+- (NSDictionary*) toDict;
+
+- (id) initWithDict:(NSDictionary*)dict;
+
 @end

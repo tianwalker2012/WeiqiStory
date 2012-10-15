@@ -42,6 +42,13 @@
     [self doActionAt:0 player:player];
 }
 
+- (void) fastForward:(EZActionPlayer *)player
+{
+    EZDEBUG(@"Fastforward for Combined action");
+    for(EZAction* action in _actions){
+        [action fastForward:player];
+    }
+}
 
 - (void) doActionAt:(NSInteger)pos player:(EZActionPlayer*)player
 {
@@ -64,6 +71,21 @@
         //The action will call nextBlock
         [action actionBody:player];
     }
+}
+
+- (NSDictionary*) actionToDict
+{
+    NSMutableDictionary* res = (NSMutableDictionary*)[super actionToDict];
+    [res setValue:self.class.description forKey:@"class"];
+    [res setValue:[EZAction actionsToCollections:_actions] forKey:@"actions"];
+    return res;
+}
+
+- (id) initWithDict:(NSDictionary*)dict
+{
+    self = [super initWithDict:dict];
+    _actions = [EZAction collectionToActions:[dict objectForKey:@"actions"]];
+    return self;
 }
 
 @end

@@ -52,4 +52,24 @@
     return [NSString stringWithFormat:@"%i", [self toNumber]];
 }
 
+- (NSDictionary*) toDict
+{
+    return @{
+        @"x":@(_x),
+        @"y":@(_y),
+        @"chessType":@(_chessType)
+    };
+}
+
+- (EZCoord*) initWithDict:(NSDictionary*)dict
+{
+    self = [super init];
+    _chessType = ((NSNumber*)[dict objectForKey:@"chessType"]).intValue;
+    _x = ((NSNumber*)[dict objectForKey:@"x"]).shortValue;
+    _y = ((NSNumber*)[dict objectForKey:@"y"]).shortValue;
+    //[self initChessType: x:<#(short)#> y:<#(short)#>]
+    return self;
+}
+
+
 @end

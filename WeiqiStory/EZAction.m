@@ -9,6 +9,8 @@
 #import "EZAction.h"
 #import "EZConstants.h"
 #import "EZActionPlayer.h"
+#import "EZCoord.h"
+#import "EZChessMark.h"
 
 @implementation EZAction
 
@@ -106,6 +108,127 @@
         }
     }
      **/
+}
+
+
+//What's the purpose of this method?
+//Turn a array of json string into a list of Actions.
+//This method will be called recursively.
+//Mean from inside it will call this method again and again.
++ (NSArray*) collectionToActions:(id)jsonCollections
+{
+    EZDEBUG(@"collectionToActions get called, type:%@, count:%i",[[jsonCollections class] description], [jsonCollections count]);
+    NSMutableArray* res = [[NSMutableArray alloc] init];
+    if([[jsonCollections class] isSubclassOfClass:[NSArray class]]){
+        
+        for(id item in jsonCollections){
+            [res addObjectsFromArray:[EZAction collectionToActions:item]];
+        }
+        //return res;
+    }else if([[jsonCollections class] isSubclassOfClass:[NSDictionary class]]){
+        //Mean this is a normal object.
+        //[res addObject:[self collectionToActions:<#(id)#>]
+        [res addObject:[EZAction dictToAction:jsonCollections]];
+    }
+    EZDEBUG(@"Returned collections:%i", res.count);
+    return res;
+}
+
+//Reverse what the collections are doing.
+//My goal of this morning it to get this method implemented.
++ (id) actionsToCollections:(NSArray*)actions
+{
+    NSMutableArray* res = [[NSMutableArray alloc] initWithCapacity:actions.count];
+    for(EZAction* act in actions){
+        [res addObject:act.actionToDict];
+    }
+    return res;
+}
+
+//It will instantiate a new action out of the NSDictionary.
++ (id) dictToAction:(NSDictionary*)dict
+{
+    NSString* classType = [dict objectForKey:@"class"];
+    Class cls = NSClassFromString(classType);
+    id res = [[cls alloc] initWithDict:dict];
+    return res;
+}
+
+
+//Each action should override this method.
+//Make sure itself could be recoverred and persisted fully without losing information.
+- (NSDictionary*) actionToDict
+{
+    //EZDEBUG(@"Please override me");
+    NSMutableDictionary* res = [[NSMutableDictionary alloc] init];
+    if(_name){
+        [res setValue:_name forKey:@"name"];
+    }
+    
+    [res setValue:@(_unitDelay) forKey:@"unitDelay"];
+    [res setValue:@(_syncType) forKey:@"syncType"];
+    return res;
+}
+
+//Every class should override this to get the own override method
+- (id) initWithDict:(NSDictionary*)dict
+{
+    self = [super init];
+    _name = [dict objectForKey:@"name"];
+    _unitDelay = ((NSNumber*)[dict objectForKey:@"unitDelay"]).floatValue;
+    _syncType = ((NSNumber*)[dict objectForKey:@"syncType"]).intValue;
+    return self;
+}
+
+- (NSArray*) coordsToArray:(NSArray*)coords
+{
+    NSMutableArray* res = [[NSMutableArray alloc] initWithCapacity:coords.count];
+    for(EZCoord* coord in coords){
+        [res addObject:[coord toDict]];
+    }
+    return res;
+}
+
+- (NSArray*) arrayToCoords:(NSArray*)dicts
+{
+    NSMutableArray* res = [[NSMutableArray alloc] initWithCapacity:dicts.count];
+    for(NSDictionary* dict in dicts){
+        [res addObject:[[EZCoord alloc] initWithDict:dict]];
+    }
+    return res;
+}
+
+- (NSArray*) marksToArray:(NSArray*)marks
+{
+    NSMutableArray* res = [[NSMutableArray alloc] initWithCapacity:marks.count];
+    for(EZChessMark* mark in marks){
+        [res addObject:mark.toDict];
+    }
+    return res;
+}
+
+- (NSArray*) arrayToMarks:(NSArray*)dicts
+{
+    NSMutableArray* res = [[NSMutableArray alloc] initWithCapacity:dicts.count];
+    
+    for(NSDictionary* dict in dicts){
+        
+        [res addObject:[[EZChessMark alloc] initWithDict:dict]];
+        
+    }
+    
+    return res;
+}
+
+//I assume the kSync type is just call the actionBody is good enough
+- (void) fastForward:(EZActionPlayer*)player
+{
+    EZDEBUG(@"Fastforward");
+    if(_syncType == kSync){
+        [self actionBody:player];
+    }else{
+        EZDEBUG(@"kAsync type should override me");
+    }
 }
 
 @end

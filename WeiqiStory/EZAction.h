@@ -52,6 +52,8 @@ typedef enum {
 @property (assign, nonatomic) BOOL blocking;
 
 //Whether we should clean all the moves on the table or not?
+//This is depreciated, right?
+//I have explicitly generate a clean action to achieve this.
 @property (assign, nonatomic) BOOL clean;
 
 @property (assign, nonatomic) NSString* name;
@@ -79,5 +81,47 @@ typedef enum {
 
 //For the subclass, override this method.
 - (void) actionBody:(EZActionPlayer*)player;
+
+//What's the purpose of this method?
+//Will only plant the moves or add the preset.
+//Just like the fastward on the video casate machine.
+//The moves which have no effects on the board will simply get ignored. 
+- (void) fastForward:(EZActionPlayer*)player;
+
+
+@end
+
+
+@interface EZAction(JSON)
+
+//What's the purpose of this method?
+//Turn a array of json string into a list of Actions.
+//This method will be called recursively.
+//Mean from inside it will call this method again and again.
++ (NSArray*) collectionToActions:(id)jsonCollections;
+
+//Reverse what the collections are doing.
+//My goal of this morning it to get this method implemented.
++ (id) actionsToCollections:(NSArray*)actions;
+
+//It will instantiate a new action out of the NSDictionary.
++ (id) dictToAction:(NSDictionary*)dict;
+
+
+//Turn the coord into dictionary, which could be jsonized
+- (NSArray*) coordsToArray:(NSArray*)coords;
+
+- (NSArray*) arrayToCoords:(NSArray*)dicts;
+
+- (NSArray*) marksToArray:(NSArray*)marks;
+
+- (NSArray*) arrayToMarks:(NSArray*)dicts;
+
+
+//Each action should override this method.
+//Make sure itself could be recoverred and persisted fully without losing information.
+- (NSDictionary*) actionToDict;
+
+- (id) initWithDict:(NSDictionary*)dict;
 
 @end

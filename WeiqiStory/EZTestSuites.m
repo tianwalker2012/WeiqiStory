@@ -18,6 +18,10 @@
 #import "EZActionPlayer.h"
 #import "EZAction.h"
 #import "EZExtender.h"
+#import "EZChessMoveAction.h"
+#import "EZSoundAction.h"
+#import "EZFileUtil.h"
+#import "EZPersistentUtil.h"
 
 
 
@@ -99,8 +103,119 @@
     //[EZTestSuites testCurrentDirectory];
     //[EZTestSuites listAllRecource];
     //[EZTestSuites testRecuringBlockIssue];
+    //[EZTestSuites testNSObjectToJSON];
+    //[EZTestSuites testActionToJson];
+    //[EZTestSuites testJsonArrayToArray];
+    //[EZTestSuites testAudioActionPersist];
 }
 
++ (void) testAudioActionPersist
+{
+    EZSoundAction* action1 = [[EZSoundAction alloc] init];
+    NSURL* realURL =  [EZFileUtil fileToURL:@"Come.caf"];
+    NSURL* fakeURL = [NSURL URLWithString:@"file://Come.caf"];
+    EZDEBUG(@"Before to show the url string");
+    EZDEBUG(@"real:%@, fake:%@", realURL.absoluteString, fakeURL.absoluteString);
+    EZDEBUG(@"Real json:%@, fake:%@", realURL.proxyForJson, fakeURL.proxyForJson);
+    
+    //assert(false);
+    action1.audioFiles = @[realURL];
+    action1.currentAudio = 1;
+    
+    NSDictionary* actDict = action1.actionToDict;
+    NSString* jsonStr = actDict.JSONRepresentation;
+    EZDEBUG(@"JSON:%@", jsonStr);
+    
+    EZSoundAction* backAct = [[EZSoundAction alloc] initWithDict:jsonStr.JSONValue];
+    assert(backAct.audioFiles.count == 1);
+    NSURL* url = [backAct.audioFiles objectAtIndex:0];
+    NSString* abosulteURL = url.absoluteString;
+    NSString* orgURL = [[action1.audioFiles objectAtIndex:0] absoluteString];
+    EZDEBUG(@"backed URL:%@, orgURL:%@", abosulteURL, orgURL);
+    assert([abosulteURL isEqualToString:orgURL]);
+    
+    assert(false);
+    
+}
+
++ (void) testJsonArrayToArray
+{
+    
+    id arrs = @[@""];
+    id arrMutables = @[@""].mutableCopy;
+    assert([[arrs class] isSubclassOfClass:[NSArray class]]);
+    assert([[arrMutables class] isSubclassOfClass:[NSMutableArray class]]);
+    
+    EZChessMoveAction* chessMove = [[EZChessMoveAction alloc] init];
+    chessMove.currentMove = 10;
+    EZCoord* coord1 = [[EZCoord alloc] initChessType:kBlackChess x:10 y:11];
+    EZCoord* coord2 = [[EZCoord alloc] initChessType:kWhiteChess x:12 y:13];
+    chessMove.plantMoves = @[coord1, coord2];
+    
+    EZChessMoveAction* chessMove2 = [[EZChessMoveAction alloc] init];
+    chessMove2.currentMove = 11;
+    EZCoord* coord11 = [[EZCoord alloc] initChessType:kBlackChess x:5 y:11];
+    EZCoord* coord12 = [[EZCoord alloc] initChessType:kWhiteChess x:7 y:13];
+    chessMove2.plantMoves = @[coord11, coord12];
+    
+    NSArray* dictArrs = [EZAction actionsToCollections:@[chessMove, chessMove2]];
+    NSString* jsonStr = dictArrs.JSONRepresentation;
+    EZDEBUG(@"JSON String:%@",jsonStr);
+    NSArray* actions = [EZAction collectionToActions:jsonStr.JSONValue];
+    
+    EZDEBUG(@"turned action is:%i", actions.count);
+    EZChessMoveAction* backAct1 = [actions objectAtIndex:0];
+    EZChessMoveAction* backAct2 = [actions objectAtIndex:1];
+    
+    assert(backAct1.currentMove == chessMove.currentMove);
+    assert(backAct2.currentMove == chessMove2.currentMove);
+    
+    EZCoord* backCoord1 = [backAct1.plantMoves objectAtIndex:0];
+    EZCoord* backCoord2 = [backAct1.plantMoves objectAtIndex:1];
+    assert(coord1.x == backCoord1.x);
+    assert(coord1.y == backCoord1.y);
+    assert(coord1.chessType == backCoord1.chessType);
+    
+    assert(coord2.x == backCoord2.x);
+    assert(coord2.y == backCoord2.y);
+    assert(coord2.chessType == backCoord2.chessType);
+
+    
+    
+    
+ //   assert(false);
+}
+
++ (void) testActionToJson
+{
+    EZChessMoveAction* chessMove = [[EZChessMoveAction alloc] init];
+    chessMove.currentMove = 10;
+    EZCoord* coord1 = [[EZCoord alloc] initChessType:kBlackChess x:10 y:11];
+    EZCoord* coord2 = [[EZCoord alloc] initChessType:kWhiteChess x:12 y:13];
+    chessMove.plantMoves = @[coord1, coord2];
+    
+    NSDictionary* dict = [chessMove actionToDict];
+    NSString* jsonStr = dict.JSONRepresentation;
+    
+    EZDEBUG(@"The dict string:%@", jsonStr);
+    NSDictionary* backDict = jsonStr.JSONValue;
+    
+    EZChessMoveAction* backChessMove = [EZAction dictToAction:backDict];
+    assert(backChessMove.plantMoves.count == 2);
+    assert(backChessMove.currentMove == 10);
+    
+    EZCoord* backCoord1 = [backChessMove.plantMoves objectAtIndex:0];
+    EZCoord* backCoord2 = [backChessMove.plantMoves objectAtIndex:1];
+    assert(coord1.x == backCoord1.x);
+    assert(coord1.y == backCoord1.y);
+    assert(coord1.chessType == backCoord1.chessType);
+    
+    assert(coord2.x == backCoord2.x);
+    assert(coord2.y == backCoord2.y);
+    assert(coord2.chessType == backCoord2.chessType);
+
+    //assert(false);
+}
 //What's the purpose of this method, I encounter problem during using the block.
 //I need this test to help me understand the block thoroughly. 
 + (void) testRecuringBlockIssue
@@ -363,6 +478,32 @@
     NSString* value = [dict objectForKey:@"cool"];
     assert([value isEqualToString:@"guy"]);
     assert(false);
+}
+
+#pragma marks To test how to turn NSObject to Json. back and forth.
++ (void) testNSObjectToJSON
+{
+    NSDictionary* nd = @{@"cool":@(25), @"guy":@(0.5f),@"some":@"guy"};
+    NSString* jsonStr = nd.JSONRepresentation;
+    EZDEBUG(@"jsonStr:%@", jsonStr);
+    
+    NSDictionary* jsonVal = jsonStr.JSONValue;
+    NSNumber* num = [jsonVal objectForKey:@"cool"];
+    assert(num.intValue == 25);
+    
+    NSArray* arr = @[@"coolguy", nd, jsonVal];
+    
+    EZDEBUG(@"Arr string:%@", arr.JSONRepresentation);
+    
+    NSArray* jsonArr = arr.JSONRepresentation.JSONValue;
+    assert(jsonArr.count == 3);
+    
+    NSDictionary* jsonDict = [jsonArr objectAtIndex:1];
+    assert([@"guy" isEqualToString:[jsonDict objectForKey:@"some"]]);
+    
+    
+    assert(false);
+
 }
 
 + (void) testAvNeighbor

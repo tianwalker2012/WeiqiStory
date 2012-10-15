@@ -74,4 +74,30 @@
     }
 }
 
+
+//Each action should override this method.
+//Make sure itself could be recoverred and persisted fully without losing information.
+//I will only store the cleanType.
+//Why not store all the things, so that I could save all the things?
+//Keep it simple and stupid.
+//I may using the native persistent framework, if it is convinient and necessary.
+- (NSDictionary*) actionToDict
+{
+    NSMutableDictionary* res = (NSMutableDictionary*)[super actionToDict];
+    [res setValue:self.class.description forKey:@"class"];
+    [res setValue:@(_cleanType) forKey:@"cleanType"];
+    [res setValue:[self marksToArray:_cleanedMarks] forKey:@"cleanedMarks"];
+    [res setValue:[self coordsToArray:_cleanedMoves] forKey:@"cleanedMoves"];
+    return res;
+}
+
+- (id) initWithDict:(NSDictionary*)dict
+{
+    self = [super initWithDict:dict];
+    _cleanType = ((NSNumber*)[dict objectForKey:@"cleanType"]).intValue;
+    _cleanedMarks = [self arrayToMarks:[dict objectForKey:@"cleanedMarks"]];
+    _cleanedMoves = [self arrayToCoords:[dict objectForKey:@"cleanedMoves"]];
+    return self;
+}
+
 @end

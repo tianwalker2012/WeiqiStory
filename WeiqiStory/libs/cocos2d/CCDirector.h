@@ -208,6 +208,8 @@ and when to execute the Scenes.
  */
 @property (nonatomic,readwrite,retain) CCActionManager *actionManager;
 
+@property (nonatomic, retain) UIImage* screenShot;
+
 /** returns a shared instance of the director */
 +(CCDirector*)sharedDirector;
 

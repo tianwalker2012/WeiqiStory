@@ -34,4 +34,8 @@ typedef enum {
 
 - (NSString*) getKey;
 
+- (NSDictionary*) toDict;
+
+- (EZCoord*) initWithDict:(NSDictionary*)dict;
+
 @end

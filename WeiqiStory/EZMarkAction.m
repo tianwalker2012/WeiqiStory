@@ -39,4 +39,23 @@
     }
 }
 
+//Will turn the action into dictionary
+- (NSDictionary*) actionToDict
+{
+    NSMutableDictionary* res = (NSMutableDictionary*)[super actionToDict];
+    [res setValue:self.class.description forKey:@"class"];
+    [res setValue:[self marksToArray:_marks] forKey:@"marks"];
+    
+    return res;
+    
+    return res;
+}
+
+- (id) initWithDict:(NSDictionary*)dict
+{
+    self =  [super initWithDict:dict];
+    _marks = [self arrayToMarks:[dict objectForKey:@"marks"]];
+    return self;
+}
+
 @end

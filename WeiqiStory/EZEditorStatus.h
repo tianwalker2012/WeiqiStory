@@ -9,8 +9,10 @@
 #import <Foundation/Foundation.h>
 #import "cocos2d.h"
 #import "EZAction.h"
+#import "EZCleanAction.h"
 
 typedef enum {
+    kEpisodeBegin,
     kPreSetting,
     kPlantMoves,
     kLectures,
@@ -61,7 +63,9 @@ typedef enum {
 
 - (void) save;
 
-- (void) addCleanAction;
+- (void) saveAsEpisodeBegin;
+
+- (void) addCleanAction:(EZCleanType)cleanType;
 
 - (void) addCleanMark;
 

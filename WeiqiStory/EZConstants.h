@@ -28,6 +28,9 @@ EZDEBUG(xx, ##__VA_ARGS__); \
 
 typedef void (^ EZOperationBlock)();
 
+//Used to handle the events, passing the sender to aviod cyclic reference holder.
+typedef void (^ EZEventBlock)(id sender);
+
 //Why add this, seems 
 typedef enum {
     kAudioManagerUninitialized=0,

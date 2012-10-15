@@ -14,6 +14,9 @@
 #import "EZCoord.h"
 #import "EZChessPlay.h"
 #import "EZCleanAction.h"
+#import "EZEpisodeInputer.h"
+#import "EZExtender.h"
+#import <QuartzCore/QuartzCore.h>
 
 @interface EZChessEditor()
 {
@@ -64,15 +67,7 @@
 
 }
 
-- (void) initScript
-{
-    
-}
 
-- (void) playMostRecent
-{
-    
-}
 //What's the meaning init?
 //Initialize the the class.
 - (id) init
@@ -111,6 +106,7 @@
         CCMenuItem* recording = [CCMenuItemFont itemWithString:@"录音" block:^(id sender){
             [editorStatus start:kLectures];
         }];
+                
         CCMenuItem* startPresetting = [CCMenuItemFont itemWithString:@"开始预设" block:^(id sender){
             [editorStatus start:kPreSetting];
         }];
@@ -123,6 +119,13 @@
         CCMenuItem* save = [CCMenuItemFont itemWithString:@"保存" block:^(id sender){
             [editorStatus save];
         }];
+        
+        
+        CCMenuItem* saveAsBegin = [CCMenuItemFont itemWithString:@"保存为本节开始" block:^(id sender){
+            EZDEBUG(@"Save as the begining of episode");
+            [editorStatus saveAsEpisodeBegin];
+        }];
+
         
         //One menu handle all the color switch
         CCMenuItemFont* selectChessColor = [CCMenuItemFont itemWithString:@"正常落子" block:^(id sender){
@@ -174,18 +177,19 @@
         
         
         CCMenuItem* addCleanAction = [CCMenuItemFont itemWithString:@"增加清盘动作" block:^(id sender){
-            [editorStatus addCleanAction];
+            [editorStatus addCleanAction:kCleanAll];
             [statusLabel setString:@"Added clean actions"];
             [chessBoard cleanAllMoves];
             EZDEBUG(@"Added clean Action");
         }];
         
-        CCMenuItem* delete = [CCMenuItemFont itemWithString:@"删除当前Action" block:^(id sender){
+        CCMenuItem* delete = [CCMenuItemFont itemWithString:[NSString stringWithFormat:@"删除Action,Pos:%i",editorStatus.actions.count] block:^(id sender){
             [editorStatus removeLast];
+            [sender setString:[NSString stringWithFormat:@"删除Action,Pos:%i",editorStatus.actions.count]];
         }];
         
         
-        CCMenuItem* preView = [CCMenuItemFont itemWithString:@"预览当前Action" block:^(id sender){
+        CCMenuItem* preView = [CCMenuItemFont itemWithString:@"预览Action" block:^(id sender){
             EZDEBUG(@"Will play:%i",editorStatus.actions.count);
             actPlayer.actions = editorStatus.actions;
             [self addChild:previewBoard z:popupZOrder];
@@ -241,19 +245,196 @@
             CCScene* playFace = [EZChessPlay sceneWithActions:editorStatus.actions];
             [[CCDirector sharedDirector] pushScene:playFace];
         }];
+        
+        CCMenuItem* storeCurrentView = [CCMenuItemFont itemWithString:@"保存当前界面" block:^(id sender){
+            EZDEBUG(@"Will store current View As image");
+            CGRect rect = [CCDirector sharedDirector].view.bounds;
+            UIGraphicsBeginImageContext(rect.size);
+            [[CCDirector sharedDirector].view.window.layer renderInContext:UIGraphicsGetCurrentContext()];
+            UIImage* image = UIGraphicsGetImageFromCurrentImageContext();
+            UIGraphicsEndImageContext();
+            UIImage* imageGl = [self takeAsUIImageEX];
+            UIGraphicsBeginImageContext(CGSizeMake(400, 300));
+            CGContextRef cgContext = UIGraphicsGetCurrentContext();
+            CGContextSetInterpolationQuality(cgContext, kCGInterpolationHigh);
+            CGContextSetShouldAntialias(cgContext, true);
+            CGContextDrawImage(cgContext, CGRectMake(0, 0, 400, 300), image.CGImage);
+            UIImage* tranferred = UIGraphicsGetImageFromCurrentImageContext();
+            UIImageView* imageView = [[UIImageView alloc] initWithImage:[CCDirector sharedDirector].screenShot];
+            
+            //UIImageView* backImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Icon"]];
+            UIGraphicsEndImageContext();
+            imageView.frame = CGRectMake(20, 20, 400, 300);
+            [[CCDirector sharedDirector].view addSubview:imageView];
+            [self performBlock:^(){
+                EZDEBUG(@"Remove the view");
+                //[imageView removeFromSuperview];
+            } withDelay:10];
+            
+        }];
+        
+        CCMenuItem* saveEpisode = [CCMenuItemFont itemWithString:@"保存本集" block:^(id sender){
+            NSString* orient = [[CCDirector sharedDirector].view orientationToStr];
+            EZDEBUG(@"Store current episode, direction:%@", orient);
+            EZEpisodeInputer* episodeInputer = [[EZEpisodeInputer alloc] initWithNibName:@"EZEpisodeInputer" bundle:nil];
+            EZDEBUG(@"Nib loaded successfully");
+            episodeInputer.modalPresentationStyle = UIModalPresentationFormSheet;
+            episodeInputer.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+            episodeInputer.confirmBlock = ^(id sender){
+                EZDEBUG(@"Confirm get called");
+                EZEpisodeInputer* ein = sender;
+                [ein.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+            };
+            episodeInputer.cancelBlock = ^(id sender){
+                EZDEBUG(@"Cancel get called");
+                EZEpisodeInputer* ein = sender;
+                [ein.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+            };
+
+            
+            [[CCDirector sharedDirector] presentViewController:episodeInputer animated:YES completion:nil];
+            
+        }];
         [editorStatus setBtnPreset:startPresetting audio:recording plantMove:startPlainMove save:save remove:delete preview:preView previewAll:nil];
         //editorStatus.statusText = statusText;
         editorStatus.statusLabel = statusLabel;
         [statusLabel setPosition:ccp(500, 34)];
         [self addChild:statusLabel];
-        CCMenu* menu = [CCMenu menuWithItems:recording,startPresetting,startPlainMove,save,selectChessColor,toggleBoardColor,toggleMark,showHand,addPreset,addCleanAction, preView,delete,regretMove,goToPlayer,nil];
+        CCMenu* menu = [CCMenu menuWithItems:recording,startPresetting,startPlainMove,save,saveAsBegin,selectChessColor,toggleBoardColor,toggleMark,showHand,addPreset,addCleanAction, preView,delete,regretMove,goToPlayer,storeCurrentView, saveEpisode, nil];
         
-        [menu alignItemsVerticallyWithPadding:15];
+        [menu alignItemsVerticallyWithPadding:10];
         
         menu.position = ccp(900, 400);
         [self addChild:menu z:-2];
     }
     return self;
+}
+
+
+- (UIImage*) takeAsUIImageEX
+{
+	CCDirector* director = [CCDirector sharedDirector];
+	CGSize size = [self contentSize];
+    
+	//Create buffer for pixels
+	GLuint bufferLength = size.width * size.height * 4;
+	GLubyte* buffer = (GLubyte*)malloc(bufferLength);
+    
+	//Read Pixels from OpenGL
+	glReadPixels(0, 0, size.width, size.height, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+	//Make data provider with data.
+	CGDataProviderRef provider = CGDataProviderCreateWithData(NULL, buffer, bufferLength, NULL);
+    
+	//Configure image
+	int bitsPerComponent = 8;
+	int bitsPerPixel = 32;
+	int bytesPerRow = 4 * size.width;
+	CGColorSpaceRef colorSpaceRef = CGColorSpaceCreateDeviceRGB();
+	CGBitmapInfo bitmapInfo = kCGBitmapByteOrderDefault;
+	CGColorRenderingIntent renderingIntent = kCGRenderingIntentDefault;
+	CGImageRef iref = CGImageCreate(size.width, size.height, bitsPerComponent, bitsPerPixel, bytesPerRow, colorSpaceRef, bitmapInfo, provider, NULL, NO, renderingIntent);
+    
+	uint32_t* pixels = (uint32_t*)malloc(bufferLength);
+	CGContextRef context = CGBitmapContextCreate(pixels, [director winSize].width, [director winSize].height, 8, [director winSize].width * 4, CGImageGetColorSpace(iref), kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
+    
+	CGContextTranslateCTM(context, 0, size.height);
+	CGContextScaleCTM(context, 1.0f, -1.0f);
+    
+	switch (director.interfaceOrientation)
+	{
+		case UIInterfaceOrientationPortrait:
+			break;
+		case UIInterfaceOrientationPortraitUpsideDown:
+			CGContextRotateCTM(context, CC_DEGREES_TO_RADIANS(180));
+			CGContextTranslateCTM(context, -size.width, -size.height);
+			break;
+		case UIInterfaceOrientationLandscapeLeft:
+			CGContextRotateCTM(context, CC_DEGREES_TO_RADIANS(-90));
+			CGContextTranslateCTM(context, -size.height, 0);
+			break;
+		case UIInterfaceOrientationLandscapeRight:
+			CGContextRotateCTM(context, CC_DEGREES_TO_RADIANS(90));
+			CGContextTranslateCTM(context, size.width * 0.5f, -size.height);
+			break;
+	}
+
+    
+	CGContextDrawImage(context, CGRectMake(0.0f, 0.0f, size.width, size.height), iref);
+	UIImage *outputImage = [UIImage imageWithCGImage:CGBitmapContextCreateImage(context)];
+    
+	//Dealloc
+	CGDataProviderRelease(provider);
+	CGImageRelease(iref);
+	CGContextRelease(context);
+	free(buffer);
+	free(pixels);
+    
+	return outputImage;
+}
+
++(CCTexture2D*) takeAsTexture2D
+{
+	//return [[[CCTexture2D alloc] initWithImage:[Screenshot takeAsUIImage]] autorelease];
+}
+
+- (UIImage*) takeAsUIImage
+{
+	CCDirector* director = [CCDirector sharedDirector];
+	CGSize size = [self contentSize];
+    
+	//Create buffer for pixels
+	GLuint bufferLength = size.width * size.height * 4;
+	GLubyte* buffer = (GLubyte*)malloc(bufferLength);
+    
+	//Read Pixels from OpenGL
+	glReadPixels(0, 0, size.width, size.height, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+	//Make data provider with data.
+	CGDataProviderRef provider = CGDataProviderCreateWithData(NULL, buffer, bufferLength, NULL);
+    
+	//Configure image
+	int bitsPerComponent = 8;
+	int bitsPerPixel = 32;
+	int bytesPerRow = 4 * size.width;
+	CGColorSpaceRef colorSpaceRef = CGColorSpaceCreateDeviceRGB();
+	CGBitmapInfo bitmapInfo = kCGBitmapByteOrderDefault;
+	CGColorRenderingIntent renderingIntent = kCGRenderingIntentDefault;
+	CGImageRef iref = CGImageCreate(size.width, size.height, bitsPerComponent, bitsPerPixel, bytesPerRow, colorSpaceRef, bitmapInfo, provider, NULL, NO, renderingIntent);
+    
+	uint32_t* pixels = (uint32_t*)malloc(bufferLength);
+	CGContextRef context = CGBitmapContextCreate(pixels, [director winSize].width, [director winSize].height, 8, [director winSize].width * 4, CGImageGetColorSpace(iref), kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
+    
+	CGContextTranslateCTM(context, 0, size.height);
+	CGContextScaleCTM(context, 1.0f, -1.0f);
+    
+	switch (director.interfaceOrientation)
+	{
+		case UIInterfaceOrientationPortrait:
+			break;
+		case UIInterfaceOrientationPortraitUpsideDown:
+			CGContextRotateCTM(context, CC_DEGREES_TO_RADIANS(180));
+			CGContextTranslateCTM(context, -size.width, -size.height);
+			break;
+		case UIInterfaceOrientationLandscapeLeft:
+			CGContextRotateCTM(context, CC_DEGREES_TO_RADIANS(-90));
+			CGContextTranslateCTM(context, -size.height, 0);
+			break;
+		case UIInterfaceOrientationLandscapeRight:
+			CGContextRotateCTM(context, CC_DEGREES_TO_RADIANS(90));
+			CGContextTranslateCTM(context, size.width * 0.5f, -size.height);
+			break;
+	}
+    
+	CGContextDrawImage(context, CGRectMake(0.0f, 0.0f, size.width, size.height), iref);
+	UIImage *outputImage = [UIImage imageWithCGImage:CGBitmapContextCreateImage(context)];
+    
+	//Dealloc
+	CGDataProviderRelease(provider);
+	CGImageRelease(iref);
+	CGContextRelease(context);
+	free(buffer);
+	free(pixels);
+    
+	return outputImage;
 }
 
 

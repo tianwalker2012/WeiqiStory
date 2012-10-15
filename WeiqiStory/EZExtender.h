@@ -23,3 +23,13 @@
 
 @end
 
+@interface UIView(EZPrivate)
+
+//The purpose is to get current orienation out
+- (UIInterfaceOrientation) currentOrientation;
+
+- (NSString*) orientationToStr;
+
+@end
+
+

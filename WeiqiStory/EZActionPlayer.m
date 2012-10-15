@@ -138,14 +138,17 @@
 //What's assumption I should make?
 //It maybe called at any place.
 //So what should we do?
+//Make it simple and straightward.
 - (void) rewind
 {
-    NSInteger endPos = _currentAction;
+    //NSInteger endPos = _currentAction;
     _currentAction = 0;
-    for(int i = (endPos-1); i >= 0; --i){
-        EZAction* action = [_actions objectAtIndex:i];
-        [self undoAction:action];
-    }
+    //for(int i = (endPos-1); i >= 0; --i){
+    //    EZAction* action = [_actions objectAtIndex:i];
+    //    [self undoAction:action];
+    //}
+    [_board cleanAllMoves];
+    [_board cleanAllMarks];
 }
 
 //Only need to handle presetting and moves

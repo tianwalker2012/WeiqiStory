@@ -38,6 +38,11 @@
     [player playMoves:cloned completeBlock:self.nextBlock withDelay:cloned.unitDelay];
 }
 
+- (void) fastForward:(EZActionPlayer *)player
+{
+    [player.board putChessmans:_plantMoves animated:NO];
+}
+
 - (EZChessMoveAction*) clone
 {
     EZChessMoveAction* cloned = [[EZChessMoveAction alloc] init];
@@ -45,6 +50,25 @@
     cloned.currentMove = _currentMove;
     cloned.unitDelay = self.unitDelay;
     return cloned;
+}
+
+//Each action should override this method.
+//Make sure itself could be recoverred and persisted fully without losing information.
+- (NSDictionary*) actionToDict
+{
+    NSMutableDictionary* res = (NSMutableDictionary*)[super actionToDict];
+    [res setValue:[self.class description] forKey:@"class"];
+    [res setValue:[self coordsToArray:_plantMoves] forKey:@"plantMoves"];
+    [res setValue:@(_currentMove) forKey:@"currentMove"];
+    return res;
+}
+
+- (id) initWithDict:(NSDictionary*)dict
+{
+    self = [super initWithDict:dict];
+    _plantMoves = [self arrayToCoords:[dict objectForKey:@"plantMoves"]];
+    _currentMove  = ((NSNumber*)[dict objectForKey:@"currentMove"]).intValue;
+    return self;
 }
 
 

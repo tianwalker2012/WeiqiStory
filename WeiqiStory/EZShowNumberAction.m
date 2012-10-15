@@ -40,4 +40,26 @@
     [player.board setShowStepStarted:_curStartStep];
 }
 
+- (NSDictionary*) actionToDict
+{
+    NSMutableDictionary* res = (NSMutableDictionary*)[super actionToDict];
+    [res setValue:@(_preShowStep) forKey:@"preShowStep"];
+    [res setValue:@(_preStartStep) forKey:@"preStartStep"];
+    
+    [res setValue:@(_curShowStep) forKey:@"curShowStep"];
+    [res setValue:@(_curStartStep) forKey:@"curStartStep"];
+    [res setValue:self.class.description forKey:@"class"];
+    return res;
+}
+
+- (id) initWithDict:(NSDictionary*)dict
+{
+    self = [super initWithDict:dict];
+    _preShowStep = ((NSNumber*)[dict objectForKey:@"preShowStep"]).intValue;
+    _preStartStep = ((NSNumber*)[dict objectForKey:@"preStartStep"]).intValue;
+    _curShowStep = ((NSNumber*)[dict objectForKey:@"curShowStep"]).intValue;
+    _curStartStep = ((NSNumber*)[dict objectForKey:@"curStartStep"]).intValue;
+    return self;
+}
+
 @end

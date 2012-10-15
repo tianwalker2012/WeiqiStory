@@ -8,6 +8,7 @@
 
 #import "EZSoundAction.h"
 #import "EZActionPlayer.h"
+#import "SBJson.h"
 
 @implementation EZSoundAction
 
@@ -47,6 +48,33 @@
     return cloned;
 }
 
+- (void) fastForward:(EZActionPlayer *)player
+{
+    EZDEBUG(@"I will do nothing");
+}
+
+- (NSDictionary*) actionToDict
+{
+    NSMutableDictionary* res = (NSMutableDictionary*)[super actionToDict];
+    [res setValue:_audioFiles forKey:@"audioFiles"];
+    [res setValue:@(_currentAudio) forKey:@"currentAudio"];
+    [res setValue:self.class.description forKey:@"class"];
+    return res;
+}
+
+- (id) initWithDict:(NSDictionary*)dict
+{
+    self = [super initWithDict:dict];
+    //Because I turn all the NSURL to strings, so here I should to turn them back.
+    NSArray* urlStrs = [dict objectForKey:@"audioFiles"];
+    NSMutableArray* urls = [[NSMutableArray alloc] initWithCapacity:urlStrs.count];
+    for(NSString* fileURL in urlStrs){
+        [urls addObject:[NSURL URLWithString:fileURL]];
+    }
+    _audioFiles = urls;
+    _currentAudio = ((NSNumber*)[dict objectForKey:@"currentAudio"]).intValue;
+    return self;
+}
 
 
 

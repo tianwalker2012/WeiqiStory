@@ -14,6 +14,6 @@
 //Will have animation too.
 @interface EZMarkAction : EZAction
 
-@property (strong, nonatomic) NSMutableArray* marks;
+@property (strong, nonatomic) NSArray* marks;
 
 @end

@@ -19,12 +19,13 @@
 //Intentionality.
 //Grow by slowly learn and appreciate the facts around you.
 @class EZActionPlayer;
-@interface EZChessPlay : CCLayer
+@interface EZChessPlay : CCLayer<UITableViewDataSource, UITableViewDelegate>
 
 + (CCScene*) scene;
 
 + (CCScene*) sceneWithActions:(NSArray*)actions;
 
 @property (strong, nonatomic) EZActionPlayer* actPlayer;
+@property (strong, nonatomic) UITableView* actionTableView;
 
 @end

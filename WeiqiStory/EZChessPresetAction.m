@@ -37,5 +37,21 @@
 
 }
 
+- (NSDictionary*) actionToDict
+{
+    NSMutableDictionary* res = (NSMutableDictionary*)[super actionToDict];
+    [res setValue:[self coordsToArray:_preSetMoves] forKey:@"presetMoves"];
+    [res setValue:self.class.description forKey:@"class"];
+    return res;
+}
+
+
+
+- (id) initWithDict:(NSDictionary*)dict
+{
+    self = [super initWithDict:dict];
+    _preSetMoves = [self arrayToCoords:[dict objectForKey:@"presetMoves"]];
+    return self;
+}
 
 @end

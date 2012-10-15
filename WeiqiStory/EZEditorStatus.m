@@ -106,14 +106,14 @@
             recorder = [[EZVoiceRecorder alloc] initWithFile:fileName];
             [recorder start];
             
-            [self updateStatusText:@"101"];
+            [self updateStatusText:@"Recording lectures"];
             break;
         }
         case kPlantMoves:{
             currentBoardSteps = _chessBoard.allSteps.count;
             beginMarks = _chessBoard.allMarks.count;
             
-            [self updateStatusText:@"201"];
+            [self updateStatusText:@"Are recording moves"];
             break;
         }
             
@@ -121,7 +121,7 @@
             currentBoardSteps = _chessBoard.allSteps.count;
             beginMarks = _chessBoard.allMarks.count;
             
-            [self updateStatusText:@"301"];
+            [self updateStatusText:@"Are recording presets"];
             break;
         }
         
@@ -132,6 +132,7 @@
     
     _saveAction.isEnabled = true;
 }
+
 
 
 - (void) addCleanAction:(EZActionType)actionType
@@ -192,6 +193,28 @@
         [_actions addObject:_presetAction];
     }
 }
+
+- (void) saveAsEpisodeBegin
+{
+    EZCleanAction* cleanAction = [[EZCleanAction alloc] init];
+    cleanAction.cleanType = kCleanAll;
+    
+    EZMarkAction* markAction =  [[EZMarkAction alloc] init];
+    markAction.marks = [NSArray arrayWithArray:_chessBoard.allMarks];
+    
+    EZChessPresetAction*  presetAction = [[EZChessPresetAction alloc] init];
+    presetAction.preSetMoves = [_chessBoard getAllChessMoves];
+    EZCombinedAction* combined = [[EZCombinedAction alloc] init];
+    if(showHandAction){
+        combined.actions = @[cleanAction,presetAction, markAction, showHandAction];
+    }else{
+        combined.actions = @[cleanAction,presetAction, markAction];
+    }
+    [_actions addObject:combined];
+    _presetAction = combined;
+    [self updateStatusText:[NSString stringWithFormat:@"Have stored the episode status, the action length is:%i",_actions.count]];
+}
+
 - (void) save
 {
     //EZAction* action = nil;//[[EZAction alloc]init];
@@ -208,7 +231,9 @@
             [_actions addObject:sa];
             break;
         }
-            
+        case kEpisodeBegin:{
+            break;
+        }
         case kPreSetting:
         case kPlantMoves:{
             EZAction* action = nil;
@@ -244,14 +269,14 @@
                     pa.preSetMoves = steps;
                     action = pa;
                     EZCombinedAction* cb = [[EZCombinedAction alloc] init];
-                    EZCleanAction* ca = [[EZCleanAction alloc] init];
-                    ca.cleanType = kCleanAll;
+                    //EZCleanAction* ca = [[EZCleanAction alloc] init];
+                    //ca.cleanType = kCleanAll;
                     if(markAction){
-                         cb.actions = @[ca,action,markAction];
+                         cb.actions = @[action,markAction];
                     }else{
-                         cb.actions = @[ca,action];
+                         cb.actions = @[action];
                     }
-                    _presetAction = cb;
+                    //_presetAction = cb;
                     action = cb;
                     //[_actions addObject:action];
                     

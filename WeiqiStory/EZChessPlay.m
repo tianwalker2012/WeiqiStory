@@ -14,6 +14,8 @@
 #import "EZAction.h"
 #import "EZActionPlayer.h"
 #import "EZPlayerStatus.h"
+#import "SBJson.h"
+#import "EZExtender.h"
 
 @interface EZChessPlay()
 {
@@ -153,8 +155,23 @@
             chessBoard.touchEnabled = false;
         }];
         
+        
+        CCMenuItem* persistMenu = [CCMenuItemFont itemWithString:@"持久化" block:^(id sender){
+        
+            NSArray* stored = [EZAction actionsToCollections:_actPlayer.actions];
+            EZDEBUG(@"All the persisted objects:%@", stored.JSONRepresentation);
+            NSArray* actions = [EZAction collectionToActions:stored.JSONRepresentation.JSONValue];
+            EZDEBUG(@"Action size:%i", actions.count);
+            _actPlayer.actions = actions;
+            [_actPlayer rewind];
+            //_actPlayer.currentAction = 0;
+            //[_actPlayer.board cleanAllMoves];
+            //[_actPlayer.board cleanAllMarks];
+        }];
+        
         playerStatus = [[EZPlayerStatus alloc] initWithPlay:nil prev:prevMenu next:nextMenu replay:replayMenu];
         CCMenuItem* playMenu = [CCMenuItemFont itemWithString:@"播放" block:^(id sender){
+            
             [playerStatus play];
         }];
         
@@ -166,13 +183,43 @@
         
         
         
-        CCMenu* menu = [CCMenu menuWithItems:introduction,regret,showSteps,showStepStart,replayMenu, prevMenu, nextMenu, playMenu, backToEditorMenu, nil];
-        [menu alignItemsVerticallyWithPadding:40];
+        CCMenu* menu = [CCMenu menuWithItems:introduction,regret,showSteps,showStepStart,replayMenu, prevMenu, nextMenu, playMenu, persistMenu, backToEditorMenu, nil];
+        [menu alignItemsVerticallyWithPadding:15
+         ];
         
         menu.position = ccp(900, 400);
         [self addChild:menu z:-2];
+        
+        _actionTableView = [[UITableView alloc] initWithFrame:CGRectMake(500,200, 300, 568) style:UITableViewStylePlain];
+        _actionTableView.dataSource = self;
+        _actionTableView.delegate = self;
+        EZDEBUG(@"The windos is:%@", [CCDirector sharedDirector].view.window);
+        
+        
+        EZDEBUG(@"Orientation:%@", [CCDirector sharedDirector].view.orientationToStr);
+        [[CCDirector sharedDirector].view addSubview:_actionTableView];
     }
     return self;
+}
+
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return _actPlayer.actions.count;
+}
+
+// Row display. Implementers should *always* try to reuse cells by setting each cell's reuseIdentifier and querying for available reusable cells with dequeueReusableCellWithIdentifier:
+// Cell gets various attributes set automatically based on table (separators) and data source (accessory views, editing controls)
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath;
+{
+    UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
+    if(cell == nil){
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
+    }
+    EZAction* act = [_actPlayer.actions objectAtIndex:indexPath.row];
+    cell.textLabel.text = [NSString stringWithFormat:@"Class:%@, SyncType:%@", act.class, act.syncType==kSync?@"Sync":@"Async"];
+    return cell;
 }
 
 @end

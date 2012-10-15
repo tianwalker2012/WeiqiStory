@@ -184,9 +184,14 @@
 		18451E51160F09FD00BF530C /* EZPlayerStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 18451E50160F09FA00BF530C /* EZPlayerStatus.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		18451E54160F22C100BF530C /* EZChessEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = 18451E53160F22BF00BF530C /* EZChessEditor.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		18451E57160F2AD000BF530C /* EZEditorStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 18451E56160F2ACE00BF530C /* EZEditorStatus.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		18ABF6CC161D8BA200B70BB3 /* EZEpisodeInputer.xib in Resources */ = {isa = PBXBuildFile; fileRef = 18ABF6CB161D8BA200B70BB3 /* EZEpisodeInputer.xib */; };
+		18ABF6CF161D8DB900B70BB3 /* EZEpisodeInputer.m in Sources */ = {isa = PBXBuildFile; fileRef = 18ABF6CE161D8DB900B70BB3 /* EZEpisodeInputer.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		18CDA9C416154BDD0090BD04 /* EZChessMoveAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 18CDA9C316154BDD0090BD04 /* EZChessMoveAction.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		18CDA9C716154BFC0090BD04 /* EZChessPresetAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 18CDA9C616154BFC0090BD04 /* EZChessPresetAction.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		18CDA9CA16154C150090BD04 /* EZSoundAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 18CDA9C916154C150090BD04 /* EZSoundAction.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		18CDA9CD1615A0B00090BD04 /* EZActionList.m in Sources */ = {isa = PBXBuildFile; fileRef = 18CDA9CC1615A0AE0090BD04 /* EZActionList.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		18CDA9FA161D72480090BD04 /* EZPersistentUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 18CDA9F9161D72480090BD04 /* EZPersistentUtil.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		18E0FE69162BBF00004BF632 /* EZChess2Image.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E0FE68162BBEFF004BF632 /* EZChess2Image.m */; };
 		18F37CB616115919004B18A0 /* EZChessMark.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F37CB516115919004B18A0 /* EZChessMark.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		18F37CBA161191D5004B18A0 /* EZCleanAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F37CB9161191D5004B18A0 /* EZCleanAction.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 /* End PBXBuildFile section */
@@ -549,12 +554,21 @@
 		18451E53160F22BF00BF530C /* EZChessEditor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZChessEditor.m; sourceTree = "<group>"; };
 		18451E55160F2ACB00BF530C /* EZEditorStatus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZEditorStatus.h; sourceTree = "<group>"; };
 		18451E56160F2ACE00BF530C /* EZEditorStatus.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZEditorStatus.m; sourceTree = "<group>"; };
+		18ABF6CB161D8BA200B70BB3 /* EZEpisodeInputer.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EZEpisodeInputer.xib; sourceTree = "<group>"; };
+		18ABF6CD161D8DB900B70BB3 /* EZEpisodeInputer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZEpisodeInputer.h; sourceTree = "<group>"; };
+		18ABF6CE161D8DB900B70BB3 /* EZEpisodeInputer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZEpisodeInputer.m; sourceTree = "<group>"; };
 		18CDA9C216154BDC0090BD04 /* EZChessMoveAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZChessMoveAction.h; sourceTree = "<group>"; };
 		18CDA9C316154BDD0090BD04 /* EZChessMoveAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZChessMoveAction.m; sourceTree = "<group>"; };
 		18CDA9C516154BFB0090BD04 /* EZChessPresetAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZChessPresetAction.h; sourceTree = "<group>"; };
 		18CDA9C616154BFC0090BD04 /* EZChessPresetAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZChessPresetAction.m; sourceTree = "<group>"; };
 		18CDA9C816154C150090BD04 /* EZSoundAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZSoundAction.h; sourceTree = "<group>"; };
 		18CDA9C916154C150090BD04 /* EZSoundAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZSoundAction.m; sourceTree = "<group>"; };
+		18CDA9CB1615A0AD0090BD04 /* EZActionList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZActionList.h; sourceTree = "<group>"; };
+		18CDA9CC1615A0AE0090BD04 /* EZActionList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZActionList.m; sourceTree = "<group>"; };
+		18CDA9F8161D72480090BD04 /* EZPersistentUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZPersistentUtil.h; sourceTree = "<group>"; };
+		18CDA9F9161D72480090BD04 /* EZPersistentUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZPersistentUtil.m; sourceTree = "<group>"; };
+		18E0FE67162BBEFF004BF632 /* EZChess2Image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZChess2Image.h; sourceTree = "<group>"; };
+		18E0FE68162BBEFF004BF632 /* EZChess2Image.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZChess2Image.m; sourceTree = "<group>"; };
 		18F37CB416115919004B18A0 /* EZChessMark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZChessMark.h; sourceTree = "<group>"; };
 		18F37CB516115919004B18A0 /* EZChessMark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZChessMark.m; sourceTree = "<group>"; };
 		18F37CB8161191D5004B18A0 /* EZCleanAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZCleanAction.h; sourceTree = "<group>"; };
@@ -618,6 +632,8 @@
 		1810EC4B1606DA1B0061FF70 /* WeiqiStory */ = {
 			isa = PBXGroup;
 			children = (
+				18ABF6C9161D8B5D00B70BB3 /* Custom UI */,
+				18CDA9CE1615A0BB0090BD04 /* UI Controllers */,
 				18451E2F160AF3B600BF530C /* Actions */,
 				18451E131609CE2000BF530C /* Data Objects */,
 				18451E001609CDDC00BF530C /* Utility */,
@@ -1146,6 +1162,10 @@
 				18451E47160B113D00BF530C /* EZSoundPlayer.m */,
 				18451E4C160EE1D500BF530C /* EZExtender.h */,
 				18451E4D160EE1D600BF530C /* EZExtender.m */,
+				18CDA9F8161D72480090BD04 /* EZPersistentUtil.h */,
+				18CDA9F9161D72480090BD04 /* EZPersistentUtil.m */,
+				18E0FE67162BBEFF004BF632 /* EZChess2Image.h */,
+				18E0FE68162BBEFF004BF632 /* EZChess2Image.m */,
 			);
 			name = Utility;
 			sourceTree = "<group>";
@@ -1184,6 +1204,25 @@
 				18CDA9C916154C150090BD04 /* EZSoundAction.m */,
 			);
 			name = Actions;
+			sourceTree = "<group>";
+		};
+		18ABF6C9161D8B5D00B70BB3 /* Custom UI */ = {
+			isa = PBXGroup;
+			children = (
+				18ABF6CB161D8BA200B70BB3 /* EZEpisodeInputer.xib */,
+				18ABF6CD161D8DB900B70BB3 /* EZEpisodeInputer.h */,
+				18ABF6CE161D8DB900B70BB3 /* EZEpisodeInputer.m */,
+			);
+			name = "Custom UI";
+			sourceTree = "<group>";
+		};
+		18CDA9CE1615A0BB0090BD04 /* UI Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				18CDA9CB1615A0AD0090BD04 /* EZActionList.h */,
+				18CDA9CC1615A0AE0090BD04 /* EZActionList.m */,
+			);
+			name = "UI Controllers";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1259,6 +1298,7 @@
 				18451DF61609CC0700BF530C /* black-btn-pad.png in Resources */,
 				18451DF71609CC0700BF530C /* weiqi-board-pad.png in Resources */,
 				18451DF81609CC0700BF530C /* weiqi-board-pad@2x.png in Resources */,
+				18ABF6CC161D8BA200B70BB3 /* EZEpisodeInputer.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1419,6 +1459,10 @@
 				18CDA9C416154BDD0090BD04 /* EZChessMoveAction.m in Sources */,
 				18CDA9C716154BFC0090BD04 /* EZChessPresetAction.m in Sources */,
 				18CDA9CA16154C150090BD04 /* EZSoundAction.m in Sources */,
+				18CDA9CD1615A0B00090BD04 /* EZActionList.m in Sources */,
+				18CDA9FA161D72480090BD04 /* EZPersistentUtil.m in Sources */,
+				18ABF6CF161D8DB900B70BB3 /* EZEpisodeInputer.m in Sources */,
+				18E0FE69162BBF00004BF632 /* EZChess2Image.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
