@@ -18,6 +18,7 @@
 #import "EZSoundAction.h"
 #import "EZChessMoveAction.h"
 #import "EZChessPresetAction.h"
+#import "EZUploader.h"
 
 
 @interface EZEditorStatus()
@@ -226,6 +227,12 @@
             [recorder stop];
             EZSoundAction* sa = [[EZSoundAction alloc] init];
             NSURL* storedFileURL = recorder.getRecordedFileURL;
+            EZUploader* uploader = [[EZUploader alloc] init];
+            EZDEBUG(@"Start upload:%@",recorder.recordedFile);
+            [uploader uploadFileURL:storedFileURL resultBlock:^(id sender){
+            
+                EZDEBUG(@"Uploaded %@, sucessfully", recorder.recordedFile);
+            }];
             sa.audioFiles = @[storedFileURL];
             EZDEBUG(@"Will store a lectures action with URL:%@", storedFileURL);
             [_actions addObject:sa];

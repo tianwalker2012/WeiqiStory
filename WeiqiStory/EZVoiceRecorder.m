@@ -13,7 +13,7 @@
 @interface EZVoiceRecorder(){
     AVAudioRecorder* audioRecorder;
     AVAudioPlayer* audioPlayer;
-    NSString* recordedFile;
+    //NSString* recordedFile;
 }
 
 - (NSURL*)fileToURL:(NSString*)fileName;
@@ -43,7 +43,7 @@
                                         nil];
         
         NSError *error = nil;
-        recordedFile = fileName;
+        _recordedFile = fileName;
         NSURL* soundFileURL = [EZFileUtil fileToURL:fileName dirType:NSDocumentDirectory];
         
         audioRecorder = [[AVAudioRecorder alloc]
@@ -66,7 +66,7 @@
 //Hide the detail within us.
 - (NSURL*) getRecordedFileURL
 {
-    return [EZFileUtil fileToURL:recordedFile dirType:NSDocumentDirectory];
+    return [EZFileUtil fileToURL:_recordedFile dirType:NSDocumentDirectory];
 }
 
 
@@ -100,7 +100,7 @@
         NSError *error;
         
         if(fileName == nil){
-            fileName = recordedFile;
+            fileName = _recordedFile;
         }
         
         

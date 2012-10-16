@@ -22,6 +22,9 @@
 #import "EZSoundAction.h"
 #import "EZFileUtil.h"
 #import "EZPersistentUtil.h"
+#import "MEpisode.h"
+#import "EZCoreAccessor.h"
+#import "EZUploader.h"
 
 
 
@@ -107,6 +110,44 @@
     //[EZTestSuites testActionToJson];
     //[EZTestSuites testJsonArrayToArray];
     //[EZTestSuites testAudioActionPersist];
+    //[EZTestSuites testCoreData];
+    
+    //assert(false);
+    [EZTestSuites testUpload];
+}
+
+
++ (void) testUpload
+{
+    EZUploader* uploader = [[EZUploader alloc] init];
+    [uploader uploadToServer:[@"Some data" dataUsingEncoding:NSUTF8StringEncoding] fileName:@"upload.txt" contentType:@"Joke" resultBlock:^(id sender){
+        NSHTTPURLResponse* response = sender;
+        EZDEBUG(@"Response detail:%i", response.statusCode);
+    }];
+    //assert(false);
+}
+
++ (void) testCoreData
+{
+    [EZCoreAccessor cleanDefaultDB];
+    EZCoreAccessor* accessor = [EZCoreAccessor getInstance];
+    MEpisode* mp = (MEpisode*)[accessor create:[MEpisode class]];
+    EZDEBUG(@"Stored object:%@", mp);
+    mp.name = @"Coolguy";
+    [accessor store:mp];
+    NSArray* arr = [accessor fetchAll:[MEpisode class] sortField:nil];
+    assert(arr.count == 1);
+    
+    MEpisode* fetched = [arr objectAtIndex:0];
+    assert([fetched.name isEqualToString:mp.name]);
+    assert(!fetched.isFault);
+    //[fetched.managedObjectContext refreshObject:fetched mergeChanges:NO];
+    //assert(fetched.isFault);
+    fetched = nil;
+    arr = nil;
+    EZDEBUG(@"fetched should be released");
+    
+    //assert(false);
 }
 
 + (void) testAudioActionPersist

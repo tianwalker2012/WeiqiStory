@@ -210,6 +210,12 @@ and when to execute the Scenes.
 
 @property (nonatomic, retain) UIImage* screenShot;
 
+//What's the purpose of this method?
+//It enable you to take one shot, but doesn't mean the shot will be ready immediately.
+//You pass a block to this shot, so that it could be invoked when the shot is ready.
+//This will be the task for next iteration.
+@property (nonatomic, assign) BOOL takeOneShot;
+
 /** returns a shared instance of the director */
 +(CCDirector*)sharedDirector;
 

@@ -56,6 +56,10 @@ typedef enum {
 } CoordTransformType;
 
 
+#define CoreDBName @"Weiqi.sqlite"
+
+#define CoreDBModel @"ChessLecture"
+
 #define ChessMarkColor ccc3(122, 190, 83)
 
 #define AUDIO_MAX_WAITTIME 1.0

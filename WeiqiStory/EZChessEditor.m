@@ -17,6 +17,8 @@
 #import "EZEpisodeInputer.h"
 #import "EZExtender.h"
 #import <QuartzCore/QuartzCore.h>
+#import "EZChess2Image.h"
+#import "EZEpisode.h"
 
 @interface EZChessEditor()
 {
@@ -247,30 +249,28 @@
         }];
         
         CCMenuItem* storeCurrentView = [CCMenuItemFont itemWithString:@"保存当前界面" block:^(id sender){
-            EZDEBUG(@"Will store current View As image");
-            CGRect rect = [CCDirector sharedDirector].view.bounds;
-            UIGraphicsBeginImageContext(rect.size);
-            [[CCDirector sharedDirector].view.window.layer renderInContext:UIGraphicsGetCurrentContext()];
-            UIImage* image = UIGraphicsGetImageFromCurrentImageContext();
-            UIGraphicsEndImageContext();
-            UIImage* imageGl = [self takeAsUIImageEX];
-            UIGraphicsBeginImageContext(CGSizeMake(400, 300));
-            CGContextRef cgContext = UIGraphicsGetCurrentContext();
-            CGContextSetInterpolationQuality(cgContext, kCGInterpolationHigh);
-            CGContextSetShouldAntialias(cgContext, true);
-            CGContextDrawImage(cgContext, CGRectMake(0, 0, 400, 300), image.CGImage);
-            UIImage* tranferred = UIGraphicsGetImageFromCurrentImageContext();
-            UIImageView* imageView = [[UIImageView alloc] initWithImage:[CCDirector sharedDirector].screenShot];
+            EZDEBUG(@"Add a chessboard");
+            EZCoord* coord = [[EZCoord alloc] initChessType:kWhiteChess x:0 y:0];
+            EZCoord* coord1 = [[EZCoord alloc] initChessType:kWhiteChess x:18 y:18];
             
-            //UIImageView* backImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Icon"]];
-            UIGraphicsEndImageContext();
-            imageView.frame = CGRectMake(20, 20, 400, 300);
+            EZCoord* coord2 = [[EZCoord alloc] initChessType:kWhiteChess x:0 y:18];
+            EZCoord* coord3 = [[EZCoord alloc] initChessType:kWhiteChess x:18 y:0];
+            
+            UIImage* image = [EZChess2Image generateChessBoard:@[coord, coord1, coord2, coord3] size:CGSizeMake(200, 200)];
+            UIImageView* imageView = [[UIImageView alloc] initWithImage:image];
             [[CCDirector sharedDirector].view addSubview:imageView];
+        }];
+        
+        CCMenuItem* showScreenShot = [CCMenuItemFont itemWithString:@"保存截屏" block:^(id sender){
+            EZDEBUG(@"Save screen shot");
+            [CCDirector sharedDirector].takeOneShot = true;
             [self performBlock:^(){
-                EZDEBUG(@"Remove the view");
-                //[imageView removeFromSuperview];
-            } withDelay:10];
-            
+                EZDEBUG(@"Collect result");
+                UIImage* image = [CCDirector sharedDirector].screenShot;
+                UIImage* shrinkedImg = [EZChess2Image shrinkImage:image size:CGSizeMake(400, 300)];
+                UIImageView* imageView = [[UIImageView alloc] initWithImage:shrinkedImg];
+                [[CCDirector sharedDirector].view addSubview:imageView];
+            } withDelay:0.2];
         }];
         
         CCMenuItem* saveEpisode = [CCMenuItemFont itemWithString:@"保存本集" block:^(id sender){
@@ -300,7 +300,7 @@
         editorStatus.statusLabel = statusLabel;
         [statusLabel setPosition:ccp(500, 34)];
         [self addChild:statusLabel];
-        CCMenu* menu = [CCMenu menuWithItems:recording,startPresetting,startPlainMove,save,saveAsBegin,selectChessColor,toggleBoardColor,toggleMark,showHand,addPreset,addCleanAction, preView,delete,regretMove,goToPlayer,storeCurrentView, saveEpisode, nil];
+        CCMenu* menu = [CCMenu menuWithItems:recording,startPresetting,startPlainMove,save,saveAsBegin,selectChessColor,toggleBoardColor,toggleMark,showHand,addPreset,addCleanAction, preView,delete,regretMove,goToPlayer,saveEpisode, nil];
         
         [menu alignItemsVerticallyWithPadding:10];
         

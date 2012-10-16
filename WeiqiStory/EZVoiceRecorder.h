@@ -26,4 +26,7 @@
 
 - (NSURL*) getRecordedFileURL;
 
+
+@property (strong, nonatomic) NSString* recordedFile;
+
 @end

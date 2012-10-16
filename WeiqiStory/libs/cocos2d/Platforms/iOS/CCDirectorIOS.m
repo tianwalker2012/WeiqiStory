@@ -167,7 +167,11 @@ CGFloat	__ccContentScaleFactor = 1;
 	kmGLPopMatrix();
 
 	totalFrames_++;
-    self.screenShot = [self takeAsUIImageEX];
+    if(self.takeOneShot){
+        NSLog(@"Capture the screen");
+        self.screenShot = [self takeAsUIImageEX];
+        self.takeOneShot = false;
+    }
 	[openGLview swapBuffers];
     //[self.screenShot release];
     //self.screenShot = [self takeAsUIImageEX];
@@ -206,8 +210,10 @@ CGFloat	__ccContentScaleFactor = 1;
     
 	CGContextTranslateCTM(context, 0, size.height);
 	CGContextScaleCTM(context, 1.0f, -1.0f);
+    NSLog(@"Orientation:%i", [UIApplication sharedApplication].statusBarOrientation);
     
-	switch (director.interfaceOrientation)
+    /**
+	switch ([UIApplication sharedApplication].statusBarOrientation)
 	{
 		case UIInterfaceOrientationPortrait:
 			break;
@@ -224,7 +230,7 @@ CGFloat	__ccContentScaleFactor = 1;
 			CGContextTranslateCTM(context, size.width * 0.5f, -size.height);
 			break;
 	}
-    
+    **/
     
 	CGContextDrawImage(context, CGRectMake(0.0f, 0.0f, size.width, size.height), iref);
 	UIImage *outputImage = [UIImage imageWithCGImage:CGBitmapContextCreateImage(context)];

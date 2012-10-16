@@ -23,10 +23,37 @@
     //The chessman will be shrinked to the gap size.
     UIGraphicsBeginImageContext(size);
     CGContextRef cgContext = UIGraphicsGetCurrentContext();
+    
+    CGContextSetFillColorWithColor(cgContext, [UIColor colorWithRed:0.4 green:0.4 blue:0.4 alpha:1.0].CGColor);
+    CGContextFillRect(cgContext, CGRectMake(0, 0, size.width, size.height));
+    
+    CGContextSetStrokeColorWithColor(cgContext, [UIColor colorWithRed:0.8 green:0.7 blue:0.7 alpha:1.0].CGColor);
+    
+  
     //Draw the context image to it.
     
     CGFloat gap = size.height/19.0;
     CGFloat pad = gap/2.0;
+    
+    CGFloat startX = pad;
+    CGFloat startY = pad;
+    CGContextBeginPath(cgContext);
+    for(int i = 0; i < 19; i++){
+        
+        CGContextMoveToPoint(cgContext, startX+ i*gap,0);
+        CGContextAddLineToPoint(cgContext, startX + i*gap, size.height);
+        
+    }
+    
+    for(int i = 0; i < 19; i++){
+        CGContextMoveToPoint(cgContext,0, startY+ i*gap);
+        CGContextAddLineToPoint(cgContext,size.width, startY + i*gap);
+        
+    }
+    CGContextStrokePath(cgContext);
+    CGContextClosePath(cgContext);
+    
+    
     CGSize btnSize = CGSizeMake(gap, gap);
     
     //TODO will move the image shrinkage to the initialization part of the code. 

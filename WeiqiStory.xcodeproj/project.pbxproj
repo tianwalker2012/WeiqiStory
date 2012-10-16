@@ -191,7 +191,14 @@
 		18CDA9CA16154C150090BD04 /* EZSoundAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 18CDA9C916154C150090BD04 /* EZSoundAction.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		18CDA9CD1615A0B00090BD04 /* EZActionList.m in Sources */ = {isa = PBXBuildFile; fileRef = 18CDA9CC1615A0AE0090BD04 /* EZActionList.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		18CDA9FA161D72480090BD04 /* EZPersistentUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 18CDA9F9161D72480090BD04 /* EZPersistentUtil.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
-		18E0FE69162BBF00004BF632 /* EZChess2Image.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E0FE68162BBEFF004BF632 /* EZChess2Image.m */; };
+		18E0FE69162BBF00004BF632 /* EZChess2Image.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E0FE68162BBEFF004BF632 /* EZChess2Image.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		18E0FE6C162C0939004BF632 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18E0FE6B162C0938004BF632 /* CoreData.framework */; };
+		18E0FE70162C098A004BF632 /* ChessLecture.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 18E0FE6E162C098A004BF632 /* ChessLecture.xcdatamodeld */; };
+		18E0FE73162C0AC5004BF632 /* MEpisode.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E0FE72162C0AC5004BF632 /* MEpisode.m */; };
+		18E0FE7D162C0C94004BF632 /* EZCoreAccessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E0FE7C162C0C94004BF632 /* EZCoreAccessor.m */; };
+		18E0FE80162D04CB004BF632 /* EZCommonUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E0FE7F162D04CB004BF632 /* EZCommonUtil.m */; };
+		18E0FEC5162D3756004BF632 /* EZHttpListener.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E0FEC4162D3754004BF632 /* EZHttpListener.m */; };
+		18E0FEC8162D5156004BF632 /* EZEpisode.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E0FEC7162D5155004BF632 /* EZEpisode.m */; };
 		18F37CB616115919004B18A0 /* EZChessMark.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F37CB516115919004B18A0 /* EZChessMark.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		18F37CBA161191D5004B18A0 /* EZCleanAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F37CB9161191D5004B18A0 /* EZCleanAction.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 /* End PBXBuildFile section */
@@ -569,6 +576,18 @@
 		18CDA9F9161D72480090BD04 /* EZPersistentUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZPersistentUtil.m; sourceTree = "<group>"; };
 		18E0FE67162BBEFF004BF632 /* EZChess2Image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZChess2Image.h; sourceTree = "<group>"; };
 		18E0FE68162BBEFF004BF632 /* EZChess2Image.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZChess2Image.m; sourceTree = "<group>"; };
+		18E0FE6B162C0938004BF632 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		18E0FE6F162C098A004BF632 /* ChessLecture.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ChessLecture.xcdatamodel; sourceTree = "<group>"; };
+		18E0FE71162C0AC5004BF632 /* MEpisode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MEpisode.h; sourceTree = "<group>"; };
+		18E0FE72162C0AC5004BF632 /* MEpisode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MEpisode.m; sourceTree = "<group>"; };
+		18E0FE7B162C0C94004BF632 /* EZCoreAccessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZCoreAccessor.h; sourceTree = "<group>"; };
+		18E0FE7C162C0C94004BF632 /* EZCoreAccessor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZCoreAccessor.m; sourceTree = "<group>"; };
+		18E0FE7E162D04CB004BF632 /* EZCommonUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZCommonUtil.h; sourceTree = "<group>"; };
+		18E0FE7F162D04CB004BF632 /* EZCommonUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZCommonUtil.m; sourceTree = "<group>"; };
+		18E0FEC3162D3752004BF632 /* EZHttpListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZHttpListener.h; sourceTree = "<group>"; };
+		18E0FEC4162D3754004BF632 /* EZHttpListener.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZHttpListener.m; sourceTree = "<group>"; };
+		18E0FEC6162D5153004BF632 /* EZEpisode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZEpisode.h; sourceTree = "<group>"; };
+		18E0FEC7162D5155004BF632 /* EZEpisode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZEpisode.m; sourceTree = "<group>"; };
 		18F37CB416115919004B18A0 /* EZChessMark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZChessMark.h; sourceTree = "<group>"; };
 		18F37CB516115919004B18A0 /* EZChessMark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZChessMark.m; sourceTree = "<group>"; };
 		18F37CB8161191D5004B18A0 /* EZCleanAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZCleanAction.h; sourceTree = "<group>"; };
@@ -580,6 +599,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				18E0FE6C162C0939004BF632 /* CoreData.framework in Frameworks */,
 				1810EC3A1606DA1B0061FF70 /* QuartzCore.framework in Frameworks */,
 				1810EC3C1606DA1B0061FF70 /* OpenGLES.framework in Frameworks */,
 				1810EC3E1606DA1B0061FF70 /* OpenAL.framework in Frameworks */,
@@ -616,6 +636,7 @@
 		1810EC381606DA1B0061FF70 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				18E0FE6B162C0938004BF632 /* CoreData.framework */,
 				1810EC391606DA1B0061FF70 /* QuartzCore.framework */,
 				1810EC3B1606DA1B0061FF70 /* OpenGLES.framework */,
 				1810EC3D1606DA1B0061FF70 /* OpenAL.framework */,
@@ -632,6 +653,7 @@
 		1810EC4B1606DA1B0061FF70 /* WeiqiStory */ = {
 			isa = PBXGroup;
 			children = (
+				18E0FE6D162C0953004BF632 /* Data Objects */,
 				18ABF6C9161D8B5D00B70BB3 /* Custom UI */,
 				18CDA9CE1615A0BB0090BD04 /* UI Controllers */,
 				18451E2F160AF3B600BF530C /* Actions */,
@@ -1166,6 +1188,10 @@
 				18CDA9F9161D72480090BD04 /* EZPersistentUtil.m */,
 				18E0FE67162BBEFF004BF632 /* EZChess2Image.h */,
 				18E0FE68162BBEFF004BF632 /* EZChess2Image.m */,
+				18E0FE7E162D04CB004BF632 /* EZCommonUtil.h */,
+				18E0FE7F162D04CB004BF632 /* EZCommonUtil.m */,
+				18E0FEC3162D3752004BF632 /* EZHttpListener.h */,
+				18E0FEC4162D3754004BF632 /* EZHttpListener.m */,
 			);
 			name = Utility;
 			sourceTree = "<group>";
@@ -1202,6 +1228,8 @@
 				18CDA9C616154BFC0090BD04 /* EZChessPresetAction.m */,
 				18CDA9C816154C150090BD04 /* EZSoundAction.h */,
 				18CDA9C916154C150090BD04 /* EZSoundAction.m */,
+				18E0FEC6162D5153004BF632 /* EZEpisode.h */,
+				18E0FEC7162D5155004BF632 /* EZEpisode.m */,
 			);
 			name = Actions;
 			sourceTree = "<group>";
@@ -1223,6 +1251,18 @@
 				18CDA9CC1615A0AE0090BD04 /* EZActionList.m */,
 			);
 			name = "UI Controllers";
+			sourceTree = "<group>";
+		};
+		18E0FE6D162C0953004BF632 /* Data Objects */ = {
+			isa = PBXGroup;
+			children = (
+				18E0FE7B162C0C94004BF632 /* EZCoreAccessor.h */,
+				18E0FE7C162C0C94004BF632 /* EZCoreAccessor.m */,
+				18E0FE6E162C098A004BF632 /* ChessLecture.xcdatamodeld */,
+				18E0FE71162C0AC5004BF632 /* MEpisode.h */,
+				18E0FE72162C0AC5004BF632 /* MEpisode.m */,
+			);
+			name = "Data Objects";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1463,6 +1503,12 @@
 				18CDA9FA161D72480090BD04 /* EZPersistentUtil.m in Sources */,
 				18ABF6CF161D8DB900B70BB3 /* EZEpisodeInputer.m in Sources */,
 				18E0FE69162BBF00004BF632 /* EZChess2Image.m in Sources */,
+				18E0FE70162C098A004BF632 /* ChessLecture.xcdatamodeld in Sources */,
+				18E0FE73162C0AC5004BF632 /* MEpisode.m in Sources */,
+				18E0FE7D162C0C94004BF632 /* EZCoreAccessor.m in Sources */,
+				18E0FE80162D04CB004BF632 /* EZCommonUtil.m in Sources */,
+				18E0FEC5162D3756004BF632 /* EZHttpListener.m in Sources */,
+				18E0FEC8162D5156004BF632 /* EZEpisode.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1581,6 +1627,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		18E0FE6E162C098A004BF632 /* ChessLecture.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				18E0FE6F162C098A004BF632 /* ChessLecture.xcdatamodel */,
+			);
+			currentVersion = 18E0FE6F162C098A004BF632 /* ChessLecture.xcdatamodel */;
+			path = ChessLecture.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 1810EC2C1606DA1B0061FF70 /* Project object */;
 }
