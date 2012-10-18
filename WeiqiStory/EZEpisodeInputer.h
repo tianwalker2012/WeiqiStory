@@ -14,7 +14,7 @@
 @property (strong, nonatomic) IBOutlet UIButton* confirm;
 @property (strong, nonatomic) IBOutlet UIButton* cancel;
 
-@property (strong, nonatomic) IBOutlet UITextField* title;
+@property (strong, nonatomic) IBOutlet UITextField* name;
 @property (strong, nonatomic) IBOutlet UITextView* description;
 
 @property (strong, nonatomic) EZEventBlock confirmBlock;

@@ -14,7 +14,7 @@
 #import "SBJson.h"
 #import "EZPatternSearcher.h"
 //#import "EZCoord.h"
-#import "EZGoRecord.h"
+
 #import "EZActionPlayer.h"
 #import "EZAction.h"
 #import "EZExtender.h"
@@ -25,11 +25,24 @@
 #import "MEpisode.h"
 #import "EZCoreAccessor.h"
 #import "EZUploader.h"
+#import "EZChess2Image.h"
+#import "EZDummyObject.h"
 
 
 
 
 @interface MyTestBoard : NSObject<EZBoardDelegate>
+
+
+@end
+
+@interface EZGoRecord : NSObject
+
+@property (nonatomic, strong) NSArray* steps;
+
+@end
+
+@implementation EZGoRecord
 
 
 @end
@@ -113,9 +126,35 @@
     //[EZTestSuites testCoreData];
     
     //assert(false);
-    [EZTestSuites testUpload];
+    //[EZTestSuites testUpload];
+    [EZTestSuites testDoubleCoreAccessor];
+    //[EZTestSuites testTransform];
 }
 
+
++ (void) testTransform
+{
+    [EZCoreAccessor cleanClientDB];
+    EZCoreAccessor* clientDB = [EZCoreAccessor getClientAccessor];
+    MEpisode* episode  = [clientDB create:[MEpisode class]];
+    episode.name = @"cool";
+    episode.thumbNail = [EZChess2Image generateChessBoard:nil size:CGSizeMake(100, 100)];
+    episode.dummy = [[EZDummyObject alloc]init];
+    episode.dummy.name = @"smart";
+    [clientDB saveContext];
+    
+    EZCoreAccessor* clientAccessor1 = [[EZCoreAccessor alloc] initWithDBName:ClientDB modelName:CoreDBModel];
+    NSArray* arr = [clientAccessor1 fetchAll:[MEpisode class] sortField:@"name"];
+    assert(arr.count == 1);
+    MEpisode* res = [arr objectAtIndex:0];
+    
+    assert(res.thumbNail != nil);
+    assert(res.thumbNail.size.width == 100);
+    assert([@"smart" isEqualToString:res.dummy.name]);
+    EZDEBUG(@"res:%@, origin:%@, image:%@", res, episode, res.thumbNail);
+    assert(false);
+    
+}
 
 + (void) testUpload
 {
@@ -127,10 +166,72 @@
     //assert(false);
 }
 
+
+//What's the purpose of this test?
+//Make sure the 2 accessor not interfere with each other.
++ (void) testDoubleCoreAccessor
+{
+    [EZCoreAccessor cleanClientDB];
+    [EZCoreAccessor cleanEditorDB];
+    
+    EZCoreAccessor* clientAccessor = [EZCoreAccessor getClientAccessor];
+    
+    EZCoreAccessor* clientAccessor1 = [[EZCoreAccessor alloc] initWithDBName:ClientDB modelName:CoreDBModel];
+    
+    EZCoreAccessor* editorAccessor = [EZCoreAccessor getEditorAccessor];
+    MEpisode* mp = [clientAccessor create:[MEpisode class]];
+    mp.name = @"coolguy";
+    
+    MEpisode* mp2 = [clientAccessor create:[MEpisode class]];
+    mp2.name = @"hotgirl";
+    
+    
+    
+    [clientAccessor saveContext];
+    
+    NSArray* storeObjs = [clientAccessor fetchAll:[MEpisode class] sortField:@"name"];
+    assert(storeObjs.count == 2);
+    
+    storeObjs = [clientAccessor1 fetchAll:[MEpisode class] sortField:@"name"];
+    assert(storeObjs.count == 2);
+    
+    NSArray* editorObjs = [editorAccessor fetchAll:[MEpisode class] sortField:nil];
+    assert(editorObjs.count == 0);
+    
+    MEpisode* res1 = [storeObjs objectAtIndex:0];
+    MEpisode* res2 = [storeObjs objectAtIndex:1];
+    
+    EZDEBUG(@"fetched:%@, old:%@", mp.name, res1.name);
+    assert([res1.name isEqualToString:mp.name]);
+    assert([res2.name isEqualToString:mp2.name]);
+    
+    [mp.managedObjectContext refreshObject:mp mergeChanges:NO];
+    mp.name = @"coolMaster";
+    //[mp.managedObjectContext]
+    //I assume this time. the change will not persist anymore
+    
+    [clientAccessor saveContext];
+    
+    storeObjs = [clientAccessor1 fetchAll:[MEpisode class] sortField:@"name"];
+    assert(storeObjs.count == 2);
+    
+    res1 = [storeObjs objectAtIndex:0];
+    EZDEBUG(@"new:%@, old:%@, %i, %i", res1.name, mp.name, (int)res1, (int)mp);
+    [res1.managedObjectContext refreshObject:res1 mergeChanges:YES];
+    //I default the mp, so I assume the change to the MP will not update to database. s
+    //Let's check how's going.
+    assert([res1.name isEqualToString:mp.name]);
+    EZDEBUG(@"org name:%@, cross context:%@", mp.name, res1.name);
+    //Let's very if our assumption make sense or not.
+    assert(false);
+
+}
+
+
 + (void) testCoreData
 {
-    [EZCoreAccessor cleanDefaultDB];
-    EZCoreAccessor* accessor = [EZCoreAccessor getInstance];
+    [EZCoreAccessor cleanClientDB];
+    EZCoreAccessor* accessor = [EZCoreAccessor getClientAccessor];
     MEpisode* mp = (MEpisode*)[accessor create:[MEpisode class]];
     EZDEBUG(@"Stored object:%@", mp);
     mp.name = @"Coolguy";
@@ -449,6 +550,9 @@
     EZDEBUG(@"Print all the value:%@, %i, %i, %@",coolguy, number.intValue, number2.intValue, arr);
     assert(false);
 }
+
+
+
 //The problem not solved, 
 + (void) testPatternSearcher
 {

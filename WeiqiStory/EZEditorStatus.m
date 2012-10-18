@@ -53,6 +53,13 @@
     return self;
 }
 
+
+- (void) clean
+{
+    [_actions removeAllObjects];
+    self.showStep = false;
+    self.presetAction = nil;
+}
 - (void) setBtnPreset:(CCMenuItem*)preset audio:(CCMenuItem*)audio plantMove:(CCMenuItem*)plantMove
                  save:(CCMenuItem*)save remove:(CCMenuItem*)remove preview:(CCMenuItem*)preview previewAll:(CCMenuItem*)previewAll
 {

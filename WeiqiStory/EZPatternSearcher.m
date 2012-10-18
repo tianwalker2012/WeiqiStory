@@ -7,7 +7,7 @@
 //
 
 #import "EZPatternSearcher.h"
-#import "EZGoRecord.h"
+//#import "EZGoRecord.h"
 #import "EZCoord.h"
 
 @implementation EZPatternSearcher
@@ -66,7 +66,7 @@ static EZPatternSearcher* searcher;
     //Imagine, you could rotata the chess board, the pattern on chess will be changed, right?
     //Can you say it is not the same pattern?
     //If your another is NO, then you know what I am doing here
-    NSArray* allSteps = [self tranformSteps:record.steps];
+    NSArray* allSteps = nil;//[self tranformSteps:record.steps];
     for(NSArray* step in allSteps){
         [self buildIndex:step record:record];
     }

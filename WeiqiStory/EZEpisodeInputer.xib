@@ -89,7 +89,7 @@
 						<bool key="IBUIClipsSubviews">YES</bool>
 						<bool key="IBUIMultipleTouchEnabled">YES</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
-						<string key="IBUIText">Episode description</string>
+						<string key="IBUIText"/>
 						<object class="IBUITextInputTraits" key="IBUITextInputTraits">
 							<int key="IBUIAutocapitalizationType">2</int>
 							<int key="IBUIAutocorrectionType">2</int>
@@ -194,14 +194,6 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchOutletConnection" key="connection">
-						<string key="label">title</string>
-						<reference key="source" ref="841351856"/>
-						<reference key="destination" ref="457890632"/>
-					</object>
-					<int key="connectionID">36</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchOutletConnection" key="connection">
 						<string key="label">cancel</string>
 						<reference key="source" ref="841351856"/>
 						<reference key="destination" ref="457536742"/>
@@ -223,6 +215,14 @@
 						<reference key="destination" ref="706448415"/>
 					</object>
 					<int key="connectionID">43</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">name</string>
+						<reference key="source" ref="841351856"/>
+						<reference key="destination" ref="457890632"/>
+					</object>
+					<int key="connectionID">45</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchOutletConnection" key="connection">
@@ -329,7 +329,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">43</int>
+			<int key="maxID">45</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -354,7 +354,7 @@
 						<string key="cancel">UIButton</string>
 						<string key="confirm">UIButton</string>
 						<string key="description">UITextView</string>
-						<string key="title">UITextField</string>
+						<string key="name">UITextField</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
 						<object class="IBToOneOutletInfo" key="cancel">
@@ -369,8 +369,8 @@
 							<string key="name">description</string>
 							<string key="candidateClassName">UITextView</string>
 						</object>
-						<object class="IBToOneOutletInfo" key="title">
-							<string key="name">title</string>
+						<object class="IBToOneOutletInfo" key="name">
+							<string key="name">name</string>
 							<string key="candidateClassName">UITextField</string>
 						</object>
 					</dictionary>

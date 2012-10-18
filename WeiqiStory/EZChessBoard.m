@@ -240,6 +240,13 @@
     [self regretMarks:_allMarks.count animated:NO];
 }
 
+//All the marks and moves get cleaned
+- (void) cleanAll
+{
+    [self cleanAllMoves];
+    [self cleanAllMarks];
+}
+
 - (void) putButton:(EZCoord*)coord isBlack:(BOOL)isBlack animated:(BOOL)animated
 {
     //Let's check it on iPad

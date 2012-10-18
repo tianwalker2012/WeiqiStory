@@ -172,7 +172,6 @@
 		18451E101609CE0000BF530C /* EZPatternSearcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 18451E081609CE0000BF530C /* EZPatternSearcher.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		18451E111609CE0000BF530C /* EZCoordUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 18451E0A1609CE0000BF530C /* EZCoordUtility.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		18451E121609CE0000BF530C /* EZFileUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 18451E0C1609CE0000BF530C /* EZFileUtil.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
-		18451E161609CE3800BF530C /* EZGoRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 18451E151609CE3800BF530C /* EZGoRecord.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		18451E191609E48200BF530C /* EZChessman.m in Sources */ = {isa = PBXBuildFile; fileRef = 18451E181609E48100BF530C /* EZChessman.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		18451E33160AF3E700BF530C /* EZAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 18451E32160AF3E700BF530C /* EZAction.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		18451E36160AF77500BF530C /* EZActionPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 18451E35160AF77500BF530C /* EZActionPlayer.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
@@ -194,11 +193,15 @@
 		18E0FE69162BBF00004BF632 /* EZChess2Image.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E0FE68162BBEFF004BF632 /* EZChess2Image.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		18E0FE6C162C0939004BF632 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18E0FE6B162C0938004BF632 /* CoreData.framework */; };
 		18E0FE70162C098A004BF632 /* ChessLecture.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 18E0FE6E162C098A004BF632 /* ChessLecture.xcdatamodeld */; };
-		18E0FE73162C0AC5004BF632 /* MEpisode.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E0FE72162C0AC5004BF632 /* MEpisode.m */; };
-		18E0FE7D162C0C94004BF632 /* EZCoreAccessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E0FE7C162C0C94004BF632 /* EZCoreAccessor.m */; };
-		18E0FE80162D04CB004BF632 /* EZCommonUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E0FE7F162D04CB004BF632 /* EZCommonUtil.m */; };
-		18E0FEC5162D3756004BF632 /* EZHttpListener.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E0FEC4162D3754004BF632 /* EZHttpListener.m */; };
-		18E0FEC8162D5156004BF632 /* EZEpisode.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E0FEC7162D5155004BF632 /* EZEpisode.m */; };
+		18E0FE7D162C0C94004BF632 /* EZCoreAccessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E0FE7C162C0C94004BF632 /* EZCoreAccessor.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		18E0FE80162D04CB004BF632 /* EZCommonUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E0FE7F162D04CB004BF632 /* EZCommonUtil.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		18E0FEC5162D3756004BF632 /* EZHttpListener.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E0FEC4162D3754004BF632 /* EZHttpListener.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		18E0FEC8162D5156004BF632 /* EZEpisode.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E0FEC7162D5155004BF632 /* EZEpisode.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		18E0FEDE162E6572004BF632 /* EZUILoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E0FEDD162E6572004BF632 /* EZUILoader.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		18E0FEE0162E6622004BF632 /* EZEpisodeCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 18E0FEDF162E6621004BF632 /* EZEpisodeCell.xib */; };
+		18E0FEE3162E664F004BF632 /* EZEpisodeCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E0FEE2162E664E004BF632 /* EZEpisodeCell.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		18E0FEE7162EB7B2004BF632 /* MEpisode.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E0FEE6162EB7B2004BF632 /* MEpisode.m */; };
+		18E0FEEA162EBE66004BF632 /* EZDummyObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E0FEE9162EBE66004BF632 /* EZDummyObject.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		18F37CB616115919004B18A0 /* EZChessMark.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F37CB516115919004B18A0 /* EZChessMark.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		18F37CBA161191D5004B18A0 /* EZCleanAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F37CB9161191D5004B18A0 /* EZCleanAction.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 /* End PBXBuildFile section */
@@ -537,8 +540,6 @@
 		18451E0A1609CE0000BF530C /* EZCoordUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZCoordUtility.m; sourceTree = "<group>"; };
 		18451E0B1609CE0000BF530C /* EZFileUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZFileUtil.h; sourceTree = "<group>"; };
 		18451E0C1609CE0000BF530C /* EZFileUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZFileUtil.m; sourceTree = "<group>"; };
-		18451E141609CE3800BF530C /* EZGoRecord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZGoRecord.h; sourceTree = "<group>"; };
-		18451E151609CE3800BF530C /* EZGoRecord.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZGoRecord.m; sourceTree = "<group>"; };
 		18451E171609E47F00BF530C /* EZChessman.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZChessman.h; sourceTree = "<group>"; };
 		18451E181609E48100BF530C /* EZChessman.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZChessman.m; sourceTree = "<group>"; };
 		18451E31160AF3E700BF530C /* EZAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZAction.h; sourceTree = "<group>"; };
@@ -578,8 +579,6 @@
 		18E0FE68162BBEFF004BF632 /* EZChess2Image.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZChess2Image.m; sourceTree = "<group>"; };
 		18E0FE6B162C0938004BF632 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		18E0FE6F162C098A004BF632 /* ChessLecture.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ChessLecture.xcdatamodel; sourceTree = "<group>"; };
-		18E0FE71162C0AC5004BF632 /* MEpisode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MEpisode.h; sourceTree = "<group>"; };
-		18E0FE72162C0AC5004BF632 /* MEpisode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MEpisode.m; sourceTree = "<group>"; };
 		18E0FE7B162C0C94004BF632 /* EZCoreAccessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZCoreAccessor.h; sourceTree = "<group>"; };
 		18E0FE7C162C0C94004BF632 /* EZCoreAccessor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZCoreAccessor.m; sourceTree = "<group>"; };
 		18E0FE7E162D04CB004BF632 /* EZCommonUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZCommonUtil.h; sourceTree = "<group>"; };
@@ -588,6 +587,16 @@
 		18E0FEC4162D3754004BF632 /* EZHttpListener.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZHttpListener.m; sourceTree = "<group>"; };
 		18E0FEC6162D5153004BF632 /* EZEpisode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZEpisode.h; sourceTree = "<group>"; };
 		18E0FEC7162D5155004BF632 /* EZEpisode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZEpisode.m; sourceTree = "<group>"; };
+		18E0FEDC162E6572004BF632 /* EZUILoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZUILoader.h; sourceTree = "<group>"; };
+		18E0FEDD162E6572004BF632 /* EZUILoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZUILoader.m; sourceTree = "<group>"; };
+		18E0FEDF162E6621004BF632 /* EZEpisodeCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EZEpisodeCell.xib; sourceTree = "<group>"; };
+		18E0FEE1162E664D004BF632 /* EZEpisodeCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZEpisodeCell.h; sourceTree = "<group>"; };
+		18E0FEE2162E664E004BF632 /* EZEpisodeCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZEpisodeCell.m; sourceTree = "<group>"; };
+		18E0FEE4162E6C57004BF632 /* EZCommon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZCommon.h; sourceTree = "<group>"; };
+		18E0FEE5162EB7B2004BF632 /* MEpisode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MEpisode.h; sourceTree = "<group>"; };
+		18E0FEE6162EB7B2004BF632 /* MEpisode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MEpisode.m; sourceTree = "<group>"; };
+		18E0FEE8162EBE65004BF632 /* EZDummyObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZDummyObject.h; sourceTree = "<group>"; };
+		18E0FEE9162EBE66004BF632 /* EZDummyObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZDummyObject.m; sourceTree = "<group>"; };
 		18F37CB416115919004B18A0 /* EZChessMark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZChessMark.h; sourceTree = "<group>"; };
 		18F37CB516115919004B18A0 /* EZChessMark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZChessMark.m; sourceTree = "<group>"; };
 		18F37CB8161191D5004B18A0 /* EZCleanAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZCleanAction.h; sourceTree = "<group>"; };
@@ -657,7 +666,6 @@
 				18ABF6C9161D8B5D00B70BB3 /* Custom UI */,
 				18CDA9CE1615A0BB0090BD04 /* UI Controllers */,
 				18451E2F160AF3B600BF530C /* Actions */,
-				18451E131609CE2000BF530C /* Data Objects */,
 				18451E001609CDDC00BF530C /* Utility */,
 				18451DFD1609CCA100BF530C /* Constants */,
 				18451DF91609CC4200BF530C /* Test Cases */,
@@ -1159,6 +1167,7 @@
 			children = (
 				18451DFE1609CCFF00BF530C /* EZConstants.h */,
 				18451DFF1609CCFF00BF530C /* EZImageResources.h */,
+				18E0FEE4162E6C57004BF632 /* EZCommon.h */,
 			);
 			name = Constants;
 			sourceTree = "<group>";
@@ -1196,15 +1205,6 @@
 			name = Utility;
 			sourceTree = "<group>";
 		};
-		18451E131609CE2000BF530C /* Data Objects */ = {
-			isa = PBXGroup;
-			children = (
-				18451E141609CE3800BF530C /* EZGoRecord.h */,
-				18451E151609CE3800BF530C /* EZGoRecord.m */,
-			);
-			name = "Data Objects";
-			sourceTree = "<group>";
-		};
 		18451E2F160AF3B600BF530C /* Actions */ = {
 			isa = PBXGroup;
 			children = (
@@ -1240,6 +1240,11 @@
 				18ABF6CB161D8BA200B70BB3 /* EZEpisodeInputer.xib */,
 				18ABF6CD161D8DB900B70BB3 /* EZEpisodeInputer.h */,
 				18ABF6CE161D8DB900B70BB3 /* EZEpisodeInputer.m */,
+				18E0FEDC162E6572004BF632 /* EZUILoader.h */,
+				18E0FEDD162E6572004BF632 /* EZUILoader.m */,
+				18E0FEDF162E6621004BF632 /* EZEpisodeCell.xib */,
+				18E0FEE1162E664D004BF632 /* EZEpisodeCell.h */,
+				18E0FEE2162E664E004BF632 /* EZEpisodeCell.m */,
 			);
 			name = "Custom UI";
 			sourceTree = "<group>";
@@ -1259,8 +1264,10 @@
 				18E0FE7B162C0C94004BF632 /* EZCoreAccessor.h */,
 				18E0FE7C162C0C94004BF632 /* EZCoreAccessor.m */,
 				18E0FE6E162C098A004BF632 /* ChessLecture.xcdatamodeld */,
-				18E0FE71162C0AC5004BF632 /* MEpisode.h */,
-				18E0FE72162C0AC5004BF632 /* MEpisode.m */,
+				18E0FEE5162EB7B2004BF632 /* MEpisode.h */,
+				18E0FEE6162EB7B2004BF632 /* MEpisode.m */,
+				18E0FEE8162EBE65004BF632 /* EZDummyObject.h */,
+				18E0FEE9162EBE66004BF632 /* EZDummyObject.m */,
 			);
 			name = "Data Objects";
 			sourceTree = "<group>";
@@ -1339,6 +1346,7 @@
 				18451DF71609CC0700BF530C /* weiqi-board-pad.png in Resources */,
 				18451DF81609CC0700BF530C /* weiqi-board-pad@2x.png in Resources */,
 				18ABF6CC161D8BA200B70BB3 /* EZEpisodeInputer.xib in Resources */,
+				18E0FEE0162E6622004BF632 /* EZEpisodeCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1479,7 +1487,6 @@
 				18451E101609CE0000BF530C /* EZPatternSearcher.m in Sources */,
 				18451E111609CE0000BF530C /* EZCoordUtility.m in Sources */,
 				18451E121609CE0000BF530C /* EZFileUtil.m in Sources */,
-				18451E161609CE3800BF530C /* EZGoRecord.m in Sources */,
 				18451E191609E48200BF530C /* EZChessman.m in Sources */,
 				18451E33160AF3E700BF530C /* EZAction.m in Sources */,
 				18451E36160AF77500BF530C /* EZActionPlayer.m in Sources */,
@@ -1504,11 +1511,14 @@
 				18ABF6CF161D8DB900B70BB3 /* EZEpisodeInputer.m in Sources */,
 				18E0FE69162BBF00004BF632 /* EZChess2Image.m in Sources */,
 				18E0FE70162C098A004BF632 /* ChessLecture.xcdatamodeld in Sources */,
-				18E0FE73162C0AC5004BF632 /* MEpisode.m in Sources */,
 				18E0FE7D162C0C94004BF632 /* EZCoreAccessor.m in Sources */,
 				18E0FE80162D04CB004BF632 /* EZCommonUtil.m in Sources */,
 				18E0FEC5162D3756004BF632 /* EZHttpListener.m in Sources */,
 				18E0FEC8162D5156004BF632 /* EZEpisode.m in Sources */,
+				18E0FEDE162E6572004BF632 /* EZUILoader.m in Sources */,
+				18E0FEE3162E664F004BF632 /* EZEpisodeCell.m in Sources */,
+				18E0FEE7162EB7B2004BF632 /* MEpisode.m in Sources */,
+				18E0FEEA162EBE66004BF632 /* EZDummyObject.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

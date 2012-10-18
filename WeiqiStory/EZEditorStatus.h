@@ -73,6 +73,8 @@ typedef enum {
 
 - (void) insertShowHand;
 
+- (void) clean;
+
 //- (id) initWithPlayer:(EZActionPlayer*)player;
 
 @end

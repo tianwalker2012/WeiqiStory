@@ -19,6 +19,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "EZChess2Image.h"
 #import "EZEpisode.h"
+#import "EZChessPresetAction.h"
 
 @interface EZChessEditor()
 {
@@ -34,6 +35,12 @@
     //So that once I add clean or preset, I could immediately see the effects.
     EZActionPlayer* currActPlayer;
     EZAction* presetAction;
+    
+    NSMutableArray* episodes;
+    
+    EZEpisode* currentEpisode;
+    
+    NSArray* basicPattern;
     
 }
 
@@ -88,6 +95,7 @@
         CCLabelTTF* statusLabel = [CCLabelTTF labelWithString:@"Status label" fontName:@"Arial" fontSize:30];
         
         NSInteger popupZOrder = 200;
+        episodes = [[NSMutableArray alloc] init];
         //[self addChild:previewBoard z:popupZOrder];
         
         //Will change the chessBoard later
@@ -126,6 +134,7 @@
         CCMenuItem* saveAsBegin = [CCMenuItemFont itemWithString:@"保存为本节开始" block:^(id sender){
             EZDEBUG(@"Save as the begining of episode");
             [editorStatus saveAsEpisodeBegin];
+            basicPattern = chessBoard.getAllChessMoves;
         }];
 
         
@@ -244,7 +253,9 @@
        
         CCMenuItem* goToPlayer = [CCMenuItemFont itemWithString:@"去播放界面" block:^(id sender){
             EZDEBUG(@"Will go to player interface");
-            CCScene* playFace = [EZChessPlay sceneWithActions:editorStatus.actions];
+            CCScene* playFace = [EZChessPlay scene];
+            EZChessPlay* playUI = (EZChessPlay*)[playFace getChildByTag:10];
+            playUI.epsides = episodes;
             [[CCDirector sharedDirector] pushScene:playFace];
         }];
         
@@ -276,6 +287,20 @@
         CCMenuItem* saveEpisode = [CCMenuItemFont itemWithString:@"保存本集" block:^(id sender){
             NSString* orient = [[CCDirector sharedDirector].view orientationToStr];
             EZDEBUG(@"Store current episode, direction:%@", orient);
+            
+            EZEpisode* episode = [[EZEpisode alloc] init];
+            episode.basicPattern = basicPattern;//((EZChessPresetAction*)editorStatus.presetAction).preSetMoves;
+            ///episode
+            episode.actions = [NSArray arrayWithArray:editorStatus.actions];
+            
+            //UIImageView* imageView = [[UIImageView alloc] initWithImage:episode.thumbNail];
+            
+            //UIImageView* imageView = [[UIImageView alloc] init];
+            //imageView.image = episode.thumbNail;
+            //imageView.frame = CGRectMake(0, 0, 100, 200);
+            //EZDEBUG(@"image size:%@", NSStringFromCGRect(imageView.frame));
+            //[[CCDirector sharedDirector].view addSubview:imageView];
+            
             EZEpisodeInputer* episodeInputer = [[EZEpisodeInputer alloc] initWithNibName:@"EZEpisodeInputer" bundle:nil];
             EZDEBUG(@"Nib loaded successfully");
             episodeInputer.modalPresentationStyle = UIModalPresentationFormSheet;
@@ -283,6 +308,13 @@
             episodeInputer.confirmBlock = ^(id sender){
                 EZDEBUG(@"Confirm get called");
                 EZEpisodeInputer* ein = sender;
+                episode.name = ein.name.text;
+                episode.introduction = ein.description.text;
+                [episodes addObject:episode];
+                [editorStatus clean];
+                [chessBoard cleanAll];
+                //[chessBoard cleanAllMarks];
+                EZDEBUG(@"Current episode number:%i, name:%@, intro:%@", episodes.count, episode.name, episode.introduction);
                 [ein.presentingViewController dismissViewControllerAnimated:YES completion:nil];
             };
             episodeInputer.cancelBlock = ^(id sender){

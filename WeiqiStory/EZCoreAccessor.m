@@ -19,26 +19,54 @@
 
 @end
 
-static EZCoreAccessor* accessor = nil;
+//static EZCoreAccessor* accessor = nil;
+static NSMutableDictionary* accessors;
+
 
 @implementation EZCoreAccessor
 @synthesize model, context, coordinator;
 
-+ (EZCoreAccessor*) getInstance
+//Generate a new DB instance
++ (void) invalidateInstance:(NSString*)dbName
 {
-    if(accessor == nil){
-        accessor = [[EZCoreAccessor alloc] initWithDBName:CoreDBName modelName:CoreDBModel];
-    }
-    return accessor; 
+    //So that next I will generate the staff again. 
+    [accessors removeObjectForKey:dbName];
 }
 
-//The purpose of this method, is to provide way to use other instance.
-//For example, the test database and the production database are different one.
-//I can instantiate a different database for it. 
-//Easy and straightforward
-+ (void) setInstance:(EZCoreAccessor*)inst
++ (EZCoreAccessor*) getInstance:(NSString*)dbName
 {
-    accessor = inst;
+    if(accessors == nil){
+        accessors = [[NSMutableDictionary alloc] initWithCapacity:2];
+    }
+    EZCoreAccessor* res = [accessors objectForKey:dbName];
+    
+    if(res == nil){
+        res = [[EZCoreAccessor alloc] initWithDBName:dbName modelName:CoreDBModel];
+        [accessors setValue:res forKey:dbName];
+    }
+    return res;
+}
+
+
++ (EZCoreAccessor*) getClientAccessor
+{
+    return [EZCoreAccessor getInstance:ClientDB];
+}
+
++ (EZCoreAccessor*) getEditorAccessor
+{
+    return [EZCoreAccessor getInstance:EditorDB];
+}
+
+
++ (void) cleanClientDB
+{
+    [EZCoreAccessor cleanDB:ClientDB];
+}
+
++ (void) cleanEditorDB
+{
+    [EZCoreAccessor cleanDB:EditorDB];
 }
 
 + (NSURL *)applicationDocumentsDirectory
@@ -58,16 +86,13 @@ static EZCoreAccessor* accessor = nil;
     return self;
 }
 
-+ (void) cleanDefaultDB
-{
-    [EZCoreAccessor cleanDB:CoreDBName];
-}
 
 + (void) cleanDB:(NSString*)fileName
 {
     
     NSURL *storeURL = [[EZCoreAccessor applicationDocumentsDirectory] URLByAppendingPathComponent:fileName];
     [[NSFileManager defaultManager] removeItemAtURL:storeURL error:nil];
+    [EZCoreAccessor invalidateInstance:fileName];
 }
 
 - (NSManagedObjectContext*) createContext:(NSPersistentStoreCoordinator*)coord
@@ -103,7 +128,7 @@ static EZCoreAccessor* accessor = nil;
 }
 
 //All NSManagedObject should be instantiated from here
-- (NSManagedObject*) create:(Class)classType
+- (id) create:(Class)classType
 {
     NSString* className = [classType description];
     NSManagedObject* res = [NSEntityDescription insertNewObjectForEntityForName:className inManagedObjectContext:context];

@@ -28,4 +28,6 @@
 @property (strong, nonatomic) EZActionPlayer* actPlayer;
 @property (strong, nonatomic) UITableView* actionTableView;
 
+@property (strong, nonatomic) NSArray* epsides;
+
 @end

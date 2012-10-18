@@ -14,9 +14,21 @@
     
 }
 
-+ (EZCoreAccessor*) getInstance;
+//Generate a new DB instance
++ (void) invalidateInstance:(NSString*)dbName;
 
-+ (void) setInstance:(EZCoreAccessor*)inst;
++ (EZCoreAccessor*) getInstance:(NSString*)dbName;
+
++ (EZCoreAccessor*) getClientAccessor;
+
++ (EZCoreAccessor*) getEditorAccessor;
+
++ (void) cleanClientDB;
+
++ (void) cleanEditorDB;
+
+
+//+ (void) setInstance:(EZCoreAccessor*)inst;
 
 + (NSURL *)applicationDocumentsDirectory;
 
@@ -26,10 +38,8 @@
 //Keep the old data, and do a migration of it.
 + (void) cleanDB:(NSString*)fileName;
 
-+ (void) cleanDefaultDB;
-
 //All NSManagedObject should be instantiated from here
-- (NSManagedObject*) create:(Class)classType; 
+- (id) create:(Class)classType;
 
 //po for persistent object
 - (BOOL) store:(NSManagedObject*)po;
@@ -46,6 +56,7 @@
 - (id) initWithDBName:(NSString*)dbName modelName:(NSString*)modelName;
 
 - (void)saveContext;
+
 @property (strong, nonatomic) NSManagedObjectContext* context;
 @property (strong, nonatomic) NSManagedObjectModel* model;
 @property (strong, nonatomic) NSPersistentStoreCoordinator* coordinator;

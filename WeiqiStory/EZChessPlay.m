@@ -16,12 +16,19 @@
 #import "EZPlayerStatus.h"
 #import "SBJson.h"
 #import "EZExtender.h"
+#import "EZEpisode.h"
+#import "EZEpisodeCell.h"
+#import "EZUILoader.h"
+
 
 @interface EZChessPlay()
 {
     //EZActionPlayer* actPlayer;
     EZChessBoard* chessBoard;
     EZPlayerStatus* playerStatus;
+    //This board is used to allow user to try out his ideas.
+    //
+    EZChessBoard* playBoard;
 }
 
 @end
@@ -35,7 +42,7 @@
     
     EZChessPlay* playLayer = [[EZChessPlay alloc] init];
     
-    [scene addChild:playLayer];
+    [scene addChild:playLayer z:10 tag:10];
 
     return scene;
 }
@@ -93,49 +100,70 @@
  
 //What's the meaning init?
 //Initialize the the class.
+
+//What's the purpose of this method?
+//It will remove all the facility UIViews with this scene. Otherwise those View will keep show off.
+- (void) removeAllView
+{
+    [_actionTableView removeFromSuperview];
+}
+
+- (void) addAllView
+{
+    [[CCDirector sharedDirector].view addSubview:_actionTableView];
+}
+
+//I assume this will be called, when current scene are get in front of the visible region
+- (void) onEnter
+{
+    [super onEnter];
+    [self addAllView];
+}
+
+//I assume this will be called when current scene are removed out of the visible region.
+- (void) onExit
+{
+    [super onExit];
+    [self removeAllView];
+}
+
+
 - (id) init
 {
     self = [super init];
     if(self){
-        chessBoard = [[EZChessBoard alloc]initWithFile:@"weiqi-board-pad.png" touchRect:CGRectMake(60, 60, 648, 648) rows:19 cols:19];
-        [chessBoard setPosition:ccp(chessBoard.boundingBox.size.width/2, chessBoard.boundingBox.size.height/2)];
-        [self addChild:chessBoard];
+        CGFloat leftTableWidth = 256.0;
+        CGPoint tableTopRight = CGPointMake(256.0, 0.0);
+        CGPoint glTopRight = [[CCDirector sharedDirector] convertToGL:tableTopRight];
         
+       
+        
+        chessBoard = [[EZChessBoard alloc]initWithFile:@"weiqi-board-pad.png" touchRect:CGRectMake(60, 60, 648, 648) rows:19 cols:19];
+        //Will chessBoard to align with the left, will move the rest of the button to the bottom of the screen.
+        //chessBoard.anchorPoint = CGPointMake(0.0, 0.0);
+        [chessBoard setPosition:ccp(chessBoard.boundingBox.size.width/2+glTopRight.x, chessBoard.boundingBox.size.height/2)];
+        
+        
+        playBoard = [[EZChessBoard alloc]initWithFile:@"weiqi-board-pad.png" touchRect:CGRectMake(60, 60, 648, 648) rows:19 cols:19];
+        [playBoard setPosition:ccp(chessBoard.boundingBox.size.width/2+glTopRight.x/2, chessBoard.boundingBox.size.height/2)];
+        playBoard.scale = 0.7;
+        playBoard.touchEnabled = false;
+        
+        //Make sure I am always before the chessBoard.
+        playBoard.zOrder = chessBoard.zOrder + 1;
+        
+        [self addChild:chessBoard];
+        chessBoard.scale = 0.7;
+        EZDEBUG(@"tableTopRight:%@, glTopRight:%@, boundingBox:%@, middle point x:%f",NSStringFromCGPoint(tableTopRight), NSStringFromCGPoint(glTopRight),
+                NSStringFromCGRect(chessBoard.boundingBox), chessBoard.boundingBox.size.width/2+glTopRight.x
+                );
         //[self initScript];
         _actPlayer = [[EZActionPlayer alloc] initWithActions:nil chessBoard:chessBoard];
-        /**
-        CCSprite* board2 = [CCSprite spriteWithFile:@"weiqi-board-pad.png" rect:CGRectMake(800, 500, 100, 100)];
-        board2.position = CGPointMake(500, 500);
-        [self addChild:board2];
-        **/
-        
-        //One test cover all the functionality
-        
-         //I will use this to test my preset on the beginning of the game.
-        [chessBoard putChessmans:[NSArray arrayWithObjects:[[EZCoord alloc] init:1 y:2],[[EZCoord alloc] init:2 y:5],[[EZCoord alloc]init:8 y:9], nil] animated:NO];
-        [chessBoard setScale:0.7];
+        //[chessBoard setScale:0.7];
         
         [CCMenuItemFont setFontSize:32];
-        LOADSOUNDEFFECT([NSArray arrayWithObjects:@"enemy.wav",nil]);
-        CCMenuItem* introduction = [CCMenuItemFont itemWithString:@"第一幕" block:^(id sender){
-            [chessBoard putChessmans:[NSArray arrayWithObjects:[[EZCoord alloc] init:5 y:5],[[EZCoord alloc] init:6 y:6],[[EZCoord alloc]init:7 y:7], nil] animated:NO];
-            EZDEBUG(@"Start play sound effects");
-            PLAYSOUNDEFFECT(firstVoice.wav);
-        }];
-        CCMenuItem* regret = [CCMenuItemFont itemWithString:@"悔棋" block:^(id sender){
-            [chessBoard regretSteps:1 animated:NO];
-        }];
-        
-        CCMenuItem* showSteps = [CCMenuItemFont itemWithString:@"显示手数" block:^(id sender){
-            chessBoard.showStep = !chessBoard.showStep;
-        }];
-        
-        CCMenuItem* showStepStart = [CCMenuItemFont itemWithString:@"从10开始显示" block:^(id sender){
-            chessBoard.showStep = YES;
-            chessBoard.showStepStarted = 10;
-        }];
-        
-        
+        //LOADSOUNDEFFECT([NSArray arrayWithObjects:@"enemy.wav",nil]);
+       
         CCMenuItem* prevMenu = [CCMenuItemFont itemWithString:@"后退" block:^(id sender){
             [_actPlayer prev];
         }];
@@ -149,25 +177,36 @@
             [_actPlayer next];
         }];
         
+        CCMenuItem* playBySelfMenu = [CCMenuItemFont itemWithString:@"开始演练" block:^(id sender){
+            //I assume the chessboard should always disable the touch.
+            //Why, in the play mode it is mostly look at what I am doing, right?
+            CCMenuItemFont* curMenu = sender;
+            if(playBoard.touchEnabled == false){//Mean not on playboard yet
+                chessBoard.touchEnabled = false;
+                playBoard.touchEnabled = true;
+            
+                [playBoard cleanAll];
+                NSArray* allChessMoves = chessBoard.getAllChessMoves;
+                [playBoard putChessmans:allChessMoves animated:NO];
+                NSArray* allMarks = chessBoard.allMarks;
+                [playBoard putMarks:allMarks];
+                [self addChild:playBoard];
+                [curMenu setString:@"停止演练"];
+            }else {
+                playBoard.touchEnabled = false;
+                chessBoard.touchEnabled = true;
+                [playBoard removeFromParentAndCleanup:NO];//I assume No Mean I can reuse again.
+                [curMenu setString:@"开始演练"];
+            }
+            //chessBoard.touchEnabled = false;
+        }];
+        
         CCMenuItem* backToEditorMenu = [CCMenuItemFont itemWithString:@"回到编辑界面" block:^(id sender){
             [[CCDirector sharedDirector] popScene];
             //Important, otherwise will not get event.
             chessBoard.touchEnabled = false;
         }];
         
-        
-        CCMenuItem* persistMenu = [CCMenuItemFont itemWithString:@"持久化" block:^(id sender){
-        
-            NSArray* stored = [EZAction actionsToCollections:_actPlayer.actions];
-            EZDEBUG(@"All the persisted objects:%@", stored.JSONRepresentation);
-            NSArray* actions = [EZAction collectionToActions:stored.JSONRepresentation.JSONValue];
-            EZDEBUG(@"Action size:%i", actions.count);
-            _actPlayer.actions = actions;
-            [_actPlayer rewind];
-            //_actPlayer.currentAction = 0;
-            //[_actPlayer.board cleanAllMoves];
-            //[_actPlayer.board cleanAllMarks];
-        }];
         
         playerStatus = [[EZPlayerStatus alloc] initWithPlay:nil prev:prevMenu next:nextMenu replay:replayMenu];
         CCMenuItem* playMenu = [CCMenuItemFont itemWithString:@"播放" block:^(id sender){
@@ -183,21 +222,32 @@
         
         
         
-        CCMenu* menu = [CCMenu menuWithItems:introduction,regret,showSteps,showStepStart,replayMenu, prevMenu, nextMenu, playMenu, persistMenu, backToEditorMenu, nil];
-        [menu alignItemsVerticallyWithPadding:15
+        CCMenu* menu = [CCMenu menuWithItems:replayMenu, prevMenu, nextMenu, playMenu,playBySelfMenu, backToEditorMenu, nil];
+        [menu alignItemsHorizontallyWithPadding:10
          ];
         
-        menu.position = ccp(900, 400);
-        [self addChild:menu z:-2];
+        //menu.anchorPoint = CGPointMake(0.0, 0.0);
+        //menu.position = ccp(glTopRight.x+200,22);
+        //EZDEBUG(@"Menu boundingBox:%@", NSStringFromCGRect(menu.boundingBox));
+        //[self addChild:menu z:-2];
         
-        _actionTableView = [[UITableView alloc] initWithFrame:CGRectMake(500,200, 300, 568) style:UITableViewStylePlain];
+        //CCNode* menuNode = [[CCNode alloc]init];
+        //menuNode.contentSize = CGSizeMake(768, 100);
+        menu.anchorPoint = ccp(0,0);
+        menu.position = ccp(glTopRight.x + 400, 45);
+        [self addChild:menu];
+        //menuNode.anchorPoint = ccp(0,0);
+        //menuNode.position = ccp(glTopRight.x, 0.0);
+        //[self addChild:menuNode];
+        
+        _actionTableView = [[UITableView alloc] initWithFrame:CGRectMake(0,0, leftTableWidth, 768) style:UITableViewStylePlain];
         _actionTableView.dataSource = self;
         _actionTableView.delegate = self;
-        EZDEBUG(@"The windos is:%@", [CCDirector sharedDirector].view.window);
+        //EZDEBUG(@"The windos is:%@", [CCDirector sharedDirector].view.window);
         
         
         EZDEBUG(@"Orientation:%@", [CCDirector sharedDirector].view.orientationToStr);
-        [[CCDirector sharedDirector].view addSubview:_actionTableView];
+        //[[CCDirector sharedDirector].view addSubview:_actionTableView];
     }
     return self;
 }
@@ -205,7 +255,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return _actPlayer.actions.count;
+    return _epsides.count;
 }
 
 // Row display. Implementers should *always* try to reuse cells by setting each cell's reuseIdentifier and querying for available reusable cells with dequeueReusableCellWithIdentifier:
@@ -213,13 +263,38 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath;
 {
-    UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
+    EZDEBUG(@"cellForRow");
+    EZEpisodeCell* cell = [tableView dequeueReusableCellWithIdentifier:@"Episode"];
     if(cell == nil){
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
+        cell = [EZUILoader createEpisodeCell];
     }
-    EZAction* act = [_actPlayer.actions objectAtIndex:indexPath.row];
-    cell.textLabel.text = [NSString stringWithFormat:@"Class:%@, SyncType:%@", act.class, act.syncType==kSync?@"Sync":@"Async"];
+    
+    //EZAction* act = [_actPlayer.actions objectAtIndex:indexPath.row];
+    EZEpisode* episode = [_epsides objectAtIndex:indexPath.row];
+    //cell.textLabel.text = [NSString stringWithFormat:@"Class:%@, SyncType:%@", act.class, act.syncType==kSync?@"Sync":@"Async"];
+    cell.name.text = episode.name;//[NSString stringWithFormat:@"Name:%@, intro:%@", episode.name, episode.introduction];
+    cell.introduces.text = episode.introduction;
+    
+    //EZDEBUG(@"cell thumbNail:%@", cell.thumbNail);
+    //EZDEBUG(@"Original thumbNail image:%@", cell.thumbNail.image);
+    
+    cell.thumbNail.image = episode.thumbNail;
     return cell;
 }
 
+- (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    //EZDEBUG(@"Selected:%i", indexPath.row);
+    EZEpisode* episode = [_epsides objectAtIndex:indexPath.row];
+    //EZDEBUG(@"Clean all moves");
+    [chessBoard cleanAll];
+    //EZDEBUG(@"Complete clean");
+    _actPlayer.actions = episode.actions;
+}
+
+//Introduce. 
+- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 100;
+}
 @end

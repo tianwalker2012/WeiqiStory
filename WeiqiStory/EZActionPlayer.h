@@ -69,6 +69,9 @@ typedef enum {
 
 - (void) cleanAllMarks;
 
+//All the marks and moves get cleaned
+- (void) cleanAll;
+
 - (BOOL) isCurrentBlack;
 
 - (NSArray*) allSteps;
