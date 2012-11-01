@@ -262,6 +262,7 @@
     [btn setZOrder:ExistingChess];
     [btn setPosition:pt];
     [coordToButtons setValue:btn forKey:coord.getKey];
+    EZDEBUG(@"btn:%@", btn);
     if(animated){
         [btn setScale:1.3];
         [self addChild:btn];

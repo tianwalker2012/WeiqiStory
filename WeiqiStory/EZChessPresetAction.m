@@ -54,4 +54,22 @@
     return self;
 }
 
+
+-(void)encodeWithCoder:(NSCoder *)coder {
+    
+    [super encodeWithCoder:coder];
+    [coder encodeObject:_preSetMoves forKey:@"presetMoves"];
+}
+
+
+
+
+-(id)initWithCoder:(NSCoder *)decoder {
+    //[super initWith]
+    self = [super initWithCoder:decoder];
+    _preSetMoves = [decoder decodeObjectForKey:@"presetMoves"];
+    return self;
+    
+}
+
 @end

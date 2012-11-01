@@ -88,4 +88,23 @@
     return self;
 }
 
+-(void)encodeWithCoder:(NSCoder *)coder {
+    
+    [super encodeWithCoder:coder];
+    //EZDEBUG(@"encodeWithCoder");
+    [coder encodeObject:_actions forKey:@"actions"];
+}
+
+
+
+
+-(id)initWithCoder:(NSCoder *)decoder {
+    //[super initWith]
+    self = [super initWithCoder:decoder];
+    _actions = [decoder decodeObjectForKey:@"actions"];
+    return self;
+    
+}
+
+
 @end

@@ -61,6 +61,25 @@
     };
 }
 
+-(void)encodeWithCoder:(NSCoder *)coder {
+    
+    //EZDEBUG(@"encodeWithCoder");
+    [coder encodeInt:_x forKey:@"x"];
+    [coder encodeInt:_y forKey:@"y"];
+    [coder encodeInt:_chessType forKey:@"chessType"];
+}
+
+
+
+-(id)initWithCoder:(NSCoder *)decoder {
+    //EZDEBUG(@"initWithCoder");
+    _chessType = [decoder decodeIntForKey:@"chessType"];
+    _x = [decoder decodeIntForKey:@"x"];
+    _y = [decoder decodeIntForKey:@"y"];
+    return self;
+    
+}
+
 - (EZCoord*) initWithDict:(NSDictionary*)dict
 {
     self = [super init];

@@ -12,7 +12,7 @@
 
 @property (strong, nonatomic) IBOutlet UILabel* name;
 
-@property (strong, nonatomic) IBOutlet UITextView* introduces;
+@property (strong, nonatomic) IBOutlet UILabel* introduces;
 
 @property (strong, nonatomic) IBOutlet UIImageView* thumbNail;
 

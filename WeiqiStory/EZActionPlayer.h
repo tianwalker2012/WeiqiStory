@@ -136,6 +136,9 @@ typedef enum {
 
 - (BOOL) isEnd;
 
+//Drag the progressBar forward and backward
+- (void) forwardFrom:(NSInteger)oldPos to:(NSInteger) newPos;
+
 //Start from beginning;
 - (void) rewind;
 
@@ -153,5 +156,7 @@ typedef enum {
 @property (strong, nonatomic) NSObject<EZBoardDelegate>* board;
 @property (strong, nonatomic) NSObject<EZActionCompleted>* completedHandler;
 @property (strong, nonatomic) EZOperationBlock completeBlock;
+
+@property (strong, readonly) NSMutableArray* stepCompletionBlocks;
 
 @end

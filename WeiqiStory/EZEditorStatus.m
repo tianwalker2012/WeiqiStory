@@ -19,6 +19,8 @@
 #import "EZChessMoveAction.h"
 #import "EZChessPresetAction.h"
 #import "EZUploader.h"
+#import "EZAudioFile.h"
+#import "EZExtender.h"
 
 
 @interface EZEditorStatus()
@@ -109,7 +111,13 @@
     
     switch (editType) {
         case kLectures:{
-            NSString* fileName = [NSString stringWithFormat:@"lectures%i.caf", recordedSeq++];
+            NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+            NSInteger countID = [userDefaults integerForKey:@"GlobalCount"];
+            ++ countID;
+            [userDefaults setInteger:countID forKey:@"GlobalCount"];
+            NSString* timestamp = [[NSDate date] stringWithFormat:@"yyyyMMdd"];
+            NSString* fileName = [NSString stringWithFormat:@"audio%@%i.caf",timestamp, countID];
+            _audioFileName = fileName;
             EZDEBUG(@"Will record to file %@", fileName);
             recorder = [[EZVoiceRecorder alloc] initWithFile:fileName];
             [recorder start];
@@ -234,13 +242,15 @@
             [recorder stop];
             EZSoundAction* sa = [[EZSoundAction alloc] init];
             NSURL* storedFileURL = recorder.getRecordedFileURL;
-            EZUploader* uploader = [[EZUploader alloc] init];
+            //EZUploader* uploader = [[EZUploader alloc] init];
             EZDEBUG(@"Start upload:%@",recorder.recordedFile);
-            [uploader uploadFileURL:storedFileURL resultBlock:^(id sender){
             
-                EZDEBUG(@"Uploaded %@, sucessfully", recorder.recordedFile);
-            }];
-            sa.audioFiles = @[storedFileURL];
+            
+            EZAudioFile* file = [[EZAudioFile alloc] init];
+            file.fileName = recorder.recordedFile;
+            file.inMainBundle = false;
+            file.downloaded = true;
+            sa.audioFiles = @[file];
             EZDEBUG(@"Will store a lectures action with URL:%@", storedFileURL);
             [_actions addObject:sa];
             break;

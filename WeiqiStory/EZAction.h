@@ -56,7 +56,7 @@ typedef enum {
 //I have explicitly generate a clean action to achieve this.
 @property (assign, nonatomic) BOOL clean;
 
-@property (assign, nonatomic) NSString* name;
+@property (strong, nonatomic) NSString* name;
 
 //One which move this action are played.
 //Is this a good practice.
@@ -123,5 +123,9 @@ typedef enum {
 - (NSDictionary*) actionToDict;
 
 - (id) initWithDict:(NSDictionary*)dict;
+
+-(id)initWithCoder:(NSCoder *)decoder;
+
+-(void)encodeWithCoder:(NSCoder *)coder;
 
 @end

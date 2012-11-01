@@ -50,6 +50,8 @@
 //If passing nil, System will use "name" to sort the result.
 - (NSArray*) fetchAll:(Class)classType sortField:(NSString*)fieldName;
 
+- (id) fetchByID:(NSManagedObjectID*)oid;
+
 //Fetch object by the specified predication
 - (NSArray*) fetchObject:(Class)classType byPredicate:(NSPredicate*)predicate withSortField:(NSString*)sortField;
 

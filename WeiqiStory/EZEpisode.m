@@ -11,19 +11,7 @@
 #import "EZChess2Image.h"
 
 @implementation EZEpisode
+@dynamic basicPattern, name, introduction, audioFiles, actions, thumbNail, completed;
 
-//Make it easy to use to the caller.
-- (void) setBasicPattern:(NSArray *)basicPattern
-{
-    _basicPattern = [NSArray arrayWithArray:basicPattern];
-    [self regenerateThumbNail];
-}
-
-//Generate the thumbNail according to the moves
-- (void) regenerateThumbNail
-{
-    CGSize thumbSize =  CGSizeMake(ThumbNailSize, ThumbNailSize);
-    _thumbNail = [EZChess2Image generateChessBoard:_basicPattern size:thumbSize];
-}
 
 @end

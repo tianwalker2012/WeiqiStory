@@ -180,6 +180,37 @@
     return self;
 }
 
+-(void)encodeWithCoder:(NSCoder *)coder {
+    
+    //EZDEBUG(@"encodeWithCoder");
+    [coder encodeObject:_name forKey:@"name"];
+    [coder encodeFloat:_unitDelay forKey:@"unitDelay"];
+    [coder encodeInt:_syncType forKey:@"syncType"];
+    //EZDEBUG(@"Complete encode");
+}
+
+
+
+
+-(id)initWithCoder:(NSCoder *)decoder {
+    //[super initWith]
+    self = [super init];
+    //EZDEBUG(@"initWithCoder:%i",(int)self);
+    _name = [decoder decodeObjectForKey:@"name"];
+    //EZDEBUG(@"Decoded name:%@", _name);
+    _unitDelay = [decoder decodeFloatForKey:@"unitDelay"];
+    _syncType = [decoder decodeIntForKey:@"syncType"];
+    //EZDEBUG(@"Complete initCoder");
+    return self;
+    
+}
+
+//I assume this would make whole chain complete.
+- (id)proxyForJson
+{
+    return [self actionToDict];
+}
+
 - (NSArray*) coordsToArray:(NSArray*)coords
 {
     NSMutableArray* res = [[NSMutableArray alloc] initWithCapacity:coords.count];

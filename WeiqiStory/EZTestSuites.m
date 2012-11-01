@@ -27,6 +27,23 @@
 #import "EZUploader.h"
 #import "EZChess2Image.h"
 #import "EZDummyObject.h"
+#import "EZEpisode.h"
+#import "EZCleanAction.h"
+#import "EZChessMark.h"
+#import "EZMarkAction.h"
+#import "EZCombinedAction.h"
+#import "EZShowNumberAction.h"
+#import "EZChessMoveAction.h"
+#import "EZChessPresetAction.h"
+#import "EZSoundAction.h"
+#import "EZAudioFile.h"
+#import "EZEpisodeVO.h"
+#import "EZEpisodeFile.h"
+#import "EZEpisodeUploader.h"
+#import "EZEpisodeDownloader.h"
+#import "EZUILoader.h"
+#import "EZEpisodeCell.h"
+//#import "EZ"
 
 
 
@@ -127,8 +144,709 @@
     
     //assert(false);
     //[EZTestSuites testUpload];
-    [EZTestSuites testDoubleCoreAccessor];
+    //[EZTestSuites testDoubleCoreAccessor];
     //[EZTestSuites testTransform];
+    //[EZTestSuites testSimplePersist];
+    //[EZTestSuites testPersistOneByOne];
+    //[EZTestSuites testAnotherFive];
+    //[EZTestSuites testEpisodeToJSON];
+ 
+    //[EZTestSuites testUploadAndDownload];
+    //[EZTestSuites testUploadAndDownload];
+    //[EZTestSuites testDataDownload];
+    //[EZTestSuites testEpisodeFileToJson];
+    //[EZTestSuites testEpisodeListUpload];
+    //[EZTestSuites testCompleteUpload];
+    //[EZTestSuites testCompleteDownload];
+    //[EZTestSuites testTransformableProperty];
+    //[EZTestSuites testLoadUI];
+    //[EZTestSuites testBoardShrinkage];
+    //[EZTestSuites listAvailableFont];
+    //[EZCoreAccessor cleanClientDB];
+    
+    //[EZTestSuites testFilePath];
+}
+
+
++ (void) testFilePath
+{
+    NSString* boundleURL = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"audio2012102215.caf"];
+    NSString* emptyName = @"";//[File [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@""];
+    
+    NSString* url = [NSString stringWithFormat:@"%@/%@",emptyName, @"audio2012102215.caf"];
+    
+    EZDEBUG(@"Final URL:%@, bundleURL:%@",url, boundleURL);
+    
+    NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:url]];
+    EZDEBUG(@"Data length:%i", data.length);
+    
+    data = [NSData dataWithContentsOfURL:[NSURL URLWithString:boundleURL]];
+    EZDEBUG(@"BundleData length:%i", data.length);
+    
+    
+    NSURL* episodeFile = [EZFileUtil fileToURL:@"episode20121022141041.ar"];
+    NSData* episode = [NSData dataWithContentsOfURL:episodeFile];
+    EZDEBUG(@"episode length:%i", episode.length);
+    
+    episode = [NSData dataWithContentsOfFile:@"episode20121022141041.ar"];
+    EZDEBUG(@"direct open:%i", episode.length);
+    
+    
+    EZDEBUG(@"boundleURL:%@, emptyName:%@ name", boundleURL, emptyName);
+    assert(false);
+}
+
++ (void) listAvailableFont
+{
+    NSArray *familyNames = [[NSArray alloc] initWithArray:[UIFont familyNames]];
+    NSArray *fontNames;
+    NSInteger indFamily, indFont;
+    for (indFamily=0; indFamily<[familyNames count]; ++indFamily)
+    {
+        NSLog(@"Family name: %@", [familyNames objectAtIndex:indFamily]);
+        fontNames = [[NSArray alloc] initWithArray:
+                     [UIFont fontNamesForFamilyName:
+                      [familyNames objectAtIndex:indFamily]]];
+        for (indFont=0; indFont<[fontNames count]; ++indFont)
+        {
+            NSLog(@"Font name: %@", [fontNames objectAtIndex:indFont]);
+        }
+        //[fontNames release];
+    }
+    //[familyNames release];
+    assert(false);
+}
+
+
+//Test the simplest cases
++ (void) testBoardShrinkage
+{
+    EZCoord* coord = [[EZCoord alloc] init:2 y:2];
+    CGRect res = [EZChess2Image shrinkBoard:@[coord]];
+    
+    EZDEBUG(@"Result:%@", NSStringFromCGRect(res));
+    assert(res.origin.x == 0);
+    assert(res.origin.y == 0);
+    assert(res.size.width == 8);
+    assert(res.size.height == 8);
+    
+    coord = [[EZCoord alloc] init:16 y:2];
+    res = [EZChess2Image shrinkBoard:@[coord]];
+    assert(res.origin.x == 1);
+    assert(res.origin.y == 0);
+    assert(res.size.width == 8);
+    assert(res.size.height == 8);
+    
+    coord = [[EZCoord alloc] init:2 y:16];
+    res = [EZChess2Image shrinkBoard:@[coord]];
+    assert(res.origin.x == 0);
+    assert(res.origin.y == 1);
+    assert(res.size.width == 8);
+    assert(res.size.height == 8);
+    
+    coord = [[EZCoord alloc] init:16 y:16];
+    res = [EZChess2Image shrinkBoard:@[coord]];
+    assert(res.origin.x == 1);
+    assert(res.origin.y == 1);
+    assert(res.size.width == 8);
+    assert(res.size.height == 8);
+    
+    coord = [[EZCoord alloc] init:2 y:2];
+    coord = [[EZCoord alloc] init:8 y:8];
+    res = [EZChess2Image shrinkBoard:@[coord]];
+    assert(res.origin.x == 0);
+    assert(res.origin.y == 0);
+    assert(res.size.width == 9);
+    assert(res.size.height == 9);
+    
+
+    assert(false);
+}
+
++ (void) testLoadUI
+{
+    EZEpisodeCell* cell = [EZUILoader createEpisodeCell];
+    EZDEBUG("Cell info:%@", cell);
+    
+    assert(cell.name);
+    assert(cell.introduces);
+    assert(cell.thumbNail);
+    assert(false);
+}
+
++ (void) testTransformableProperty
+{
+    [EZCoreAccessor cleanClientDB];
+    EZCoreAccessor* accessor = [EZCoreAccessor getClientAccessor];
+    EZCoreAccessor* clientAccessor1 = [[EZCoreAccessor alloc] initWithDBName:ClientDB modelName:CoreDBModel];
+    
+    EZEpisode* episode = [accessor create:[EZEpisode class]];
+    
+    EZAction* action1 = [[EZAction alloc] init];
+    action1.name = @"action1";
+    episode.actions = @[action1];
+    //[accessor saveContext];
+    [accessor store:episode];
+    EZEpisode* fetched =  [clientAccessor1 fetchByID:episode.objectID];
+    [clientAccessor1.context refreshObject:fetched mergeChanges:YES];
+    EZDEBUG(@"fetched:%@, org:%@", fetched.name, action1.name);
+    assert([fetched.name isEqualToString:episode.name]);
+    assert(fetched.actions.count == 1);
+    
+    EZAction* act2 = [[EZAction alloc] init];
+    act2.name = @"act2";
+    episode.actions = @[action1, act2];
+    [accessor saveContext];
+    
+    [fetched.managedObjectContext refreshObject:fetched mergeChanges:YES];
+    assert(fetched.actions.count == 2);
+    
+    assert(false);
+    
+}
+
++ (void) testCompleteDownload
+{
+    [EZCoreAccessor cleanClientDB];
+    EZCoreAccessor* accessor = [EZCoreAccessor getClientAccessor];
+    //NSString* fileURL = @"http://192.168.10.104:3000/episode20121019165738.ar";
+    NSString* listURL = @"http://192.168.10.104:3000/episode.lst";
+    EZEpisodeDownloader* downloader = [[EZEpisodeDownloader alloc] init];
+    downloader.baseURL = @"http://192.168.10.104:3000";
+    [downloader downloadAccordingToList:[NSURL URLWithString:listURL]];
+    //[downloader downloadEpisode:[NSURL URLWithString:fileURL] completeBlock:nil];
+    [NSThread sleepForTimeInterval:5];
+    NSArray* arr = [accessor fetchAll:[EZEpisode class] sortField:@"name"];
+    assert(arr.count == 2);
+    
+    EZEpisode* retEp1 = [arr objectAtIndex:0];
+    assert(retEp1.audioFiles.count == 2);
+    EZAudioFile* file1 = [retEp1.audioFiles objectAtIndex:0];
+    EZAudioFile* file2 = [retEp1.audioFiles objectAtIndex:1];
+    NSData* data1 = [NSData dataWithContentsOfURL:file1.getFileURL];
+    NSData* data2 = [NSData dataWithContentsOfURL:file2.getFileURL];
+    
+    EZDEBUG(@"file:%@, length:%i", file1.fileName, data1.length);
+    EZDEBUG(@"file:%@, length:%i", file2.fileName, data2.length);
+    
+    assert(retEp1.completed);
+    assert(data1.length > 0);
+    assert(data2.length > 0);
+    
+    EZEpisode* retEp2 = [arr objectAtIndex:1];
+    assert(retEp2.audioFiles.count == 1);
+    EZAudioFile* file3 = [retEp2.audioFiles objectAtIndex:0];
+    NSData* data3 = [NSData dataWithContentsOfURL:file3.getFileURL];
+    
+    EZDEBUG(@"file:%@, length:%i", file3.fileName, data3.length);
+    assert(data3.length > 0);
+    assert(retEp2);
+    
+    assert(false);
+
+}
+
++ (void) testCompleteUpload
+{
+    
+    EZEpisodeUploader* uploader = [[EZEpisodeUploader alloc] init];
+    uploader.uploadBaseURL = @"http://192.168.10.104:3000/upload";
+    uploader.downloadBaseURL = @"http://192.168.10.104:3000";
+    
+    [uploader cleanList];
+    
+    [uploader performBlock:^(){
+        EZEpisodeVO* episode = [[EZEpisodeVO alloc] init];
+        episode.name = @"episode 1";
+        
+        EZAudioFile* file1 = [[EZAudioFile alloc] init];
+        file1.fileName = @"firstVoice.wav";
+        file1.inMainBundle = true;
+        
+        EZAudioFile* file2 = [[EZAudioFile alloc] init];
+        file2.fileName = @"enemy.wav";
+        file2.inMainBundle = true;
+        episode.audioFiles = @[file1, file2];
+        
+        EZEpisodeVO* episode2 = [[EZEpisodeVO alloc] init];
+        episode2.name = @"episode 2";
+
+        EZAudioFile* file3 = [[EZAudioFile alloc] init];
+        file3.fileName = @"chess-plant.wav";
+        file3.inMainBundle = true;
+        episode2.audioFiles = @[file3];
+        
+        [uploader uploadEpisodes:@[episode, episode2] completBlk:nil];
+        
+    } withDelay:2];
+    
+    [uploader performBlock:^(){
+        //The purpose of this code is to make sure our code get executed.
+        //Release my precious recognition power for more important staff. 
+        assert(false);
+    
+    } withDelay:5];
+    
+}
+
++ (void) testEpisodeListUpload
+{
+    EZEpisodeUploader* uploader = [[EZEpisodeUploader alloc] init];
+    uploader.uploadBaseURL = @"http://192.168.10.104:3000/upload";
+    uploader.downloadBaseURL = @"http://192.168.10.104:3000";
+    float delay = 2;
+    
+    
+    [uploader cleanList];
+    
+    [uploader performBlock:^(){
+    
+        EZDEBUG(@"Upload the first list");
+        [uploader updateList:@"file1"];
+        //[NSThread sleepForTimeInterval:5];
+    } withDelay:delay];
+    
+    delay +=2;
+    [uploader performBlock:^(){
+        EZDEBUG(@"Upload the second list");
+        [uploader updateList:@"file2"];
+    } withDelay:delay];
+    
+    
+    delay +=2;
+    
+    [uploader performBlock:^(){
+        NSArray* list = [uploader getEpisodeList];
+        EZDEBUG(@"Returned list:%i", list.count);
+        assert(list.count == 2);
+        assert(false);
+    } withDelay:delay];
+    
+}
+
++ (void) testEpisodeFileToJson
+{
+    EZEpisodeFile* epfile = [[EZEpisodeFile alloc] init];
+    epfile.fileName = @"filename1";
+    epfile.createTime = [NSDate date];
+    NSString* jsonStr = @[epfile].JSONRepresentation;
+    
+    NSArray* arr = jsonStr.JSONValue;
+    EZEpisodeFile* retFile = [[EZEpisodeFile alloc] initDict:[arr objectAtIndex:0]];
+    assert([retFile.fileName isEqualToString:epfile.fileName]);
+    
+    EZDEBUG(@"Files:%@", jsonStr);
+    assert(false);
+}
+
++ (void) testDataDownload
+{
+    EZDEBUG(@"Before no exist IP");
+    NSData* data = [NSData dataWithContentsOfURL:[NSURL URLWithString:@"http://192.168.10.104:999/comeOn"]];
+    EZDEBUG(@"After non exist IP");
+    assert(data == nil);
+    assert(data.length == 0);
+    
+    EZDEBUG(@"Before correct file");
+    NSData* data2 = [NSData dataWithContentsOfURL:[NSURL URLWithString:@"http://192.168.10.104:3000/TestFile.ar"]];
+    EZDEBUG(@"After correct file");
+    assert(data2 !=nil);
+    assert(data2.length > 0);
+    
+    EZDEBUG(@"Before wrong file");
+    NSData* data3 = [NSData dataWithContentsOfURL:[NSURL URLWithString:@"http://192.168.10.104:3000/WrongFile"]];
+    EZDEBUG(@"After wrong file");
+    assert(data3 == nil);
+    assert(data3.length == 0);
+
+    
+    assert(false);
+}
+
++ (void) testUploadAndDownload
+{
+    [EZCoreAccessor cleanClientDB];
+    EZCoreAccessor* accessor = [EZCoreAccessor getClientAccessor];
+    //EZCoreAccessor* clientAccessor1 = [[EZCoreAccessor alloc] initWithDBName:ClientDB modelName:CoreDBModel];
+    id created = [accessor create:[EZEpisode class]];
+    EZDEBUG(@"Created class:%@, detail:%@",[created class], created);
+    
+    EZEpisode* episode = created;
+    EZDEBUG(@"episode class:%@", episode.class);
+    
+    episode.name = @"cool guy";
+    EZAudioFile* audioFile = [[EZAudioFile alloc] init];
+    audioFile.fileName = @"Cool1";
+    audioFile.downloaded = true;
+    episode.audioFiles = @[audioFile];
+    
+    
+    EZCombinedAction* combine = [[EZCombinedAction alloc] init];
+    
+    EZChessMoveAction* move = [[EZChessMoveAction alloc] init];
+    EZCoord* coord  = [[EZCoord alloc] init:10 y:11];
+    move.plantMoves = @[coord];
+    
+    EZChessPresetAction* presetMove = [[EZChessPresetAction alloc] init];
+    presetMove.preSetMoves = @[coord];
+    
+    combine.actions = @[move, presetMove];
+    episode.actions = @[combine];
+    
+    EZEpisodeVO* vo = [[EZEpisodeVO alloc] initWithPO:episode];
+    NSArray* episodes = @[vo];
+    EZDEBUG(@"Before achieve");
+    NSData* data = [NSKeyedArchiver archivedDataWithRootObject:episodes];
+    
+    EZUploader* uploader = [[EZUploader alloc] initWithURL:[NSURL URLWithString:@"http://192.168.10.104:3000/upload"]];
+    
+    [uploader uploadToServer:data fileName:@"TestFile.ar" contentType:@"Archieve" resultBlock:^(id resp){
+    
+        
+        
+        NSLog(@"Upload successful:%@, mainThread:%i, currentThread:%i", resp, (int)[NSThread mainThread], (int)[NSThread currentThread]);
+        
+        NSData* downloaded = [NSData dataWithContentsOfURL:[NSURL URLWithString:@"http://192.168.10.104:3000/TestFile.ar"]];
+        
+        NSLog(@"The downloaded count:%i", downloaded.length);
+        
+        NSArray* retArr = [NSKeyedUnarchiver unarchiveObjectWithData:downloaded];
+        
+        assert(retArr.count == 1);
+        
+        EZEpisodeVO* retEpisode = [retArr objectAtIndex:0];
+        assert([episode.name isEqualToString:retEpisode.name]);
+        assert(retEpisode.audioFiles.count == 1);
+        EZAudioFile* file = [retEpisode.audioFiles objectAtIndex:0];
+        
+        assert([file.fileName isEqualToString:audioFile.fileName]);
+        
+        assert(retEpisode.actions.count == 1);
+        
+        EZCombinedAction* retCombine = [retEpisode.actions objectAtIndex:0];
+        assert(retCombine.actions.count == 2);
+        
+        
+        assert(false);
+
+    
+    }];
+    
+}
++ (void) testEpisodeToJSON
+{
+    
+    [EZCoreAccessor cleanClientDB];
+    EZCoreAccessor* accessor = [EZCoreAccessor getClientAccessor];
+    //EZCoreAccessor* clientAccessor1 = [[EZCoreAccessor alloc] initWithDBName:ClientDB modelName:CoreDBModel];
+    id created = [accessor create:[EZEpisode class]];
+    EZDEBUG(@"Created class:%@, detail:%@",[created class], created);
+    
+    EZEpisode* episode = created;
+    EZDEBUG(@"episode class:%@", episode.class);
+    
+    episode.name = @"cool guy";
+    EZAudioFile* audioFile = [[EZAudioFile alloc] init];
+    audioFile.fileName = @"Cool1";
+    audioFile.downloaded = true;
+    episode.audioFiles = @[audioFile];
+    
+    
+    
+    //NSString* jsonStr = episodes.JSONRepresentation;
+    //EZDEBUG(@"Json string:%@", jsonStr);
+    
+    //NSMutableData* storedData = [[NSMutableData alloc] init];
+    //NSKeyedArchiver* archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:storedData];
+    //[archiver setValue:episode forKey:@"root"];
+    EZEpisodeVO* vo = [[EZEpisodeVO alloc] initWithPO:episode];
+    NSArray* episodes = @[vo];
+    EZDEBUG(@"Before achieve");
+    NSData* data = [NSKeyedArchiver archivedDataWithRootObject:episodes];
+    
+    EZDEBUG(@"After achieve");
+    
+    NSArray* retArr = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+    
+    assert(retArr.count == 1);
+    
+    EZEpisodeVO* retEpisode = [retArr objectAtIndex:0];
+    assert([episode.name isEqualToString:retEpisode.name]);
+    assert(retEpisode.audioFiles.count == 1);
+    EZAudioFile* file = [retEpisode.audioFiles objectAtIndex:0];
+    
+    assert([file.fileName isEqualToString:audioFile.fileName]);
+    
+    assert(false);
+    
+}
+
++ (void) testAnotherFive
+{
+    [EZCoreAccessor cleanClientDB];
+    EZCoreAccessor* accessor = [EZCoreAccessor getClientAccessor];
+    EZCoreAccessor* clientAccessor1 = [[EZCoreAccessor alloc] initWithDBName:ClientDB modelName:CoreDBModel];
+    
+    EZSoundAction* moveact = [[EZSoundAction alloc] init];
+    
+    
+    moveact.name = @"Sound";
+    
+    EZAudioFile* audio = [[EZAudioFile alloc] init];
+    audio.fileName = @"CoolFile";
+    audio.inMainBundle = true;
+    audio.downloaded = true;
+    
+    moveact.audioFiles = @[audio];
+    
+    EZEpisode* episode = [accessor create:[EZEpisode class]];
+    episode.name = @"One";
+    episode.actions = @[moveact];
+    [accessor saveContext];
+    
+    NSArray* arr = [clientAccessor1 fetchAll:[EZEpisode class] sortField:@"name"];
+    EZEpisode* retEpisode = [arr objectAtIndex:0];
+    EZSoundAction* retSna = [retEpisode.actions objectAtIndex:0];
+    assert([retSna.name isEqualToString:moveact.name]);
+    assert(retSna.audioFiles.count == 1);
+    
+    EZAudioFile* retAudio = [retSna.audioFiles objectAtIndex:0];
+    assert(retAudio.downloaded);
+    assert(retAudio.inMainBundle);
+    assert([audio.fileName isEqualToString:retAudio.fileName]);
+    
+    assert(false);
+}
+
++ (void) testAnotherFour
+{
+    [EZCoreAccessor cleanClientDB];
+    EZCoreAccessor* accessor = [EZCoreAccessor getClientAccessor];
+    EZCoreAccessor* clientAccessor1 = [[EZCoreAccessor alloc] initWithDBName:ClientDB modelName:CoreDBModel];
+    
+    EZChessPresetAction* moveact = [[EZChessPresetAction alloc] init];
+    
+    EZCoord* move = [[EZCoord alloc] init:10 y:11];
+    moveact.preSetMoves = @[move];
+    moveact.name = @"Move";
+    
+    EZEpisode* episode = [accessor create:[EZEpisode class]];
+    episode.name = @"One";
+    episode.actions = @[moveact];
+    [accessor saveContext];
+    
+    NSArray* arr = [clientAccessor1 fetchAll:[EZEpisode class] sortField:@"name"];
+    EZEpisode* retEpisode = [arr objectAtIndex:0];
+    EZChessPresetAction* retSna = [retEpisode.actions objectAtIndex:0];
+    assert([retSna.name isEqualToString:moveact.name]);
+    assert(retSna.preSetMoves.count == 1);
+    
+    
+    assert(false);
+}
+
++ (void) testAnotherThree
+{
+    [EZCoreAccessor cleanClientDB];
+    EZCoreAccessor* accessor = [EZCoreAccessor getClientAccessor];
+    EZCoreAccessor* clientAccessor1 = [[EZCoreAccessor alloc] initWithDBName:ClientDB modelName:CoreDBModel];
+    
+    EZChessMoveAction* moveact = [[EZChessMoveAction alloc] init];
+    
+    EZCoord* move = [[EZCoord alloc] init:10 y:11];
+    moveact.plantMoves = @[move];
+    moveact.name = @"Move";
+    
+    EZEpisode* episode = [accessor create:[EZEpisode class]];
+    episode.name = @"One";
+    episode.actions = @[moveact];
+    [accessor saveContext];
+    
+    NSArray* arr = [clientAccessor1 fetchAll:[EZEpisode class] sortField:@"name"];
+    EZEpisode* retEpisode = [arr objectAtIndex:0];
+    EZChessMoveAction* retSna = [retEpisode.actions objectAtIndex:0];
+    assert([retSna.name isEqualToString:moveact.name]);
+    assert(retSna.plantMoves.count == 1);
+        
+    
+    assert(false);
+}
+
+
++ (void) testAnotherTwo
+{
+    [EZCoreAccessor cleanClientDB];
+    EZCoreAccessor* accessor = [EZCoreAccessor getClientAccessor];
+    EZCoreAccessor* clientAccessor1 = [[EZCoreAccessor alloc] initWithDBName:ClientDB modelName:CoreDBModel];
+    
+    EZShowNumberAction* sna = [[EZShowNumberAction alloc] init];
+    sna.curShowStep = 1;
+    sna.curStartStep = 2;
+    sna.preShowStep = 3;
+    sna.preStartStep = 4;
+    EZEpisode* episode = [accessor create:[EZEpisode class]];
+    episode.name = @"One";
+    episode.actions = @[sna];
+    [accessor saveContext];
+    
+    NSArray* arr = [clientAccessor1 fetchAll:[EZEpisode class] sortField:@"name"];
+    EZEpisode* retEpisode = [arr objectAtIndex:0];
+    EZShowNumberAction* retSna = [retEpisode.actions objectAtIndex:0];
+    assert(sna.curStartStep == retSna.curStartStep);
+    assert(sna.curShowStep == retSna.curShowStep);
+    assert(sna.preShowStep == retSna.preShowStep);
+    assert(sna.preStartStep == retSna.preStartStep);
+    
+    
+    assert(false);
+}
+
+//Better on case a time, keep the room clean.
++ (void) testAnotherOne
+{
+    [EZCoreAccessor cleanClientDB];
+    EZCoreAccessor* accessor = [EZCoreAccessor getClientAccessor];
+    EZCoreAccessor* clientAccessor1 = [[EZCoreAccessor alloc] initWithDBName:ClientDB modelName:CoreDBModel];
+    EZCombinedAction* combine = [[EZCombinedAction alloc] init];
+    combine.name = @"combine";
+    
+    
+    EZMarkAction* cm = [[EZMarkAction alloc] init];
+    EZChessMark* mark = [[EZChessMark alloc] initWithText:@"TestMark" fontSize:10 coord:nil];
+    cm.name = @"Mark";
+    cm.marks = @[mark];
+    
+
+    combine.actions = @[cm];
+    
+    EZEpisode* episode = [accessor create:[EZEpisode class]];
+    episode.name = @"Cool2";
+    episode.introduction = @"A very cool guy2";
+    episode.actions = @[combine];
+    
+    EZDEBUG(@"Before save context");
+    [accessor saveContext];
+    EZDEBUG(@"After save context");
+    NSArray* arr = [clientAccessor1 fetchAll:[EZEpisode class] sortField:nil];
+    EZDEBUG(@"Fetched all back");
+    EZEpisode* retEpisode = [arr objectAtIndex:0];
+    EZCombinedAction* retCm = [retEpisode.actions objectAtIndex:0];
+    assert([retCm.name isEqualToString:combine.name]);
+    assert(retCm.actions.count == 1);
+
+}
+
++ (void) testPersistOneByOne
+{
+    [EZCoreAccessor cleanClientDB];
+    EZCoreAccessor* accessor = [EZCoreAccessor getClientAccessor];
+    EZCoreAccessor* clientAccessor1 = [[EZCoreAccessor alloc] initWithDBName:ClientDB modelName:CoreDBModel];
+    EZEpisode* episode = [accessor create:[EZEpisode class]];
+    episode.name = @"Cool";
+    episode.introduction = @"A very cool guy";
+    
+    EZMarkAction* cm = [[EZMarkAction alloc] init];
+    EZChessMark* mark = [[EZChessMark alloc] initWithText:@"TestMark" fontSize:10 coord:nil];
+    cm.name = @"Mark";
+    cm.marks = @[mark];
+    
+    episode.actions = @[cm];
+    [accessor saveContext];
+    
+    NSArray* arr = [clientAccessor1 fetchAll:[EZEpisode class] sortField:nil];
+    
+    EZEpisode* retEpisode = [arr objectAtIndex:0];
+    EZMarkAction* retCm = [retEpisode.actions objectAtIndex:0];
+    assert([retCm.name isEqualToString:cm.name]);
+    assert(retCm.marks.count == 1);
+
+    assert(false);
+
+}
+
++ (void) testSimplePersist
+{
+    [EZCoreAccessor cleanClientDB];
+    EZCoreAccessor* accessor = [EZCoreAccessor getClientAccessor];
+    EZCoreAccessor* clientAccessor1 = [[EZCoreAccessor alloc] initWithDBName:ClientDB modelName:CoreDBModel];
+    EZEpisode* episode = [accessor create:[EZEpisode class]];
+    episode.name = @"Cool";
+    episode.introduction = @"A very cool guy";
+    
+    
+    
+    EZAction* act = [[EZAction alloc] init];
+    act.syncType = 10;
+    act.unitDelay = 2.9;
+    act.name = @"act1";
+    
+    EZCleanAction* cleanAct = [[EZCleanAction alloc] init];
+    EZCoord* coord = [[EZCoord alloc] init:10 y:15];
+    EZChessMark* chessMark = [[EZChessMark alloc] initWithText:@"Mark" fontSize:50 coord:coord];
+    cleanAct.cleanedMoves = @[coord];
+    cleanAct.cleanedMarks = @[chessMark];
+    cleanAct.name = @"cleanact1";
+    
+    episode.actions = @[act, cleanAct];
+    [accessor saveContext];
+    
+    NSArray* arr = [clientAccessor1 fetchAll:[EZEpisode class] sortField:@"name"];
+    
+    
+    EZEpisode* ep = [arr objectAtIndex:0];
+    
+    EZDEBUG(@"Immediately after fetch:%@", ep.name);
+    assert([ep.name isEqualToString:episode.name]);
+    
+    
+   
+    //[accessor saveContext];
+    
+    //[ep.managedObjectContext refreshObject:ep mergeChanges:YES];
+    
+    EZDEBUG(@"Compare actions");
+    EZAction* act1 = [ep.actions objectAtIndex:0];
+    EZAction* act2 = [ep.actions objectAtIndex:1];
+    
+    EZDEBUG(@"Before exchange");
+    EZCleanAction* cleanAct1 = (EZCleanAction*)act2;
+    EZDEBUG(@"after cast oldName:%@, new Name:%@", act.name, act1);
+    
+    
+    if(![act1.name isEqualToString:act.name]){
+        cleanAct1 = (EZCleanAction*)act1;
+        act1 = act2;
+        //Make sure the sequence is right.
+    }
+
+    
+    EZDEBUG(@"Class type:%@, name type:%@, act1 pointer:%i", act1.class, act1.name.class, (int)act1);
+    EZDEBUG(@"Object name:%@", act1.name);
+    assert([act1.name isEqualToString:act.name]);
+    assert(act1.syncType == act.syncType);
+    assert(act1.unitDelay == act.unitDelay);
+
+   
+    assert(cleanAct1.cleanedMarks.count == 1);
+    assert(cleanAct1.cleanedMoves.count == 1);
+    
+    EZCoord* retCoord = [cleanAct1.cleanedMoves objectAtIndex:0];
+    EZChessMark* retMark = [cleanAct1.cleanedMarks objectAtIndex:0];
+    
+    assert(retCoord.x == coord.x);
+    assert(retCoord.y == coord.y);
+    assert(retCoord.chessType == coord.chessType);
+    
+    
+    assert(retMark.fontSize == chessMark.fontSize);
+    assert([chessMark.text isEqualToString:retMark.text]);
+    assert(chessMark.coord.x == coord.x);
+    assert(chessMark.coord.y == coord.y);
+    assert(chessMark.coord.chessType == coord.chessType);
+    
+    
+    assert(false);
+    
 }
 
 
@@ -140,7 +858,12 @@
     episode.name = @"cool";
     episode.thumbNail = [EZChess2Image generateChessBoard:nil size:CGSizeMake(100, 100)];
     episode.dummy = [[EZDummyObject alloc]init];
-    episode.dummy.name = @"smart";
+    //episode.dummy.name = @"smart";
+    
+    EZDummyObject* dummy2 = [[EZDummyObject alloc] init];
+    dummy2.name = @"smart dummy";
+    episode.dummys = @[dummy2];
+    
     [clientDB saveContext];
     
     EZCoreAccessor* clientAccessor1 = [[EZCoreAccessor alloc] initWithDBName:ClientDB modelName:CoreDBModel];
@@ -149,8 +872,13 @@
     MEpisode* res = [arr objectAtIndex:0];
     
     assert(res.thumbNail != nil);
-    assert(res.thumbNail.size.width == 100);
-    assert([@"smart" isEqualToString:res.dummy.name]);
+    //assert(res.thumbNail.size.width == 100);
+    //assert([@"smart" isEqualToString:res.dummy.name]);
+    
+    EZDummyObject* dummyInList = [res.dummys objectAtIndex:0];
+    EZDEBUG(@"Dummy in list:%@", dummyInList.name);
+    assert([dummyInList.name isEqualToString:dummy2.name]);
+    
     EZDEBUG(@"res:%@, origin:%@, image:%@", res, episode, res.thumbNail);
     assert(false);
     
@@ -159,6 +887,7 @@
 + (void) testUpload
 {
     EZUploader* uploader = [[EZUploader alloc] init];
+    uploader.url = [NSURL URLWithString:@"http://192.168.10.104:3000/upload"];
     [uploader uploadToServer:[@"Some data" dataUsingEncoding:NSUTF8StringEncoding] fileName:@"upload.txt" contentType:@"Joke" resultBlock:^(id sender){
         NSHTTPURLResponse* response = sender;
         EZDEBUG(@"Response detail:%i", response.statusCode);

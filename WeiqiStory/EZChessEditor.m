@@ -20,6 +20,9 @@
 #import "EZChess2Image.h"
 #import "EZEpisode.h"
 #import "EZChessPresetAction.h"
+#import "EZEpisodeVO.h"
+#import "EZEpisodeUploader.h"
+#import "EZAudioFile.h"
 
 @interface EZChessEditor()
 {
@@ -38,9 +41,13 @@
     
     NSMutableArray* episodes;
     
-    EZEpisode* currentEpisode;
+    //EZEpisodeVO* currentEpisode;
     
     NSArray* basicPattern;
+    
+    CCLabelTTF* statusLabel;
+    
+    NSMutableArray* audioFiles;
     
 }
 
@@ -84,6 +91,7 @@
     self = [super init];
     if(self){
         [self setUpStatus];
+        audioFiles = [[NSMutableArray alloc] init];
         chessBoard = [[EZChessBoard alloc]initWithFile:@"weiqi-board-pad.png" touchRect:CGRectMake(60, 60, 648, 648) rows:19 cols:19];
         [chessBoard setPosition:ccp(chessBoard.boundingBox.size.width/2, chessBoard.boundingBox.size.height/2)];
         [self addChild:chessBoard];
@@ -92,7 +100,7 @@
         [previewBoard setPosition:ccp(previewBoard.boundingBox.size.width/4, previewBoard.boundingBox.size.height/4)];
         [previewBoard setScale:0.5];
         previewBoard.touchEnabled = false;
-        CCLabelTTF* statusLabel = [CCLabelTTF labelWithString:@"Status label" fontName:@"Arial" fontSize:30];
+        statusLabel = [CCLabelTTF labelWithString:@"Status label" fontName:@"Arial" fontSize:30];
         
         NSInteger popupZOrder = 200;
         episodes = [[NSMutableArray alloc] init];
@@ -127,7 +135,19 @@
         
         
         CCMenuItem* save = [CCMenuItemFont itemWithString:@"保存" block:^(id sender){
+            EZDEBUG(@"Save get called, %i, kLetures:%i", editorStatus.curEditType, kLectures);
+            if(editorStatus.curEditType == kLectures){
+                EZAudioFile* audioFile = [[EZAudioFile alloc] init];
+                audioFile.fileName = editorStatus.audioFileName;
+                //audioFile.inMainBundle = false;
+                //audioFile.downloaded = false;
+                //[currentEpisode.audioFiles addObject:editorStatus.audioFileName];
+                EZDEBUG(@"Add audioFile to list");
+                [audioFiles addObject:audioFile];
+                EZDEBUG(@"Add audio file:%@, total count:%i", editorStatus.audioFileName, audioFiles.count);
+            }
             [editorStatus save];
+            EZDEBUG(@"Quit save");
         }];
         
         
@@ -259,6 +279,7 @@
             [[CCDirector sharedDirector] pushScene:playFace];
         }];
         
+        /**
         CCMenuItem* storeCurrentView = [CCMenuItemFont itemWithString:@"保存当前界面" block:^(id sender){
             EZDEBUG(@"Add a chessboard");
             EZCoord* coord = [[EZCoord alloc] initChessType:kWhiteChess x:0 y:0];
@@ -269,9 +290,13 @@
             
             UIImage* image = [EZChess2Image generateChessBoard:@[coord, coord1, coord2, coord3] size:CGSizeMake(200, 200)];
             UIImageView* imageView = [[UIImageView alloc] initWithImage:image];
+            //imageView.contentMode = UIViewContentModeCenter;
+            imageView.contentStretch = CGRectMake(0.2, 0.2, 0.8, 0.8);
+            imageView.frame = CGRectMake(0, 0, 300, 300);
             [[CCDirector sharedDirector].view addSubview:imageView];
         }];
-        
+        **/
+        /**
         CCMenuItem* showScreenShot = [CCMenuItemFont itemWithString:@"保存截屏" block:^(id sender){
             EZDEBUG(@"Save screen shot");
             [CCDirector sharedDirector].takeOneShot = true;
@@ -283,23 +308,29 @@
                 [[CCDirector sharedDirector].view addSubview:imageView];
             } withDelay:0.2];
         }];
-        
+        **/
+        CCMenuItem* uploadAll = [CCMenuItemFont itemWithString:@"上传全部" block:^(id sender){
+            EZDEBUG(@"Upload all");
+            //[self setStatus:[NSString stringWithFormat:@"Will upload %i",  episodes.count]];
+            EZEpisodeUploader* uploader = [[EZEpisodeUploader alloc] init];
+            uploader.uploadBaseURL = UploadBaseURL;
+            uploader.downloadBaseURL = DownloadBaseURL;
+            [uploader uploadEpisodes:episodes completBlk:nil];
+            EZDEBUG(@"upload done....");
+        }];
         CCMenuItem* saveEpisode = [CCMenuItemFont itemWithString:@"保存本集" block:^(id sender){
             NSString* orient = [[CCDirector sharedDirector].view orientationToStr];
             EZDEBUG(@"Store current episode, direction:%@", orient);
             
-            EZEpisode* episode = [[EZEpisode alloc] init];
+            EZEpisodeVO* episode = [[EZEpisodeVO alloc] init];
             episode.basicPattern = basicPattern;//((EZChessPresetAction*)editorStatus.presetAction).preSetMoves;
             ///episode
             episode.actions = [NSArray arrayWithArray:editorStatus.actions];
             
-            //UIImageView* imageView = [[UIImageView alloc] initWithImage:episode.thumbNail];
+            episode.audioFiles = [NSArray arrayWithArray:audioFiles];
+            EZDEBUG(@"AudioFile count:%i", episode.audioFiles.count);
             
-            //UIImageView* imageView = [[UIImageView alloc] init];
-            //imageView.image = episode.thumbNail;
-            //imageView.frame = CGRectMake(0, 0, 100, 200);
-            //EZDEBUG(@"image size:%@", NSStringFromCGRect(imageView.frame));
-            //[[CCDirector sharedDirector].view addSubview:imageView];
+            [audioFiles removeAllObjects];
             
             EZEpisodeInputer* episodeInputer = [[EZEpisodeInputer alloc] initWithNibName:@"EZEpisodeInputer" bundle:nil];
             EZDEBUG(@"Nib loaded successfully");
@@ -322,9 +353,12 @@
                 EZEpisodeInputer* ein = sender;
                 [ein.presentingViewController dismissViewControllerAnimated:YES completion:nil];
             };
-
+            //Store the data to database. 
+            [episode persist];
+            
             
             [[CCDirector sharedDirector] presentViewController:episodeInputer animated:YES completion:nil];
+            statusLabel.string = [NSString stringWithFormat:@"All episode count:%i", episodes.count];
             
         }];
         [editorStatus setBtnPreset:startPresetting audio:recording plantMove:startPlainMove save:save remove:delete preview:preView previewAll:nil];
@@ -332,15 +366,16 @@
         editorStatus.statusLabel = statusLabel;
         [statusLabel setPosition:ccp(500, 34)];
         [self addChild:statusLabel];
-        CCMenu* menu = [CCMenu menuWithItems:recording,startPresetting,startPlainMove,save,saveAsBegin,selectChessColor,toggleBoardColor,toggleMark,showHand,addPreset,addCleanAction, preView,delete,regretMove,goToPlayer,saveEpisode, nil];
+        CCMenu* menu = [CCMenu menuWithItems:recording,startPresetting,startPlainMove,save,saveAsBegin,selectChessColor,toggleBoardColor,toggleMark,showHand,addPreset,addCleanAction, preView,delete,regretMove,goToPlayer,saveEpisode,uploadAll, nil];
         
-        [menu alignItemsVerticallyWithPadding:10];
+        [menu alignItemsVerticallyWithPadding:5];
         
         menu.position = ccp(900, 400);
         [self addChild:menu z:-2];
     }
     return self;
 }
+
 
 
 - (UIImage*) takeAsUIImageEX

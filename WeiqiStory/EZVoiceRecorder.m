@@ -69,6 +69,10 @@
     return [EZFileUtil fileToURL:_recordedFile dirType:NSDocumentDirectory];
 }
 
+- (NSString*) getRecordedFile
+{
+    return _recordedFile;
+}
 
 - (void) stop
 {

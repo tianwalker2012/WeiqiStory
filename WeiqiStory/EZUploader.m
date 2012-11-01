@@ -20,15 +20,22 @@
 
 @implementation EZUploader
 
+- (id) initWithURL:(NSURL*)url
+{
+    self = [super init];
+    _url = url;
+    
+    return self;
+}
 
 
 - (NSDictionary*) getFromServer
 {
-    NSString* strURL = @"http://172.16.0.17:8888/download/my.json";
-    NSData* data = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:strURL]];
+    //NSString* strURL = @"http://172.16.0.17:8888/download/my.json";
+    //NSData* data = [[NSData alloc] initWithContentsOfURL:_url];
     //[NSString stringWithContentsOfURL:@"" encoding: error:<#(NSError **)#>
     
-    NSString* str = [NSString stringWithContentsOfURL:[NSURL URLWithString:strURL] encoding:NSUTF8StringEncoding error:nil];
+    NSString* str = [NSString stringWithContentsOfURL:_url encoding:NSUTF8StringEncoding error:nil];
     EZDEBUG(@"String:%@", str);
     return str.JSONValue;
 }
@@ -45,17 +52,17 @@
     [self uploadToServer:[NSData dataWithContentsOfURL:fileURL] fileName:fileName contentType:@"Whatever" resultBlock:block];
 }
 
-- (void) uploadFileURL:(NSURL*)fileURL resultBlock:(EZEventBlock)block
+- (void) uploadFileURL:(NSURL*)fileURL fileName:(NSString*)fileName resultBlock:(EZEventBlock)block
 {
     //This is for small file, if download large file, we need to make it do it gradually, otherwise
     //The memory will eat out.
     EZDEBUG(@"url:%@", fileURL.baseURL);
-    [self uploadToServer:[NSData dataWithContentsOfURL:fileURL] fileName:@"firstLecture0.caf" contentType:@"Whatever" resultBlock:block];
+    [self uploadToServer:[NSData dataWithContentsOfURL:fileURL] fileName:fileName contentType:@"lecture/audio" resultBlock:block];
 }
 
 - (void) uploadToServer:(NSData*)data fileName:(NSString*)name contentType:(NSString*)contentType resultBlock:(EZEventBlock)block
 {
-    NSString* requestURL = @"http://172.16.0.18:3000/upload";
+    //NSString* requestURL = @"http://172.16.0.18:3000/upload";
     // create request
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
     [request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
@@ -63,7 +70,7 @@
     [request setTimeoutInterval:30];
     [request setHTTPMethod:@"POST"];
     
-    NSString* boundary = @"CoolUploadxxoo";
+    NSString* boundary = @"CoolUploadxxooVeryHot";
     // set Content-Type in HTTP header
     NSString *contentTypeParam = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary];
     [request setValue:contentTypeParam forHTTPHeaderField: @"Content-Type"];
@@ -99,7 +106,7 @@
     [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
     
     // set URL
-    [request setURL:[NSURL URLWithString:requestURL]];
+    [request setURL:_url];
     EZHttpListener* listener = [[EZHttpListener alloc] init];
     listener.resultBlock = block;
     //This is blocking way of doing thing, later will change it to non-blocking way.
@@ -107,7 +114,7 @@
     
     [connection start];
     //connection = nil;
-    EZDEBUG(@"Should have started");
+    EZDEBUG(@"Should have started upload to:%@", _url);
 }
 
 #pragma mark NSURLConnection delegate.

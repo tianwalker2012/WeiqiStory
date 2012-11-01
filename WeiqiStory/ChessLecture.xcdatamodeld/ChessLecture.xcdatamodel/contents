@@ -1,12 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1810" systemVersion="11E53" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="EZEpisode" syncable="YES">
+        <attribute name="actions" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="audioFiles" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="basicPattern" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="completed" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="introduction" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="thumbNail" optional="YES" attributeType="Transformable" syncable="YES"/>
+    </entity>
     <entity name="MEpisode" representedClassName="MEpisode" syncable="YES">
+        <attribute name="completed" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="dummy" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="dummys" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="storedFile" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="thumbNail" optional="YES" attributeType="Transformable" syncable="YES"/>
     </entity>
     <elements>
-        <element name="MEpisode" positionX="160" positionY="192" width="128" height="105"/>
+        <element name="EZEpisode" positionX="160" positionY="192" width="128" height="150"/>
+        <element name="MEpisode" positionX="160" positionY="192" width="128" height="135"/>
     </elements>
 </model>

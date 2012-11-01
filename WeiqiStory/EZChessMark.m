@@ -28,6 +28,25 @@
     return self;
 }
 
+
+-(void)encodeWithCoder:(NSCoder *)coder {
+    //EZDEBUG(@"encodeWithCoder");
+    [coder encodeObject:_text forKey:@"text"];
+    [coder encodeObject:_coord forKey:@"coord"];
+    [coder encodeInt:_fontSize forKey:@"fontSize"];
+}
+
+
+
+-(id)initWithCoder:(NSCoder *)decoder {
+    //EZDEBUG(@"initWithCoder");
+    _text = [decoder decodeObjectForKey:@"text"];
+    _coord = [decoder decodeObjectForKey:@"coord"];
+    _fontSize = [decoder decodeIntForKey:@"fontSize"];
+    return self;
+    
+}
+
 - (NSDictionary*) toDict
 {
     return @{@"text":_text, @"coord":[_coord toDict], @"fontSize":@(_fontSize)};

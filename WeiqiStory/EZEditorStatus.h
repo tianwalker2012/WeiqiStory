@@ -23,6 +23,8 @@ typedef enum {
 //What's the purpose of this class
 //All the editor interface will be manipulated my this class
 //Make my life easier.
+//Not a clean thinking absolutely.
+
 //@class EZActionPlayer;
 @class EZChessBoard;
 @interface EZEditorStatus : NSObject
@@ -51,6 +53,8 @@ typedef enum {
 //This chessBoard will be used to capture the move of the chess
 @property (weak, nonatomic) EZChessBoard* chessBoard;
 
+@property (strong, nonatomic) NSString* audioFileName;
+
 
 - (void) setBtnPreset:(CCMenuItem*)preset audio:(CCMenuItem*)audio plantMove:(CCMenuItem*)plantMove
                  save:(CCMenuItem*)save remove:(CCMenuItem*)remove preview:(CCMenuItem*)preview previewAll:(CCMenuItem*)previewAll;
@@ -74,6 +78,8 @@ typedef enum {
 - (void) insertShowHand;
 
 - (void) clean;
+
+
 
 //- (id) initWithPlayer:(EZActionPlayer*)player;
 

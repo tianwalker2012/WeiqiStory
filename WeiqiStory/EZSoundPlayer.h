@@ -17,4 +17,6 @@
 
 - (EZSoundPlayer*) initWithURL:(NSURL*)url completeCall:(EZOperationBlock)blk;
 
+- (EZSoundPlayer*) initWithFile:(NSString*)fileName inMainBundle:(BOOL)mainBundle completeCall:(void(^)())blk;
+
 @end

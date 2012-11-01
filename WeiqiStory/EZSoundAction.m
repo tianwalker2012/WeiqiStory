@@ -53,6 +53,7 @@
     EZDEBUG(@"I will do nothing");
 }
 
+
 - (NSDictionary*) actionToDict
 {
     NSMutableDictionary* res = (NSMutableDictionary*)[super actionToDict];
@@ -76,6 +77,27 @@
     return self;
 }
 
+
+-(void)encodeWithCoder:(NSCoder *)coder {
+    
+    [super encodeWithCoder:coder];
+    //EZDEBUG(@"encodeWithCoder");
+    [coder encodeObject:_audioFiles forKey:@"audioFiles"];
+    //CurrentAudio is just for tempoary use, so not persist it.
+}
+
+
+
+
+-(id)initWithCoder:(NSCoder *)decoder {
+    //[super initWith]
+    self = [super initWithCoder:decoder];
+    
+    _audioFiles = [decoder decodeObjectForKey:@"audioFiles"];
+    
+    return self;
+    
+}
 
 
 @end

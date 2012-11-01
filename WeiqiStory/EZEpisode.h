@@ -7,13 +7,14 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <CoreData/CoreData.h>
 #import "EZAction.h"
 //What's the purpose of this class?
 //I can't think abstractly about what need in the our player.
 //I need a class to stabize and concreting some of my thoughts with the player.
 //Once you put something done, it is no more a abstract idea.
 //It is something alive now. 
-@interface EZEpisode : NSObject
+@interface EZEpisode : NSManagedObject
 
 //For example: Dead and live number 4 or Start pattern number 2
 @property (strong, nonatomic) NSString* name;
@@ -36,8 +37,15 @@
 //Seems the purpose of the basicPattern is used to generate the thumbnail.
 @property (strong, nonatomic) UIImage* thumbNail;
 
-//Generate the thumbNail according to the moves
-- (void) regenerateThumbNail;
+//All the audioFiles included in this episode.
+@property (strong, nonatomic) NSArray* audioFiles;
+
+//What's the purpose of this flag.
+//To indicate if this episode have downloaded successfully from the server side.
+//The default flag shoudl be false, so that the background thread can work on this.
+//Once download completed, can use a notification, so that frontend could load
+//All the download episode to the list, user could enjoy playing the episode. 
+@property (strong, nonatomic) NSNumber* completed;
 
 
 @end

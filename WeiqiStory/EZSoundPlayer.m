@@ -25,6 +25,18 @@
     return [self initWithURL:fileURL completeCall:blk];
 }
 
+//Well done. Let's test it.
+- (EZSoundPlayer*) initWithFile:(NSString*)fileName inMainBundle:(BOOL)mainBundle completeCall:(void(^)())blk
+{
+    NSURL* fileURL = nil;
+    if(mainBundle){
+        fileURL = [EZFileUtil fileToURL:fileName];
+    }else{
+        fileURL = [EZFileUtil fileToURL:fileName dirType:NSDocumentDirectory];
+    }
+    return [self initWithURL:fileURL completeCall:blk];
+}
+
 - (EZSoundPlayer*) initWithURL:(NSURL*)url completeCall:(EZOperationBlock)blk
 {
     self = [super init];

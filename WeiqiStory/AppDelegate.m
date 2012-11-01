@@ -13,6 +13,9 @@
 #import "EZChessPlay.h"
 #import "EZTestSuites.h"
 #import "EZChessEditor.h"
+#import "EZHomePage.h"
+#import "EZListPage.h"
+#import "EZEffectTester.h"
 //#import "EZPlayerStatus.h"
 
 @implementation AppController
@@ -78,9 +81,10 @@
 	[CCTexture2D PVRImagesHavePremultipliedAlpha:YES];
 
 	// and add the scene to the stack. The director will run it when it automatically when the view is displayed.
-	[director_ pushScene:[EZChessEditor scene]];
+	//[director_ pushScene:[EZChessEditor scene]];
     //[director_ pushScene:[EZChessPlay scene]];
-	
+	[director_ pushScene:[EZListPage scene]];
+    //[director_ pushScene:[EZEffectTester scene]];
 	// Create a Navigation Controller with the Director
 	navController_ = [[UINavigationController alloc] initWithRootViewController:director_];
 	navController_.navigationBarHidden = YES;

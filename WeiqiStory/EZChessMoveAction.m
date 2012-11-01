@@ -40,6 +40,7 @@
 
 - (void) fastForward:(EZActionPlayer *)player
 {
+    EZDEBUG(@"board is:%@, moves count:%i", player.board, _plantMoves.count);
     [player.board putChessmans:_plantMoves animated:NO];
 }
 
@@ -69,6 +70,27 @@
     _plantMoves = [self arrayToCoords:[dict objectForKey:@"plantMoves"]];
     _currentMove  = ((NSNumber*)[dict objectForKey:@"currentMove"]).intValue;
     return self;
+}
+
+-(void)encodeWithCoder:(NSCoder *)coder {
+    
+    [super encodeWithCoder:coder];
+    //EZDEBUG(@"encodeWithCoder");
+    [coder encodeObject:_plantMoves forKey:@"plantMoves"];
+    ///[coder encodeObject:_currentMove ]
+    [coder encodeInt:_currentMove forKey:@"currentMove"];
+}
+
+
+
+
+-(id)initWithCoder:(NSCoder *)decoder {
+    //[super initWith]
+    self = [super initWithCoder:decoder];
+    _plantMoves = [decoder decodeObjectForKey:@"plantMoves"];
+    //_currentMove = [decoder decodeIntForKey:@"currentMove"];
+    return self;
+    
 }
 
 

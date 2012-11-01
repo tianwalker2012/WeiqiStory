@@ -62,4 +62,31 @@
     return self;
 }
 
+-(void)encodeWithCoder:(NSCoder *)coder {
+    
+    [super encodeWithCoder:coder];
+    //EZDEBUG(@"encodeWithCoder");
+    //[coder encodeObject:_marks forKey:@"marks"];
+    [coder encodeInt:_preShowStep forKey:@"preShowStep"];
+    [coder encodeInt:_preStartStep forKey:@"preStartStep"];
+    [coder encodeInt:_curShowStep forKey:@"curShowStep"];
+    [coder encodeInt:_curStartStep forKey:@"curStartStep"];
+    
+}
+
+
+
+
+-(id)initWithCoder:(NSCoder *)decoder {
+    //[super initWith]
+    self = [super initWithCoder:decoder];
+    _preShowStep = [decoder decodeIntegerForKey:@"preShowStep"];
+    _preStartStep = [decoder decodeIntegerForKey:@"preStartStep"];
+    _curShowStep = [decoder decodeIntegerForKey:@"curShowStep"];
+    _curStartStep = [decoder decodeIntegerForKey:@"curStartStep"];
+    return self;
+    
+}
+
+
 @end

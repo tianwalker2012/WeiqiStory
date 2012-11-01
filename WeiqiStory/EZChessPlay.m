@@ -19,6 +19,8 @@
 #import "EZEpisode.h"
 #import "EZEpisodeCell.h"
 #import "EZUILoader.h"
+#import "EZEpisodeVO.h"
+#import "EZEpisodeDownloader.h"
 
 
 @interface EZChessPlay()
@@ -118,6 +120,7 @@
 {
     [super onEnter];
     [self addAllView];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadedEpisode:) name:EpisodeDownloadDone object:nil];
 }
 
 //I assume this will be called when current scene are removed out of the visible region.
@@ -125,8 +128,27 @@
 {
     [super onExit];
     [self removeAllView];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+
+//Make sure the episode was which send by the notification
+- (void) downloadedEpisode:(NSNotification*) notify
+{
+    EZDEBUG(@"currentThread:%i, mainThread:%i",(int)[NSThread currentThread], (int)[NSThread mainThread]);
+    EZEpisodeVO* episode = notify.object;
+    EZDEBUG(@"Object id:%i, thumberNail:%@", (int)episode, episode.thumbNail);
+    //episode.basicPattern = episode.basicPattern;
+    //EZDEBUG(@"Episode basic pattern:%@, thumbNail:%@", episode.basicPattern, episode.thumbNail);
+    //EZEpisodeVO* episode2 = [notify.userInfo objectForKey:@"episode"];
+    //EZDEBUG(@"One episode downloaded successful:%@, classType:%@, episode2:%@, classType:%@", episode.name, [episode class], episode2, [episode2 class]);
+    [self  executeBlockInMainThread:^(){
+        NSMutableArray* existed = [[NSMutableArray alloc] initWithArray:_epsides];
+        [existed addObject:episode];
+        _epsides = existed;
+        [_actionTableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:_epsides.count-1 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+    }];
+}
 
 - (id) init
 {
@@ -136,7 +158,7 @@
         CGPoint tableTopRight = CGPointMake(256.0, 0.0);
         CGPoint glTopRight = [[CCDirector sharedDirector] convertToGL:tableTopRight];
         
-       
+       //Register for the notification, so that if some episode downloaded, I could play it immediately
         
         chessBoard = [[EZChessBoard alloc]initWithFile:@"weiqi-board-pad.png" touchRect:CGRectMake(60, 60, 648, 648) rows:19 cols:19];
         //Will chessBoard to align with the left, will move the rest of the button to the bottom of the screen.
@@ -161,7 +183,7 @@
         _actPlayer = [[EZActionPlayer alloc] initWithActions:nil chessBoard:chessBoard];
         //[chessBoard setScale:0.7];
         
-        [CCMenuItemFont setFontSize:32];
+        [CCMenuItemFont setFontSize:25];
         //LOADSOUNDEFFECT([NSArray arrayWithObjects:@"enemy.wav",nil]);
        
         CCMenuItem* prevMenu = [CCMenuItemFont itemWithString:@"后退" block:^(id sender){
@@ -201,6 +223,13 @@
             //chessBoard.touchEnabled = false;
         }];
         
+        CCMenuItem* downloadMenu = [CCMenuItemFont itemWithString:@"从服务器下载" block:^(id sender){
+            EZEpisodeDownloader *downloader = [[EZEpisodeDownloader alloc] init];
+            downloader.baseURL = DownloadBaseURL;
+            NSURL* listURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@/%@", DownloadBaseURL, ServerListFile]];
+            [downloader downloadAccordingToList:listURL];        
+        }];
+        
         CCMenuItem* backToEditorMenu = [CCMenuItemFont itemWithString:@"回到编辑界面" block:^(id sender){
             [[CCDirector sharedDirector] popScene];
             //Important, otherwise will not get event.
@@ -222,7 +251,7 @@
         
         
         
-        CCMenu* menu = [CCMenu menuWithItems:replayMenu, prevMenu, nextMenu, playMenu,playBySelfMenu, backToEditorMenu, nil];
+        CCMenu* menu = [CCMenu menuWithItems:replayMenu, prevMenu, nextMenu, playMenu,playBySelfMenu,downloadMenu, backToEditorMenu, nil];
         [menu alignItemsHorizontallyWithPadding:10
          ];
         
@@ -253,6 +282,8 @@
 }
 
 
+
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     return _epsides.count;
@@ -270,22 +301,21 @@
     }
     
     //EZAction* act = [_actPlayer.actions objectAtIndex:indexPath.row];
-    EZEpisode* episode = [_epsides objectAtIndex:indexPath.row];
+    EZEpisodeVO* episode = [_epsides objectAtIndex:indexPath.row];
     //cell.textLabel.text = [NSString stringWithFormat:@"Class:%@, SyncType:%@", act.class, act.syncType==kSync?@"Sync":@"Async"];
     cell.name.text = episode.name;//[NSString stringWithFormat:@"Name:%@, intro:%@", episode.name, episode.introduction];
     cell.introduces.text = episode.introduction;
     
-    //EZDEBUG(@"cell thumbNail:%@", cell.thumbNail);
-    //EZDEBUG(@"Original thumbNail image:%@", cell.thumbNail.image);
-    
     cell.thumbNail.image = episode.thumbNail;
+    
+    EZDEBUG(@"cell.name %@, cell.introduce:%@, cell.thumbNail:%@, episode.Thumbnail:%@", cell.name, cell.introduces, cell.thumbNail, episode.thumbNail);
     return cell;
 }
 
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     //EZDEBUG(@"Selected:%i", indexPath.row);
-    EZEpisode* episode = [_epsides objectAtIndex:indexPath.row];
+    EZEpisodeVO* episode = [_epsides objectAtIndex:indexPath.row];
     //EZDEBUG(@"Clean all moves");
     [chessBoard cleanAll];
     //EZDEBUG(@"Complete clean");

@@ -75,6 +75,31 @@
 }
 
 
+-(void)encodeWithCoder:(NSCoder *)coder {
+    
+    //EZDEBUG(@"encodeWithCoder");
+    [super encodeWithCoder:coder];
+    [coder encodeInt:_cleanType forKey:@"cleanType"];
+    //[coder encodeInt:_syncType forKey:@"syncType"];
+    [coder encodeObject:_cleanedMarks forKey:@"cleanedMarks"];
+    [coder encodeObject:_cleanedMoves forKey:@"cleanedMoves"];
+    EZDEBUG(@"Complete encode");
+}
+
+
+
+-(id)initWithCoder:(NSCoder *)decoder {
+    self =  [super initWithCoder:decoder];
+    EZDEBUG(@"initWithCoder");
+    _cleanType = [decoder decodeIntForKey:@"cleanType"];
+    _cleanedMarks = [decoder decodeObjectForKey:@"cleanedMarks"];
+    _cleanedMoves = [decoder decodeObjectForKey:@"cleanedMoves"];
+    EZDEBUG(@"complete initWithCoder");
+    return self;
+    
+}
+
+
 //Each action should override this method.
 //Make sure itself could be recoverred and persisted fully without losing information.
 //I will only store the cleanType.

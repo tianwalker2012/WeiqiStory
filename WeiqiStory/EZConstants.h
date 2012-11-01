@@ -56,12 +56,25 @@ typedef enum {
 } CoordTransformType;
 
 //Why need to differentiate this 2?
-//So that I can test the functionality without need to worry about all the things. 
+//So that I can test the functionality without need to worry about all the things.
+
+#define DownloadBaseURL @"http://192.168.10.104:3000"
+
+#define UploadBaseURL @"http://192.168.10.104:3000/upload"
+
+#define ServerListFile @"episode.lst"
+
 #define EditorDB @"WeiqiEditor.sqlite"
 
 #define ClientDB @"WeiqiClient.sqlite"
 
 #define CoreDBModel @"ChessLecture"
+
+//What if something failed?
+//Should we do some thing about it?
+//Have some retry mechanism later.
+//Add them later. 
+#define EpisodeDownloadDone @"EpisodeDownloadDone"
 
 #define ChessMarkColor ccc3(122, 190, 83)
 
@@ -73,6 +86,12 @@ typedef enum {
 
 #define ThumbNailSize  150
 
+
+#define ezrect(x, y, w, h) \
+    CGRectMake(x, y, w, h)
+
+#define ezros(pos, size) \
+    CGRectMake(pos.x, pos.y, size.width, size.height)
 
 #define SFX_NOTLOADED NO
 #define SFX_LOADED YES

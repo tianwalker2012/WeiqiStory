@@ -16,6 +16,7 @@
 #import "EZExtender.h"
 #import "EZSoundAction.h"
 #import "EZChessMoveAction.h"
+#import "EZAudioFile.h"
 
 
 
@@ -53,6 +54,7 @@
         _currentAction = 0;
         _playingStatus = kPause;
         timerArray = [[NSMutableArray alloc] init];
+        _stepCompletionBlocks = [[NSMutableArray alloc] init];
     }
     return self;
 }
@@ -151,6 +153,25 @@
     [_board cleanAllMarks];
 }
 
+//This is for the purpose of dragging the progressBar forward and backward. 
+- (void) forwardFrom:(NSInteger)oldPos to:(NSInteger) newPos
+{
+    if(oldPos < newPos){
+        for(int i = oldPos; i < newPos; i++){
+            EZAction* action = [_actions objectAtIndex:i];
+            [action fastForward:self];
+        }
+    }else if(oldPos > newPos){
+        for(int i = oldPos-1; i >= newPos; i--){
+            EZAction* action = [_actions objectAtIndex:i];
+            [action undoAction:self];
+        }
+    }else{//mean oldPos == newPos
+        
+    }
+    _currentAction = newPos;
+}
+
 //Only need to handle presetting and moves
 - (void) undoAction:(EZAction*)action
 {
@@ -244,7 +265,7 @@
         return;
     }
     EZDEBUG(@" _currentAction:%i, actions Count:%i", _currentAction, _actions.count);
-        
+    
     if(_currentAction >= _actions.count){
         _playingStatus = kEnd;
         EZDEBUG(@"Quit for get the end of actions");
@@ -257,6 +278,10 @@
     EZAction* action = [_actions objectAtIndex:_currentAction];
     EZDEBUG(@"Will play action:%i, name:%@",_currentAction, action.name);
     ++_currentAction;
+    
+    for(EZEventBlock blk in _stepCompletionBlocks){
+        blk(self);
+    }
     [action doAction:self];
 }
 
@@ -281,17 +306,9 @@
     CallBackBlock block =  ^(){
         [self playSound:action completeBlock:blk];
     };
-    id aFile = [soundAction.audioFiles objectAtIndex:soundAction.currentAudio];
+    EZAudioFile* audio = [soundAction.audioFiles objectAtIndex:soundAction.currentAudio];
     soundAction.currentAudio = soundAction.currentAudio + 1;
-    if([[[aFile class]description] isEqualToString:@"NSURL"]){
-        EZDEBUG(@"Play URL directly:%@",aFile);
-        soundPlayer = [[EZSoundPlayer alloc] initWithURL:aFile completeCall:block];
-    }else{
-        EZDEBUG(@"Play fileName:%@",aFile);
-        soundPlayer = [[EZSoundPlayer alloc] initWithFile:aFile completeCall:
-                  block];
-    }
-    
+    soundPlayer = [[EZSoundPlayer alloc] initWithFile:audio.fileName inMainBundle:audio.inMainBundle completeCall:block];
 }
 
 - (void) playMoves:(EZAction*)act completeBlock:(void (^)())blk withDelay:(CGFloat)delay

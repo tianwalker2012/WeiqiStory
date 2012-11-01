@@ -58,6 +58,10 @@ static NSMutableDictionary* accessors;
     return [EZCoreAccessor getInstance:EditorDB];
 }
 
+- (id) fetchByID:(NSManagedObjectID*)oid
+{
+    return [context objectWithID:oid];
+}
 
 + (void) cleanClientDB
 {

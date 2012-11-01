@@ -15,6 +15,8 @@
 //Already store in the configure file. 
 @interface EZUploader : NSObject<NSURLConnectionDataDelegate>
 
+@property (nonatomic, strong) NSURL* url;
+
 - (NSDictionary*) getFromServer;
 
 - (void) uploadToServer:(NSData*)data fileName:(NSString*)name contentType:(NSString*)contentType resultBlock:(EZEventBlock)block;
@@ -23,7 +25,8 @@
 //Which is great.
 - (void) uploadFile:(NSString*)fileName resultBlock:(EZEventBlock)block;
 
-- (void) uploadFileURL:(NSURL*)fileName resultBlock:(EZEventBlock)block;
+- (void) uploadFileURL:(NSURL*)fileURL fileName:(NSString*)fileName resultBlock:(EZEventBlock)block;
 
+- (id) initWithURL:(NSURL*)url;
 
 @end
