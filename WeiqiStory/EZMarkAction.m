@@ -39,6 +39,15 @@
     }
 }
 
+
+//This will never get called.
+//Because the EZAction have call actionBody already.
+//Let's check debug output carefully.
+- (void) fastForward:(EZActionPlayer *)player
+{
+    [self actionBody:player];
+}
+
 //Will turn the action into dictionary
 - (NSDictionary*) actionToDict
 {

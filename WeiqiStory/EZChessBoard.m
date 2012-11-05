@@ -27,6 +27,9 @@
     NSMutableDictionary* coordToMarks;
     NSArray* chessMarkChar;
     CCSprite* cursor;
+    
+    //What's the purpose of this count. Make the marks can function well
+    NSInteger charCount;
 }
 
 - (void) initializeCursor;
@@ -51,6 +54,7 @@
     self = [super initWithFile:filename];
     if(self){
         chessMarkChar = @[@"A",@"B",@"C",@"D",@"E",@"F",@"G",@"H",@"I",@"J",@"K",@"L",@"M",@"N",@"O",@"P",@"Q",@"R",@"S",@"T",@"U",@"V",@"W",@"X",@"Y",@"Z"];
+        charCount = 0;
         //Why am I doing this?
         //So that the edge of the board coud detect the touch too
         _chessmanType = kChessMan;
@@ -230,7 +234,7 @@
     //[_allMarks removeObjectAtIndex:position];
     EZCoord* coord = mark.coord;
     NSMutableArray* marks = [coordToMarks objectForKey:coord];
-    [marks removeObject:marks];
+    [marks removeObject:mark];
     [mark.mark removeFromParentAndCleanup:NO];
 }
 //Cool
@@ -399,14 +403,17 @@
 
 - (void) regretMarks:(NSInteger)steps animated:(BOOL)animated
 {
+    EZDEBUG(@"Before regret, regret steps:%i, allMarks:%i", steps, _allMarks.count);
     for(int i = 0; i < steps; i++){
         if(_allMarks.count > 0){
             EZChessMark* cm = _allMarks.lastObject;
             [self removeMarks:cm];
+            //[_allMarks removeLastObject];
         }else{
             break;
         }
     }
+    EZDEBUG(@"after _allmarks count:%i", _allMarks.count);
 }
 
 //Following is the code for the touch event.
@@ -448,7 +455,8 @@
         coord.chessType = _chessmanSetType;
         [boardStatus putButtonByCoord:coord animated:YES];
     }else{
-        NSString* markStr = [chessMarkChar objectAtIndex:(coordToMarks.count % chessMarkChar.count)];
+        NSString* markStr = [chessMarkChar objectAtIndex:(_allMarks .count % chessMarkChar.count)];
+        EZDEBUG(@"Current marks:%i, chessMarChar.cout:%i, markStr:%@", coordToMarks.count, chessMarkChar.count, markStr);
         //CCLabelTTF*  markText = [CCLabelTTF labelWithString:markStr fontName:@"Arial" fontSize:40];
         EZCoord* coord = [boardStatus pointToBC:localPoint];
         //[chessBoard putMark:markText coord:[[EZCoord alloc] init:10 y:10] animAction:nil];

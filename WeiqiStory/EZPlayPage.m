@@ -96,7 +96,7 @@ typedef enum {
     
     [self addChild:studyBoard];
     
-    CCMenuItemImage* quitButton = [CCMenuItemImage itemWithNormalImage:@"study-btn-pad.png" selectedImage:@"study-btn-pad.png"
+    CCMenuItemImage* quitButton = [CCMenuItemImage itemWithNormalImage:@"studyover-pad.png" selectedImage:@"study-btn-pad.png"
         block:^(id sender){
             [studyBoardHolder removeFromParentAndCleanup:NO];
             studyBoard.touchEnabled = false;

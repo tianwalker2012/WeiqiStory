@@ -119,6 +119,7 @@
         
         editorStatus = [[EZEditorStatus alloc] init];
         editorStatus.chessBoard = chessBoard;
+        editorStatus.player = currActPlayer;
         
         //LOADSOUNDEFFECT([NSArray arrayWithObjects:@"enemy.wav",nil]);
         CCMenuItem* recording = [CCMenuItemFont itemWithString:@"录音" block:^(id sender){
@@ -224,6 +225,10 @@
             EZDEBUG(@"Will play:%i",editorStatus.actions.count);
             actPlayer.actions = editorStatus.actions;
             [self addChild:previewBoard z:popupZOrder];
+            [previewBoard cleanAll];
+            if((editorStatus.actions.count - 1) > 0){
+                [actPlayer forwardFrom:0 to:editorStatus.actions.count - 1];
+            }
             [actPlayer playFrom:(editorStatus.actions.count -1) completeBlock:^(){
                 EZDEBUG(@"Complete board get called");
                 [previewBoard removeFromParentAndCleanup:NO];
@@ -273,7 +278,7 @@
        
         CCMenuItem* goToPlayer = [CCMenuItemFont itemWithString:@"去播放界面" block:^(id sender){
             EZDEBUG(@"Will go to player interface");
-            CCScene* playFace = [EZChessPlay scene];
+            CCScene* playFace = [EZChessPlay sceneWithActions:editorStatus.actions];
             EZChessPlay* playUI = (EZChessPlay*)[playFace getChildByTag:10];
             playUI.epsides = episodes;
             [[CCDirector sharedDirector] pushScene:playFace];
@@ -344,6 +349,10 @@
                 [episodes addObject:episode];
                 [editorStatus clean];
                 [chessBoard cleanAll];
+                chessBoard.showStep = false;
+                CCMenuItemFont* itemFont = (CCMenuItemFont*)showHand;
+                [itemFont setString:@"不显示手数"];
+                
                 //[chessBoard cleanAllMarks];
                 EZDEBUG(@"Current episode number:%i, name:%@, intro:%@", episodes.count, episode.name, episode.introduction);
                 [ein.presentingViewController dismissViewControllerAnimated:YES completion:nil];
@@ -366,7 +375,14 @@
         editorStatus.statusLabel = statusLabel;
         [statusLabel setPosition:ccp(500, 34)];
         [self addChild:statusLabel];
-        CCMenu* menu = [CCMenu menuWithItems:recording,startPresetting,startPlainMove,save,saveAsBegin,selectChessColor,toggleBoardColor,toggleMark,showHand,addPreset,addCleanAction, preView,delete,regretMove,goToPlayer,saveEpisode,uploadAll, nil];
+        
+        
+        CCMenuItem* deleteAllEpisode = [CCMenuItemFont itemWithString:@"删除已上传数据" block:^(id sender){
+            EZDEBUG(@"Upload all");
+            [episodes removeAllObjects];
+        }];
+
+        CCMenu* menu = [CCMenu menuWithItems:recording,startPresetting,startPlainMove,save,addPreset,saveAsBegin,selectChessColor,toggleBoardColor,toggleMark,showHand,addCleanAction, preView,delete,regretMove,goToPlayer,saveEpisode,uploadAll,deleteAllEpisode,nil];
         
         [menu alignItemsVerticallyWithPadding:5];
         
