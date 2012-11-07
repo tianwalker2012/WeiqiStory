@@ -172,7 +172,12 @@
 
 - (void) removeLast
 {
-    [_actions removeLastObject];
+    if(_actions.count > 0){
+        EZAction* lastAct = [_actions lastObject];
+        [_actions removeLastObject];
+        [lastAct undoAction:_player];
+    }
+    
 }
 
 - (void) insertShowHand
@@ -187,6 +192,9 @@
 {
     NSInteger addedMarks = _chessBoard.allMarks.count;
     NSInteger deltaMarks = addedMarks - beginMarks;
+    
+    EZDEBUG(@"current total marks:%i, deltaMarks:%i", addedMarks, deltaMarks);
+    
     if(deltaMarks > 0){
         NSMutableArray* steps = [[NSMutableArray alloc] initWithCapacity:deltaMarks];
         EZMarkAction* markAction = [[EZMarkAction alloc] init];
@@ -262,9 +270,11 @@
         case kPlantMoves:{
             EZAction* action = nil;
             NSInteger addedSteps = _chessBoard.allSteps.count;
+            NSInteger markSteps = _chessBoard.allMarks.count;
             NSInteger deltaStep = addedSteps - currentBoardSteps;
+            NSInteger deltaMark = markSteps - beginMarks;
             EZDEBUG(@"previous:%i, current:%i",currentBoardSteps, addedSteps);
-            if(deltaStep > 0){
+            if(deltaStep > 0 || deltaMark > 0){
                 NSMutableArray* steps = [[NSMutableArray alloc] initWithCapacity:deltaStep];
                 for(NSInteger i = 0; i < deltaStep; i++){
                     [steps addObject:[_chessBoard coordForStep:currentBoardSteps+i]];

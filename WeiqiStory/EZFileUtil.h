@@ -18,5 +18,12 @@
 //NSApplicationDirectory.
 + (NSURL*) fileToURL:(NSString*)fileName;
 
+//It is to remove all the audio file on the iPad
+//So I could use the directory space for other purpose.
++ (void) removeAllAudioFiles;
+
++ (NSArray*) listAllFiles:(NSSearchPathDirectory)type;
+
++ (void) deleteFiles:(NSString*)files;
 
 @end

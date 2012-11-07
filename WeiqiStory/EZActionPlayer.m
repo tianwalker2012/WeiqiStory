@@ -332,7 +332,7 @@
 - (void) playMoves:(EZAction*)act completeBlock:(void (^)())blk withDelay:(CGFloat)delay
 {
     EZChessMoveAction* action = (EZChessMoveAction*)act;
-    EZDEBUG(@"Get into playMoves with delay %f,play moves:%i, currentMove:%i, object pointer:%i, name:%@",action.unitDelay, action.plantMoves.count, action.currentMove, (int)action, action.name);
+    //EZDEBUG(@"Get into playMoves with delay %f,play moves:%i, currentMove:%i, object pointer:%i, name:%@",action.unitDelay, action.plantMoves.count, action.currentMove, (int)action, action.name);
     EZAction* localAct = action;
     EZOperationBlock block = ^(){
         [self playMoves:localAct completeBlock:blk];
@@ -349,14 +349,14 @@
 - (void) playMoves:(EZAction*)act completeBlock:(void(^)())blk
 {
     EZChessMoveAction* action = (EZChessMoveAction*)act;
-    EZDEBUG(@"in playMoves,currentMove:%i, total move:%i, object pointer:%i, name:%@", action.currentMove, action.plantMoves.count, (int)action, action.name);
+    //EZDEBUG(@"in playMoves,currentMove:%i, total move:%i, object pointer:%i, name:%@", action.currentMove, action.plantMoves.count, (int)action, action.name);
     
     if(actionTimer){
         [actionTimer invalidate];
         actionTimer = nil;
     }
     if(action.currentMove >= action.plantMoves.count){
-        EZDEBUG(@"Complete move playback");
+        //EZDEBUG(@"Complete move playback");
         if(blk){
             blk();
         }
@@ -366,7 +366,7 @@
     //Now let's get the simplest case up and run.
     EZDEBUG(@"current plant move:%i, total move:%i",action.currentMove, action.plantMoves.count);
     EZCoord* planted = [action.plantMoves objectAtIndex:action.currentMove];
-    EZDEBUG(@"Start to plant move at:%@",planted);
+    //EZDEBUG(@"Start to plant move at:%@",planted);
     [_board putChessman:planted animated:YES];
     action.currentMove += 1;
     [self playMoves:action completeBlock:blk withDelay:action.unitDelay];

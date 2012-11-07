@@ -30,6 +30,7 @@
     //NSString* jsonStr = episodes.JSONRepresentation;
     NSData* data = [NSKeyedArchiver archivedDataWithRootObject:episodes];
     EZUploader* uploader = [[EZUploader alloc] initWithURL:[NSURL URLWithString:_uploadBaseURL]];
+    EZDEBUG(@"Begin upload to URL:%@", _uploadBaseURL);
     [uploader uploadToServer:data fileName:uniqueFileName contentType:@"episode" resultBlock:^(id sender){
         EZDEBUG(@"upload episode script success");
     }];

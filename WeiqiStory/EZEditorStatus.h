@@ -26,7 +26,7 @@ typedef enum {
 //Not a clean thinking absolutely.
 
 //@class EZActionPlayer;
-@class EZChessBoard;
+@class EZChessBoard, EZActionPlayer;
 @interface EZEditorStatus : NSObject
 
 @property (weak, nonatomic) CCMenuItem* presetting;
@@ -47,6 +47,9 @@ typedef enum {
 @property (strong, nonatomic) NSMutableArray* actions;
 
 @property (strong, nonatomic) EZAction* presetAction;
+
+
+@property (weak, nonatomic) EZActionPlayer* player;
 
 //Keep the record,
 @property (assign, nonatomic) BOOL showStep;

@@ -11,6 +11,60 @@
 
 @implementation EZFileUtil
 
+//Will list all file under the specified directory
++ (NSArray*) listAllFiles:(NSSearchPathDirectory)type
+{
+    NSMutableArray* fileURLS = [[NSMutableArray alloc] init];
+    NSFileManager *manager = [NSFileManager defaultManager];
+    
+    /**
+    NSArray* dirPaths = NSSearchPathForDirectoriesInDomains(
+                                                   type, NSUserDomainMask, YES);
+    NSString* docsDir = [dirPaths objectAtIndex:0];
+    **/
+    
+    NSArray* urls = [manager URLsForDirectory:type inDomains:NSUserDomainMask];
+    EZDEBUG(@"The Type:%i URLS count is:%i, content:%@",type, urls.count,urls);
+    
+    for(NSURL* url in urls){
+        NSError* error;
+        NSArray* contents = [manager contentsOfDirectoryAtURL:url includingPropertiesForKeys:nil options:NSDirectoryEnumerationSkipsHiddenFiles error:&error];
+        [fileURLS addObjectsFromArray:contents];
+        //EZDEBUG(@"Content size:%i, content:%@",contents.count, contents);
+    }
+    
+    EZDEBUG(@"Final urls:%i", fileURLS.count);
+    return fileURLS;
+}
+
++ (void) removeAllAudioFiles
+{
+    NSArray* urls = [EZFileUtil listAllFiles:NSDocumentDirectory];
+    NSFileManager* fileMgr = [NSFileManager defaultManager];
+    NSError* error = nil;
+    for(NSURL* url in urls){
+        NSString* file = url.description;
+        error = nil;
+        if([file hasSuffix:@"caf"]){
+            EZDEBUG(@"Encounter caf, should remove:%@", file);
+        
+            [fileMgr removeItemAtURL:url error:&error];
+            if(error){
+                EZDEBUG(@"Error at deleting %@, error detail:%@", url, error);
+            }else{
+                EZDEBUG(@"Successfully deleted:%@", url);
+            }
+        }
+        
+    }
+}
+
++ (void) deleteFile:(NSString*)files
+{
+    
+}
+
+
 + (NSURL*) fileToURL:(NSString*)fileName dirType:(NSSearchPathDirectory)type
 {
     NSArray *dirPaths;

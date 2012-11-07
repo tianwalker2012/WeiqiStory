@@ -37,6 +37,10 @@ typedef enum ChessPutStatus{
 
 - (void) putButton:(EZCoord*)coord isBlack:(BOOL)isBlack animated:(BOOL)animated;
 
+//Why need this method?
+//Because, I need the deleted button to show the correct number too.
+- (void) recoveredButton:(EZChessPosition*)chessPos animated:(BOOL)animated;
+
 @end
 
 //What's the purpose of this class?
