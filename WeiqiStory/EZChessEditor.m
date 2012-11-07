@@ -382,7 +382,7 @@
             [episodes removeAllObjects];
         }];
 
-        CCMenu* menu = [CCMenu menuWithItems:recording,startPresetting,startPlainMove,save,addPreset,saveAsBegin,selectChessColor,toggleBoardColor,toggleMark,showHand,addCleanAction, preView,delete,regretMove,goToPlayer,saveEpisode,uploadAll,deleteAllEpisode,nil];
+        CCMenu* menu = [CCMenu menuWithItems:recording,startPresetting,startPlainMove,save,regretMove,toggleMark,showHand,preView,delete,addPreset,saveAsBegin,selectChessColor,toggleBoardColor,saveEpisode,uploadAll,goToPlayer,deleteAllEpisode,nil];
         
         [menu alignItemsVerticallyWithPadding:5];
         

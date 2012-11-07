@@ -13,8 +13,7 @@
 #import "EZImageResources.h"
 #import "EZChessman.h"
 #import "EZChessMark.h"
-
-
+#import "EZChessPosition.h"
 #import "EZBoardStatus.h"
 
 @interface EZChessBoard()
@@ -206,9 +205,9 @@
 - (void) removeMark:(EZCoord*)coord animAction:(CCAction*)action
 {
     
-    EZDEBUG(@"Will remove marks at %@", coord);
+    //EZDEBUG(@"Will remove marks at %@", coord);
     NSMutableArray* marks = [coordToMarks objectForKey:coord.getKey];
-    EZDEBUG(@"Fetched marks:%@",marks);
+    //EZDEBUG(@"Fetched marks:%@",marks);
     if(marks){
         for(EZChessMark* mk in marks){
             if(action){
@@ -217,7 +216,7 @@
                 }]];
                 [mk.mark runAction:removeAction];
             }else{
-                EZDEBUG(@"Will remove from parent, mark:%@",mk.mark);
+                //EZDEBUG(@"Will remove from parent, mark:%@",mk.mark);
                 [mk.mark removeFromParentAndCleanup:NO];
             }
             [_allMarks removeObject:mk];
@@ -251,12 +250,39 @@
     [self cleanAllMarks];
 }
 
+
+//this is like a display logic.
+//Should have nothing to do with the whether this button should appear or not.
+//Yes, fix it first. This is annoy bugs right? Sure, let fix them.
+//Finally, I have cases for merge 2 branch together.
+//Enjoy it my dear.
+- (void) recoveredButton:(EZChessPosition*)chessPos animated:(BOOL)animated
+{
+    EZChessman* btn = [[EZChessman alloc] initWithSpriteFrameName:chessPos.isBlack?BlackBtnName:WhiteBtnName step:chessPos.step showStep:showStep isBlack:chessPos.isBlack showedStep:chessPos.step - showStepStarted];
+    CGPoint pt = [boardStatus bcToPoint:chessPos.coord];
+    [btn setZOrder:ExistingChess];
+    [btn setPosition:pt];
+    [coordToButtons setValue:btn forKey:chessPos.coord.getKey];
+    //EZDEBUG(@"btn:%@", btn);
+    if(animated){
+        [btn setScale:1.3];
+        [self addChild:btn];
+        id scaleDown = [CCScaleTo actionWithDuration:0.3f scale:1.0f];
+        [btn runAction:scaleDown];
+    }else{
+        //Simply add them if without animation
+        [self addChild:btn];
+    }
+
+    
+}
+
 - (void) putButton:(EZCoord*)coord isBlack:(BOOL)isBlack animated:(BOOL)animated
 {
     //Let's check it on iPad
     
     CGPoint pt = [boardStatus bcToPoint:coord];
-    EZDEBUG(@"Button on:%@", NSStringFromCGPoint(pt));
+    //EZDEBUG(@"Button on:%@", NSStringFromCGPoint(pt));
     EZChessman* btn = nil;
     if(isBlack){
         btn = [[EZChessman alloc] initWithSpriteFrameName:BlackBtnName step:boardStatus.steps showStep:showStep isBlack:isBlack showedStep:boardStatus.steps - showStepStarted];
@@ -266,7 +292,7 @@
     [btn setZOrder:ExistingChess];
     [btn setPosition:pt];
     [coordToButtons setValue:btn forKey:coord.getKey];
-    EZDEBUG(@"btn:%@", btn);
+    //EZDEBUG(@"btn:%@", btn);
     if(animated){
         [btn setScale:1.3];
         [self addChild:btn];
@@ -403,7 +429,7 @@
 
 - (void) regretMarks:(NSInteger)steps animated:(BOOL)animated
 {
-    EZDEBUG(@"Before regret, regret steps:%i, allMarks:%i", steps, _allMarks.count);
+    //EZDEBUG(@"Before regret, regret steps:%i, allMarks:%i", steps, _allMarks.count);
     for(int i = 0; i < steps; i++){
         if(_allMarks.count > 0){
             EZChessMark* cm = _allMarks.lastObject;
@@ -413,7 +439,7 @@
             break;
         }
     }
-    EZDEBUG(@"after _allmarks count:%i", _allMarks.count);
+    //EZDEBUG(@"after _allmarks count:%i", _allMarks.count);
 }
 
 //Following is the code for the touch event.
@@ -426,9 +452,9 @@
 {
     CGPoint localPt = [self locationInSelf:touch];
     CGPoint regularizedPt = [boardStatus adjustLocation:localPt];
-    EZDEBUG(@"TouchRect:%@, touchPoint:%@",NSStringFromCGRect(touchRect), NSStringFromCGPoint(localPt));
+    //EZDEBUG(@"TouchRect:%@, touchPoint:%@",NSStringFromCGRect(touchRect), NSStringFromCGPoint(localPt));
     if(CGRectContainsPoint(touchRect, localPt)){
-        EZDEBUG(@"Will plant chessman");
+        //EZDEBUG(@"Will plant chessman");
         [self putCursorButton:regularizedPt];
         return YES;
     }
@@ -439,7 +465,7 @@
 {
     CGPoint localPoint = [self locationInSelf:touch];
     CGPoint regularizedPt = [boardStatus adjustLocation:localPoint];
-    EZDEBUG(@"Move local GL:%@, ajusted: %@", NSStringFromCGPoint(localPoint), NSStringFromCGPoint(regularizedPt));
+    //EZDEBUG(@"Move local GL:%@, ajusted: %@", NSStringFromCGPoint(localPoint), NSStringFromCGPoint(regularizedPt));
     [self moveCursorButton:regularizedPt];
 }
 
@@ -447,7 +473,7 @@
 {
     CGPoint localPoint = [self locationInSelf:touch];
     CGPoint regularizedPt = [boardStatus adjustLocation:localPoint];
-    EZDEBUG(@"Touch ended at:%@, adjusted: %@", NSStringFromCGPoint(localPoint), NSStringFromCGPoint(regularizedPt));
+    //EZDEBUG(@"Touch ended at:%@, adjusted: %@", NSStringFromCGPoint(localPoint), NSStringFromCGPoint(regularizedPt));
     [self removeCursorButton];
     if(_chessmanType == kChessMan){
         EZCoord* coord = [boardStatus pointToBC:localPoint];
@@ -456,7 +482,7 @@
         [boardStatus putButtonByCoord:coord animated:YES];
     }else{
         NSString* markStr = [chessMarkChar objectAtIndex:(_allMarks .count % chessMarkChar.count)];
-        EZDEBUG(@"Current marks:%i, chessMarChar.cout:%i, markStr:%@", coordToMarks.count, chessMarkChar.count, markStr);
+        //EZDEBUG(@"Current marks:%i, chessMarChar.cout:%i, markStr:%@", coordToMarks.count, chessMarkChar.count, markStr);
         //CCLabelTTF*  markText = [CCLabelTTF labelWithString:markStr fontName:@"Arial" fontSize:40];
         EZCoord* coord = [boardStatus pointToBC:localPoint];
         //[chessBoard putMark:markText coord:[[EZCoord alloc] init:10 y:10] animAction:nil];
@@ -469,7 +495,7 @@
 - (void) setChessmanType:(EZChessmanType)chessmanType
 {
     //What do we need to do?
-    EZDEBUG(@"chessmanType:%i", chessmanType);
+    //EZDEBUG(@"chessmanType:%i", chessmanType);
     if(chessmanType == kChessMark){
         
     }

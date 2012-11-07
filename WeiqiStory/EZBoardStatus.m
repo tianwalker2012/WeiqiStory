@@ -50,12 +50,12 @@
 {
     self = [super init];
     if(self){
+        steps = 0;
         lineGap = gap;
         bounds = bd;
         totalLines = tl;
         boardRect = [self calcInnerRect];
         initialBlack = true;
-        steps = 0;
         coordToChess = [[NSMutableDictionary alloc] initWithCapacity:100];
         plantedChess = [[NSMutableArray alloc] initWithCapacity:100];
     }
@@ -67,12 +67,12 @@
 {
     self = [super init];
     if(self){
+        steps = 0;
         lineGap = bd.size.height/(rows-1);
         bounds = bd;
         totalLines = rows;
         boardRect = bounds;
         initialBlack = true;
-        steps = 0;
         coordToChess = [[NSMutableDictionary alloc] initWithCapacity:100];
         plantedChess = [[NSMutableArray alloc] initWithCapacity:100];
     }
@@ -378,25 +378,23 @@
 //The It will call EZBoardFront to plant the button on screen accordingly.
 - (ChessPutStatus) putButtonByCoord:(EZCoord*)coord animated:(BOOL)animated
 {
-    ChessPutStatus putStatus = [self tryPutButton:coord isBlack:[self isCurrentBlack]];
-    if(putStatus != EZPutOk){
-        return putStatus;
-    }
     BOOL isBlack = [self isCurrentBlack];
     if(coord.chessType == kBlackChess){
         isBlack = true;
     }else if(coord.chessType == kWhiteChess){
         isBlack = false;
     }
-
+    ChessPutStatus putStatus = [self tryPutButton:coord isBlack:isBlack];
+    if(putStatus != EZPutOk){
+        
+        return putStatus;
+    }
     EZChessPosition* pos = [[EZChessPosition alloc]initWithCoord:coord isBlack:isBlack step:steps] ;
     [coordToChess setValue:pos forKey:coord.getKey];
     [plantedChess addObject:pos];
     [front putButton:coord isBlack:isBlack animated:animated];
     [self checkAndRemove:coord isBlack:isBlack animated:animated];
     ++steps;
-    
-    
     //EZDEBUG(@"complete put button");
     return putStatus;
 }
@@ -467,7 +465,8 @@
     for(EZChessPosition* removed in chess.removedChess){
         removed.eaten = NO;
         [coordToChess setValue:removed forKey:removed.coord.getKey];
-        [front putButton:removed.coord isBlack:removed.isBlack animated:NO];
+        //[front putButton:removed.coord isBlack:removed.isBlack animated:NO];
+        [front recoveredButton:removed animated:false];
     }
 
 }

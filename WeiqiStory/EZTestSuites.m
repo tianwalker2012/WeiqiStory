@@ -165,6 +165,21 @@
     //[EZCoreAccessor cleanClientDB];
     
     //[EZTestSuites testFilePath];
+    
+    //Befor work on the platform test the whole thing first.
+    //[EZTestSuites testUpload];
+    [EZTestSuites testListAllFiles];
+}
+
++ (void) testListAllFiles
+{
+    NSArray* files = [EZFileUtil listAllFiles:NSDocumentDirectory];
+    for(NSURL* file in files){
+        //EZDEBUG(@"File name:%@", file);
+    }
+    
+    [EZFileUtil removeAllAudioFiles];
+    //assert(false);
 }
 
 
@@ -891,6 +906,7 @@
     [uploader uploadToServer:[@"Some data" dataUsingEncoding:NSUTF8StringEncoding] fileName:@"upload.txt" contentType:@"Joke" resultBlock:^(id sender){
         NSHTTPURLResponse* response = sender;
         EZDEBUG(@"Response detail:%i", response.statusCode);
+        assert(false);
     }];
     //assert(false);
 }
