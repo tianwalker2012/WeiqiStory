@@ -49,11 +49,22 @@
     }
     audioPlayer.delegate = self;
     block = blk;
+    audioPlayer.volume = 0.1;
     [audioPlayer play];
     EZDEBUG(@"start playing url:%@",url);
     return self;
     
 }
+
+- (void) stop{
+    [audioPlayer stop];
+}
+
+- (void) setVolume:(CGFloat)volume
+{
+    audioPlayer.volume = volume;
+}
+
 
 /* audioPlayerDidFinishPlaying:successfully: is called when a sound has finished playing. This method is NOT called if the player is stopped due to an interruption. */
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag

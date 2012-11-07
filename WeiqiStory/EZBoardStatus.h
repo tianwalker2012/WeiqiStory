@@ -83,7 +83,6 @@ typedef enum ChessPutStatus{
 - (id) initWithBound:(CGRect)bounds rows:(NSInteger)rows cols:(NSInteger)cols;
 
 
-
 - (CGPoint) adjustLocation:(CGPoint)point;
 
 //Turn the point to the coordinate on the board
@@ -179,7 +178,7 @@ typedef enum ChessPutStatus{
 - (BOOL) checkAvailableQi:(EZCoord*)coord isBlack:(BOOL)black isRobbery:(BOOL)robbery;
 
 
-- (void) regretOneStep;
+- (EZChessPosition*) regretOneStep:(BOOL)animated;
 
 //What's the difference between planted and getAllChessMoves?
 //Make it clear. 

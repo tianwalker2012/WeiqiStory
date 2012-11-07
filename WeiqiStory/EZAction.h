@@ -88,6 +88,11 @@ typedef enum {
 //The moves which have no effects on the board will simply get ignored. 
 - (void) fastForward:(EZActionPlayer*)player;
 
+//This is only useful for the voice part.
+//When user paused, we need to stop the voice playback.
+//Since the resume other things need to cooperate with it.
+//Let's keep it simple and stupid.
+- (void) pause:(EZActionPlayer*)player;
 
 @end
 

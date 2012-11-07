@@ -183,6 +183,30 @@
 		18451E51160F09FD00BF530C /* EZPlayerStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 18451E50160F09FA00BF530C /* EZPlayerStatus.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		18451E54160F22C100BF530C /* EZChessEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = 18451E53160F22BF00BF530C /* EZChessEditor.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		18451E57160F2AD000BF530C /* EZEditorStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 18451E56160F2ACE00BF530C /* EZEditorStatus.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		185BF458164373460044214A /* back-button-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 185BF445164373460044214A /* back-button-pad.png */; };
+		185BF459164373460044214A /* next-button-pressed-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 185BF446164373460044214A /* next-button-pressed-pad.png */; };
+		185BF45A164373460044214A /* prev-button-pressed-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 185BF447164373460044214A /* prev-button-pressed-pad.png */; };
+		185BF45B164373460044214A /* board-frame-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 185BF448164373460044214A /* board-frame-pad.png */; };
+		185BF45C164373460044214A /* chess-board-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 185BF449164373460044214A /* chess-board-pad.png */; };
+		185BF45D164373460044214A /* message-region-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 185BF44A164373460044214A /* message-region-pad.png */; };
+		185BF45E164373460044214A /* next-button-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 185BF44B164373460044214A /* next-button-pad.png */; };
+		185BF45F164373460044214A /* pause-button-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 185BF44C164373460044214A /* pause-button-pad.png */; };
+		185BF460164373460044214A /* pause-button-pressed-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 185BF44D164373460044214A /* pause-button-pressed-pad.png */; };
+		185BF461164373460044214A /* play-button-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 185BF44E164373460044214A /* play-button-pad.png */; };
+		185BF462164373460044214A /* play-button-pressed-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 185BF44F164373460044214A /* play-button-pressed-pad.png */; };
+		185BF463164373460044214A /* prev-button-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 185BF450164373460044214A /* prev-button-pad.png */; };
+		185BF464164373460044214A /* progress-bar-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 185BF451164373460044214A /* progress-bar-pad.png */; };
+		185BF465164373460044214A /* progress-nob-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 185BF452164373460044214A /* progress-nob-pad.png */; };
+		185BF466164373460044214A /* study-button-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 185BF453164373460044214A /* study-button-pad.png */; };
+		185BF467164373460044214A /* study-over-button-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 185BF454164373460044214A /* study-over-button-pad.png */; };
+		185BF468164373460044214A /* volume-adjust-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 185BF455164373460044214A /* volume-adjust-pad.png */; };
+		185BF469164373460044214A /* volume-button-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 185BF456164373460044214A /* volume-button-pad.png */; };
+		185BF46A164373460044214A /* volume-nob-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 185BF457164373460044214A /* volume-nob-pad.png */; };
+		185BF46C1643749A0044214A /* back-button-pressed-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 185BF46B1643749A0044214A /* back-button-pressed-pad.png */; };
+		185BF46F16437AA10044214A /* EZRegretAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 185BF46E16437AA10044214A /* EZRegretAction.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		185BF4711643A1090044214A /* volume-bar-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 185BF4701643A1080044214A /* volume-bar-pad.png */; };
+		185BF4731643A1140044214A /* volume-frame-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 185BF4721643A1140044214A /* volume-frame-pad.png */; };
+		185BF4751643B2F00044214A /* volume-button-pressed-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 185BF4741643B2F00044214A /* volume-button-pressed-pad.png */; };
 		18780DAE163E580100A26115 /* EZListPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 18780DAD163E580100A26115 /* EZListPage.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		18780DB0163E5ED200A26115 /* listpage.png in Resources */ = {isa = PBXBuildFile; fileRef = 18780DAF163E5ED200A26115 /* listpage.png */; };
 		18780DB2163E5EE400A26115 /* small-board-frame.png in Resources */ = {isa = PBXBuildFile; fileRef = 18780DB1163E5EE400A26115 /* small-board-frame.png */; };
@@ -227,16 +251,6 @@
 		18F87405163FCD7A00FB617D /* AdobeKai.otf in Resources */ = {isa = PBXBuildFile; fileRef = 18F87404163FCD7A00FB617D /* AdobeKai.otf */; };
 		18F87408163FD55A00FB617D /* EZBoardPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F87407163FD55A00FB617D /* EZBoardPanel.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		18F8740B163FFAE100FB617D /* EZPlayPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F8740A163FFAE100FB617D /* EZPlayPage.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
-		18F8740D1640CAEE00FB617D /* background-pattern-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 18F8740C1640CAEE00FB617D /* background-pattern-pad.png */; };
-		18F8740F1640CB0F00FB617D /* message-region-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 18F8740E1640CB0F00FB617D /* message-region-pad.png */; };
-		18F874111640D7D500FB617D /* back-button-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 18F874101640D7D400FB617D /* back-button-pad.png */; };
-		18F874131640D7E800FB617D /* board-frame-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 18F874121640D7E800FB617D /* board-frame-pad.png */; };
-		18F874151640D7F300FB617D /* chess-board-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 18F874141640D7F300FB617D /* chess-board-pad.png */; };
-		18F874171640D84400FB617D /* pause-button-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 18F874161640D84300FB617D /* pause-button-pad.png */; };
-		18F874191640D85300FB617D /* play-button-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 18F874181640D85200FB617D /* play-button-pad.png */; };
-		18F8741B1640D85E00FB617D /* progress-bar-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 18F8741A1640D85E00FB617D /* progress-bar-pad.png */; };
-		18F8741D1640D86A00FB617D /* progress-nob-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 18F8741C1640D86900FB617D /* progress-nob-pad.png */; };
-		18F8741F1640D87200FB617D /* study-btn-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 18F8741E1640D87200FB617D /* study-btn-pad.png */; };
 		18F874221640F8C000FB617D /* EZEffectTester.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F874211640F8BF00FB617D /* EZEffectTester.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		18F874241640F9AF00FB617D /* effects.png in Resources */ = {isa = PBXBuildFile; fileRef = 18F874231640F9AE00FB617D /* effects.png */; };
 		18F87427164120E900FB617D /* episode20121022141041.ar in Resources */ = {isa = PBXBuildFile; fileRef = 18F87426164120E900FB617D /* episode20121022141041.ar */; };
@@ -601,6 +615,31 @@
 		18451E53160F22BF00BF530C /* EZChessEditor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZChessEditor.m; sourceTree = "<group>"; };
 		18451E55160F2ACB00BF530C /* EZEditorStatus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZEditorStatus.h; sourceTree = "<group>"; };
 		18451E56160F2ACE00BF530C /* EZEditorStatus.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZEditorStatus.m; sourceTree = "<group>"; };
+		185BF445164373460044214A /* back-button-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "back-button-pad.png"; path = "../../../icons/weiqi/back-button-pad.png"; sourceTree = "<group>"; };
+		185BF446164373460044214A /* next-button-pressed-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "next-button-pressed-pad.png"; path = "../../../icons/weiqi/next-button-pressed-pad.png"; sourceTree = "<group>"; };
+		185BF447164373460044214A /* prev-button-pressed-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "prev-button-pressed-pad.png"; path = "../../../icons/weiqi/prev-button-pressed-pad.png"; sourceTree = "<group>"; };
+		185BF448164373460044214A /* board-frame-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "board-frame-pad.png"; path = "../../../icons/weiqi/board-frame-pad.png"; sourceTree = "<group>"; };
+		185BF449164373460044214A /* chess-board-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "chess-board-pad.png"; path = "../../../icons/weiqi/chess-board-pad.png"; sourceTree = "<group>"; };
+		185BF44A164373460044214A /* message-region-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "message-region-pad.png"; path = "../../../icons/weiqi/message-region-pad.png"; sourceTree = "<group>"; };
+		185BF44B164373460044214A /* next-button-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "next-button-pad.png"; path = "../../../icons/weiqi/next-button-pad.png"; sourceTree = "<group>"; };
+		185BF44C164373460044214A /* pause-button-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "pause-button-pad.png"; path = "../../../icons/weiqi/pause-button-pad.png"; sourceTree = "<group>"; };
+		185BF44D164373460044214A /* pause-button-pressed-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "pause-button-pressed-pad.png"; path = "../../../icons/weiqi/pause-button-pressed-pad.png"; sourceTree = "<group>"; };
+		185BF44E164373460044214A /* play-button-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "play-button-pad.png"; path = "../../../icons/weiqi/play-button-pad.png"; sourceTree = "<group>"; };
+		185BF44F164373460044214A /* play-button-pressed-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "play-button-pressed-pad.png"; path = "../../../icons/weiqi/play-button-pressed-pad.png"; sourceTree = "<group>"; };
+		185BF450164373460044214A /* prev-button-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "prev-button-pad.png"; path = "../../../icons/weiqi/prev-button-pad.png"; sourceTree = "<group>"; };
+		185BF451164373460044214A /* progress-bar-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "progress-bar-pad.png"; path = "../../../icons/weiqi/progress-bar-pad.png"; sourceTree = "<group>"; };
+		185BF452164373460044214A /* progress-nob-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "progress-nob-pad.png"; path = "../../../icons/weiqi/progress-nob-pad.png"; sourceTree = "<group>"; };
+		185BF453164373460044214A /* study-button-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "study-button-pad.png"; path = "../../../icons/weiqi/study-button-pad.png"; sourceTree = "<group>"; };
+		185BF454164373460044214A /* study-over-button-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "study-over-button-pad.png"; path = "../../../icons/weiqi/study-over-button-pad.png"; sourceTree = "<group>"; };
+		185BF455164373460044214A /* volume-adjust-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "volume-adjust-pad.png"; path = "../../../icons/weiqi/volume-adjust-pad.png"; sourceTree = "<group>"; };
+		185BF456164373460044214A /* volume-button-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "volume-button-pad.png"; path = "../../../icons/weiqi/volume-button-pad.png"; sourceTree = "<group>"; };
+		185BF457164373460044214A /* volume-nob-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "volume-nob-pad.png"; path = "../../../icons/weiqi/volume-nob-pad.png"; sourceTree = "<group>"; };
+		185BF46B1643749A0044214A /* back-button-pressed-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "back-button-pressed-pad.png"; path = "../../../icons/weiqi/back-button-pressed-pad.png"; sourceTree = "<group>"; };
+		185BF46D16437AA10044214A /* EZRegretAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZRegretAction.h; sourceTree = "<group>"; };
+		185BF46E16437AA10044214A /* EZRegretAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZRegretAction.m; sourceTree = "<group>"; };
+		185BF4701643A1080044214A /* volume-bar-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "volume-bar-pad.png"; path = "../../../icons/weiqi/volume-bar-pad.png"; sourceTree = "<group>"; };
+		185BF4721643A1140044214A /* volume-frame-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "volume-frame-pad.png"; path = "../../../icons/weiqi/volume-frame-pad.png"; sourceTree = "<group>"; };
+		185BF4741643B2F00044214A /* volume-button-pressed-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "volume-button-pressed-pad.png"; path = "../../../icons/weiqi/volume-button-pressed-pad.png"; sourceTree = "<group>"; };
 		18780DAC163E580100A26115 /* EZListPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZListPage.h; sourceTree = "<group>"; };
 		18780DAD163E580100A26115 /* EZListPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZListPage.m; sourceTree = "<group>"; };
 		18780DAF163E5ED200A26115 /* listpage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = listpage.png; sourceTree = "<group>"; };
@@ -675,16 +714,6 @@
 		18F87407163FD55A00FB617D /* EZBoardPanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZBoardPanel.m; sourceTree = "<group>"; };
 		18F87409163FFAE100FB617D /* EZPlayPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZPlayPage.h; sourceTree = "<group>"; };
 		18F8740A163FFAE100FB617D /* EZPlayPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZPlayPage.m; sourceTree = "<group>"; };
-		18F8740C1640CAEE00FB617D /* background-pattern-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "background-pattern-pad.png"; sourceTree = "<group>"; };
-		18F8740E1640CB0F00FB617D /* message-region-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "message-region-pad.png"; sourceTree = "<group>"; };
-		18F874101640D7D400FB617D /* back-button-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "back-button-pad.png"; sourceTree = "<group>"; };
-		18F874121640D7E800FB617D /* board-frame-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "board-frame-pad.png"; sourceTree = "<group>"; };
-		18F874141640D7F300FB617D /* chess-board-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "chess-board-pad.png"; sourceTree = "<group>"; };
-		18F874161640D84300FB617D /* pause-button-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pause-button-pad.png"; sourceTree = "<group>"; };
-		18F874181640D85200FB617D /* play-button-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "play-button-pad.png"; sourceTree = "<group>"; };
-		18F8741A1640D85E00FB617D /* progress-bar-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "progress-bar-pad.png"; sourceTree = "<group>"; };
-		18F8741C1640D86900FB617D /* progress-nob-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "progress-nob-pad.png"; sourceTree = "<group>"; };
-		18F8741E1640D87200FB617D /* study-btn-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "study-btn-pad.png"; sourceTree = "<group>"; };
 		18F874201640F8BF00FB617D /* EZEffectTester.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZEffectTester.h; sourceTree = "<group>"; };
 		18F874211640F8BF00FB617D /* EZEffectTester.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZEffectTester.m; sourceTree = "<group>"; };
 		18F874231640F9AE00FB617D /* effects.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = effects.png; path = ../../../icons/weiqi/effects.png; sourceTree = "<group>"; };
@@ -1220,6 +1249,8 @@
 				18451E56160F2ACE00BF530C /* EZEditorStatus.m */,
 				18F37CB416115919004B18A0 /* EZChessMark.h */,
 				18F37CB516115919004B18A0 /* EZChessMark.m */,
+				185BF46D16437AA10044214A /* EZRegretAction.h */,
+				185BF46E16437AA10044214A /* EZRegretAction.m */,
 			);
 			name = Boards;
 			sourceTree = "<group>";
@@ -1238,21 +1269,34 @@
 		18451DE41609CBA800BF530C /* images */ = {
 			isa = PBXGroup;
 			children = (
+				185BF4741643B2F00044214A /* volume-button-pressed-pad.png */,
+				185BF4721643A1140044214A /* volume-frame-pad.png */,
+				185BF4701643A1080044214A /* volume-bar-pad.png */,
+				185BF46B1643749A0044214A /* back-button-pressed-pad.png */,
 				18F874231640F9AE00FB617D /* effects.png */,
-				18F8741E1640D87200FB617D /* study-btn-pad.png */,
-				18F8741C1640D86900FB617D /* progress-nob-pad.png */,
-				18F8741A1640D85E00FB617D /* progress-bar-pad.png */,
-				18F874181640D85200FB617D /* play-button-pad.png */,
-				18F874161640D84300FB617D /* pause-button-pad.png */,
-				18F874101640D7D400FB617D /* back-button-pad.png */,
-				18F874141640D7F300FB617D /* chess-board-pad.png */,
-				18F874121640D7E800FB617D /* board-frame-pad.png */,
-				18F8740E1640CB0F00FB617D /* message-region-pad.png */,
-				18F8740C1640CAEE00FB617D /* background-pattern-pad.png */,
 				18780DB9163E701D00A26115 /* chessman-white@14x14.png */,
 				18780DB7163E6FF700A26115 /* chessman-black@14x14.png */,
 				18780DB5163E5F2400A26115 /* inner-board-pad@250x250.png */,
 				18780DB3163E5F0100A26115 /* small-board.png */,
+				185BF445164373460044214A /* back-button-pad.png */,
+				185BF446164373460044214A /* next-button-pressed-pad.png */,
+				185BF447164373460044214A /* prev-button-pressed-pad.png */,
+				185BF448164373460044214A /* board-frame-pad.png */,
+				185BF449164373460044214A /* chess-board-pad.png */,
+				185BF44A164373460044214A /* message-region-pad.png */,
+				185BF44B164373460044214A /* next-button-pad.png */,
+				185BF44C164373460044214A /* pause-button-pad.png */,
+				185BF44D164373460044214A /* pause-button-pressed-pad.png */,
+				185BF44E164373460044214A /* play-button-pad.png */,
+				185BF44F164373460044214A /* play-button-pressed-pad.png */,
+				185BF450164373460044214A /* prev-button-pad.png */,
+				185BF451164373460044214A /* progress-bar-pad.png */,
+				185BF452164373460044214A /* progress-nob-pad.png */,
+				185BF453164373460044214A /* study-button-pad.png */,
+				185BF454164373460044214A /* study-over-button-pad.png */,
+				185BF455164373460044214A /* volume-adjust-pad.png */,
+				185BF456164373460044214A /* volume-button-pad.png */,
+				185BF457164373460044214A /* volume-nob-pad.png */,
 				18780DB1163E5EE400A26115 /* small-board-frame.png */,
 				18780DAF163E5ED200A26115 /* listpage.png */,
 				18E3F495163E524B00E0CFA6 /* homepage.png */,
@@ -1527,20 +1571,33 @@
 				18780DBA163E701D00A26115 /* chessman-white@14x14.png in Resources */,
 				18F87403163FCAA500FB617D /* HuaKaiTi.ttf in Resources */,
 				18F87405163FCD7A00FB617D /* AdobeKai.otf in Resources */,
-				18F8740D1640CAEE00FB617D /* background-pattern-pad.png in Resources */,
-				18F8740F1640CB0F00FB617D /* message-region-pad.png in Resources */,
-				18F874111640D7D500FB617D /* back-button-pad.png in Resources */,
-				18F874131640D7E800FB617D /* board-frame-pad.png in Resources */,
-				18F874151640D7F300FB617D /* chess-board-pad.png in Resources */,
-				18F874171640D84400FB617D /* pause-button-pad.png in Resources */,
-				18F874191640D85300FB617D /* play-button-pad.png in Resources */,
-				18F8741B1640D85E00FB617D /* progress-bar-pad.png in Resources */,
-				18F8741D1640D86A00FB617D /* progress-nob-pad.png in Resources */,
-				18F8741F1640D87200FB617D /* study-btn-pad.png in Resources */,
 				18F874241640F9AF00FB617D /* effects.png in Resources */,
 				18F87427164120E900FB617D /* episode20121022141041.ar in Resources */,
 				18F8742E16412A5F00FB617D /* audio2012102214.caf in Resources */,
 				18F8742F16412A5F00FB617D /* audio2012102215.caf in Resources */,
+				185BF458164373460044214A /* back-button-pad.png in Resources */,
+				185BF459164373460044214A /* next-button-pressed-pad.png in Resources */,
+				185BF45A164373460044214A /* prev-button-pressed-pad.png in Resources */,
+				185BF45B164373460044214A /* board-frame-pad.png in Resources */,
+				185BF45C164373460044214A /* chess-board-pad.png in Resources */,
+				185BF45D164373460044214A /* message-region-pad.png in Resources */,
+				185BF45E164373460044214A /* next-button-pad.png in Resources */,
+				185BF45F164373460044214A /* pause-button-pad.png in Resources */,
+				185BF460164373460044214A /* pause-button-pressed-pad.png in Resources */,
+				185BF461164373460044214A /* play-button-pad.png in Resources */,
+				185BF462164373460044214A /* play-button-pressed-pad.png in Resources */,
+				185BF463164373460044214A /* prev-button-pad.png in Resources */,
+				185BF464164373460044214A /* progress-bar-pad.png in Resources */,
+				185BF465164373460044214A /* progress-nob-pad.png in Resources */,
+				185BF466164373460044214A /* study-button-pad.png in Resources */,
+				185BF467164373460044214A /* study-over-button-pad.png in Resources */,
+				185BF468164373460044214A /* volume-adjust-pad.png in Resources */,
+				185BF469164373460044214A /* volume-button-pad.png in Resources */,
+				185BF46A164373460044214A /* volume-nob-pad.png in Resources */,
+				185BF46C1643749A0044214A /* back-button-pressed-pad.png in Resources */,
+				185BF4711643A1090044214A /* volume-bar-pad.png in Resources */,
+				185BF4731643A1140044214A /* volume-frame-pad.png in Resources */,
+				185BF4751643B2F00044214A /* volume-button-pressed-pad.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1727,6 +1784,7 @@
 				18F8740B163FFAE100FB617D /* EZPlayPage.m in Sources */,
 				18F874221640F8C000FB617D /* EZEffectTester.m in Sources */,
 				18F87432164212B400FB617D /* EZProgressBar.m in Sources */,
+				185BF46F16437AA10044214A /* EZRegretAction.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

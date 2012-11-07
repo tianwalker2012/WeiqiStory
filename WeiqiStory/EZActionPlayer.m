@@ -55,6 +55,7 @@
         _playingStatus = kPause;
         timerArray = [[NSMutableArray alloc] init];
         _stepCompletionBlocks = [[NSMutableArray alloc] init];
+        _soundVolume = InitialVolume;
     }
     return self;
 }
@@ -68,6 +69,13 @@
     if(_completeBlock){
         _completeBlock();
     }
+}
+
+- (void) setSoundVolume:(CGFloat)soundVolume
+{
+    [soundPlayer setVolume:soundVolume];
+    _soundVolume = soundVolume;
+    
 }
 
 //When to call this method?
@@ -101,6 +109,10 @@
 //Only play in a stepwise fashion.
 - (void) pause{
     _playingStatus = kStepWisePlaying;
+    if(_currentAction > 0){
+        EZAction* action = [_actions objectAtIndex:_currentAction-1];
+        [action pause:self];
+    }
 }
 
 //What the meaning of next?
@@ -309,6 +321,12 @@
     EZAudioFile* audio = [soundAction.audioFiles objectAtIndex:soundAction.currentAudio];
     soundAction.currentAudio = soundAction.currentAudio + 1;
     soundPlayer = [[EZSoundPlayer alloc] initWithFile:audio.fileName inMainBundle:audio.inMainBundle completeCall:block];
+    [soundPlayer setVolume:_soundVolume];
+}
+
+- (void) stopSound
+{
+    [soundPlayer stop];
 }
 
 - (void) playMoves:(EZAction*)act completeBlock:(void (^)())blk withDelay:(CGFloat)delay

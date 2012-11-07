@@ -452,23 +452,24 @@
 //No defensive, help to expose bugs.
 //If error it caused by UI and data inconsistent.
 //This is it, let's experiment.
-- (void) regretOneStep
+- (EZChessPosition*) regretOneStep:(BOOL)animated
 {
     //Too defensive?
     if(plantedChess.count == 0){
-        return;
+        return nil;
     }
     EZChessPosition* chess = plantedChess.lastObject;
     EZDEBUG(@"Will regret, the coord is:%@, removed size is:%i",chess.coord, chess.removedChess.count);
     [plantedChess removeLastObject];
     [coordToChess removeObjectForKey:chess.coord.getKey];
     -- steps;
-    [front clean:chess.coord animated:NO];
+    [front clean:chess.coord animated:animated];
     for(EZChessPosition* removed in chess.removedChess){
         removed.eaten = NO;
         [coordToChess setValue:removed forKey:removed.coord.getKey];
         [front putButton:removed.coord isBlack:removed.isBlack animated:NO];
     }
+    return chess;
 
 }
 

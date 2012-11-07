@@ -262,4 +262,9 @@
     }
 }
 
+- (void) pause:(EZActionPlayer*)player
+{
+    EZDEBUG(@"Pause get called, do nothing");
+}
+
 @end

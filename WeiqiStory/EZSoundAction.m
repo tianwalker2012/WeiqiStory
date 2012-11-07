@@ -37,6 +37,11 @@
     
 }
 
+- (void) pause:(EZActionPlayer *)player
+{
+    [player stopSound];
+}
+
 - (EZSoundAction*) clone
 {
     EZSoundAction* cloned = [[EZSoundAction alloc] init];

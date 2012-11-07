@@ -147,6 +147,8 @@ typedef enum {
 - (void) cleanActionMove:(NSArray*)moves;
 - (void) stepCompleted;
 - (void) playSound:(EZAction*)action completeBlock:(void(^)())blk;
+- (void) stopSound;
+
 - (void) playMoves:(EZAction*)action completeBlock:(void (^)())blk withDelay:(CGFloat)delay;
 
 
@@ -158,5 +160,7 @@ typedef enum {
 @property (strong, nonatomic) EZOperationBlock completeBlock;
 
 @property (strong, readonly) NSMutableArray* stepCompletionBlocks;
+
+@property (assign, nonatomic) CGFloat soundVolume;
 
 @end

@@ -19,4 +19,9 @@
 
 - (EZSoundPlayer*) initWithFile:(NSString*)fileName inMainBundle:(BOOL)mainBundle completeCall:(void(^)())blk;
 
+//stop play back
+- (void) stop;
+
+- (void) setVolume:(CGFloat)volume;
+
 @end

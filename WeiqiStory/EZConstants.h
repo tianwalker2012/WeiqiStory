@@ -86,6 +86,8 @@ typedef enum {
 
 #define ThumbNailSize  150
 
+#define InitialVolume 0.8
+
 
 #define ezrect(x, y, w, h) \
     CGRectMake(x, y, w, h)

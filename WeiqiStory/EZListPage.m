@@ -89,7 +89,8 @@
         
         //Download the source from the server
         //[self startDownload];
-        [self loadEpisode];
+        //[self loadEpisode];
+        [self startDownload];
     }
     return self;
 }
@@ -126,7 +127,7 @@
     [_episodes addObject:epv];
     int col = (_episodes.count-1) % 4;
     int row = (_episodes.count-1) / 4;
-    
+
     CGFloat initX = 0;
     CGFloat initY = 0;
     CGFloat widthGap = 45;
@@ -134,6 +135,15 @@
     
     CGFloat panelWidth = 142;
     CGFloat panelHeight = 168;
+
+    
+    CGFloat scrollHeight = (row-1)* heightGap + row* panelHeight;
+
+    EZDEBUG(@"content height:%f, scrollHeight:%f", scroll.contentSize.height, scrollHeight);
+    if(scroll.contentSize.height < scrollHeight){
+        EZDEBUG(@"Adjust the scroll height accordingly");
+        scroll.contentSize = CGSizeMake(scroll.contentSize.width, scrollHeight);
+    }
     
     CGFloat xPos = (widthGap + panelWidth) * col + initX;
     CGFloat yPos = (heightGap + panelHeight) * row + initY;

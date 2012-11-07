@@ -13,6 +13,7 @@
 #import "EZImageResources.h"
 #import "EZChessman.h"
 #import "EZChessMark.h"
+#import "EZRegretAction.h"
 
 
 #import "EZBoardStatus.h"
@@ -64,6 +65,9 @@
         //I assume I can calculate the lineGap, simply by rect.size.width/rows
         coordToButtons = [[NSMutableDictionary alloc] init];
         coordToMarks = [[NSMutableDictionary alloc] init];
+        //Why do we have this? provide regret for the regrets
+        //Which is powerful for people change his mind quite often
+        _regrets = [[NSMutableArray alloc] init];
         _allMarks = [[NSMutableArray alloc] init];
         boardStatus = [[EZBoardStatus alloc] initWithBound:rect rows:rws cols:cls];
         boardStatus.front = self;
@@ -383,7 +387,10 @@
 - (void) regretChess:(NSInteger)steps  animated:(BOOL)animated
 {
     for(int i = 0; i < steps; i++){
-        [boardStatus regretOneStep];
+        EZChessPosition* cp = [boardStatus regretOneStep:animated];
+        EZRegretAction* regAct = [[EZRegretAction alloc] init];
+        regAct.position = cp;
+        [_regrets addObject:regAct];
     }
 }
 
@@ -396,16 +403,34 @@
     }
 }
 
+//Now we can officially regret what we regret for. 
+- (void) redoRegret:(BOOL)animated
+{
+    if(_regrets.count > 0){
+        EZRegretAction* act = [_regrets lastObject];
+        [act redo:self animated:animated];
+        [_regrets removeLastObject];
+    }
+}
+
 
 - (void) regretMarks:(NSInteger)steps animated:(BOOL)animated
 {
+    NSMutableArray* removedMarks = [[NSMutableArray alloc] initWithCapacity:steps];
     for(int i = 0; i < steps; i++){
         if(_allMarks.count > 0){
             EZChessMark* cm = _allMarks.lastObject;
             [self removeMarks:cm];
+            [removedMarks addObject:cm];
         }else{
             break;
         }
+    }
+    
+    if(removedMarks.count > 0){
+        EZRegretAction* regAct = [[EZRegretAction alloc] init];
+        regAct.chessMarks = removedMarks;
+        [_regrets addObject:regAct];
     }
 }
 
@@ -448,7 +473,9 @@
         coord.chessType = _chessmanSetType;
         [boardStatus putButtonByCoord:coord animated:YES];
     }else{
+        
         NSString* markStr = [chessMarkChar objectAtIndex:(coordToMarks.count % chessMarkChar.count)];
+        EZDEBUG(@"Current marks:%i, chessMarChar.cout:%i, markStr:%@", coordToMarks.count, chessMarkChar.count, markStr);
         //CCLabelTTF*  markText = [CCLabelTTF labelWithString:markStr fontName:@"Arial" fontSize:40];
         EZCoord* coord = [boardStatus pointToBC:localPoint];
         //[chessBoard putMark:markText coord:[[EZCoord alloc] init:10 y:10] animAction:nil];

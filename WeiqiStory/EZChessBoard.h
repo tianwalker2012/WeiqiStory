@@ -78,6 +78,8 @@ typedef enum {
 
 @property (strong, nonatomic) NSMutableArray* allMarks;
 
+@property (strong, nonatomic) NSMutableArray* regrets;
+
 //The touch Rect determined what's the region for chess board.
 - (id)initWithFile:(NSString*)filename touchRect:(CGRect)rect rows:(NSInteger)rows cols:(NSInteger)cols;
 
@@ -85,11 +87,14 @@ typedef enum {
 
 - (void) putChessman:(EZCoord*)coord animated:(BOOL)animated;
 
+- (void) putMarks:(NSArray*) marks;
 
 - (void) putChessmans:(NSArray*)coords animated:(BOOL)animated;
 
 //How many steps I will regret.
 - (void) regretSteps:(NSInteger)steps  animated:(BOOL)animated;
+
+- (void) redoRegret:(BOOL)animated;
 
 //Will get all the steps ever put on this board
 - (NSArray*) allSteps;
