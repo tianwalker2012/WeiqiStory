@@ -202,7 +202,6 @@
             [editorStatus insertPreset];
             currActPlayer.actions = @[editorStatus.presetAction];
             [currActPlayer playOneStep:0 completeBlock:nil];
-            
         }];
         
        

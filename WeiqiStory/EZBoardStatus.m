@@ -10,6 +10,7 @@
 #import "EZCoord.h"
 #import "EZConstants.h"
 #import "EZChessPosition.h"
+#import "EZSoundManager.h"
 
 //I may need to persist this class.
 //The goal before lunch is to make the black and white could go accordingly
@@ -386,13 +387,19 @@
     }
     ChessPutStatus putStatus = [self tryPutButton:coord isBlack:isBlack];
     if(putStatus != EZPutOk){
-        
+        if(animated){
+            [[EZSoundManager sharedSoundManager] playSoundEffect:sndRefuseChessman];
+        }
         return putStatus;
     }
     EZChessPosition* pos = [[EZChessPosition alloc]initWithCoord:coord isBlack:isBlack step:steps] ;
     [coordToChess setValue:pos forKey:coord.getKey];
     [plantedChess addObject:pos];
     [front putButton:coord isBlack:isBlack animated:animated];
+    
+    if(animated){
+        [[EZSoundManager sharedSoundManager] playSoundEffect:sndPlantChessman];
+    }
     [self checkAndRemove:coord isBlack:isBlack animated:animated];
     ++steps;
     //EZDEBUG(@"complete put button");

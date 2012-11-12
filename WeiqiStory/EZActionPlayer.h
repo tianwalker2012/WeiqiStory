@@ -114,7 +114,14 @@ typedef enum {
 
 - (void) replay:(EZOperationBlock)block;
 
+- (BOOL) isPlaying;
+
 - (void) pause;
+
+//Currently, the stop do one more thing than pause, that is set the currentAction to zero.
+//Only the quit will call it.
+//Normally others only call the pause.
+- (void) stop;
 
 - (void) resume;
 

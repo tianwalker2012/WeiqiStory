@@ -26,4 +26,15 @@
 
 + (void) deleteFiles:(NSString*)files;
 
++ (UIImage*) imageFromFile:(NSString*)file;
+
+//IF all data have copied into the database
+//If it is I will read from the database rather than from the disk.
+//Save the efforts of copy things.
++ (BOOL) isDataCopyDone;
+
++ (void) setDataCopyDone:(BOOL)done;
+
+
+
 @end

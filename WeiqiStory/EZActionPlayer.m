@@ -115,6 +115,13 @@
     }
 }
 
+//later will differentiate it. 
+- (void) stop
+{
+    [self pause];
+    _currentAction = 0;
+}
+
 //What the meaning of next?
 //When next get clicked
 //I will adjust the status to stepwise.
@@ -263,6 +270,11 @@
     _currentAction = begin;
     _playingStatus = kStepWisePlaying;
     [self resume];
+}
+
+- (BOOL) isPlaying
+{
+    return _playingStatus == kPlaying;
 }
 
 - (void) playOneStep:(NSInteger)begin completeBlock:(EZOperationBlock)block

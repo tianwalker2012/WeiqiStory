@@ -9,6 +9,15 @@
 #import "EZHomePage.h"
 #import "EZConstants.h"
 #import "EZListPage.h"
+#import "EZSoundPlayer.h"
+#import "EZSoundManager.h"
+
+@interface EZHomePage()
+{
+    EZSoundPlayer* soundPlayer;
+}
+
+@end
 
 @implementation EZHomePage
 
@@ -35,8 +44,9 @@
         CGSize winsize = [CCDirector sharedDirector].winSize;
         //CCSprite* background = [[CC]]
         
-        CCSprite* background = [[CCSprite alloc] initWithFile:@"homepage.png"];
-        CCMenuItemImage* startButton = [CCMenuItemImage itemWithNormalImage:@"start-btn.png" selectedImage:@"start-btn-pressed.png" block:^(id sender){
+        CCSprite* background = [[CCSprite alloc] initWithFile:@"home-page.png"];
+        CCMenuItemImage* startButton = [CCMenuItemImage itemWithNormalImage:@"start-button.png" selectedImage:@"start-button-pressed.png" block:^(id sender){
+            [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
             [[CCDirector sharedDirector] replaceScene:[EZListPage node]];
         }];
         

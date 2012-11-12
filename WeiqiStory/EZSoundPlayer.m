@@ -49,7 +49,7 @@
     }
     audioPlayer.delegate = self;
     block = blk;
-    audioPlayer.volume = 0.1;
+    //audioPlayer.volume = 0.1;
     [audioPlayer play];
     EZDEBUG(@"start playing url:%@",url);
     return self;

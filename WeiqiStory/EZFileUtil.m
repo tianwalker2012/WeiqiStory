@@ -8,6 +8,7 @@
 
 #import "EZFileUtil.h"
 #import "EZConstants.h"
+#import "cocos2d.h"
 
 @implementation EZFileUtil
 
@@ -96,6 +97,36 @@
     NSURL* res = [NSURL fileURLWithPath:fullPath];
     EZDEBUG(@"Home made directory name:%@, URL is:%@", fullPath, res);
     return res;
+}
+
+//Will pick the proper file with my own name conventions.
+//Great, I love this. 
++ (UIImage*) imageFromFile:(NSString *)file
+{
+    ccResolutionType resolution;
+    NSString *fullpath = [[CCFileUtils sharedFileUtils] fullPathFromRelativePath:file resolutionType:&resolution];
+    
+    NSLog(@"Full path:%@, resolution type:%i", fullpath, resolution);
+    UIImage *image = [[UIImage alloc] initWithContentsOfFile:fullpath];
+    return image;
+}
+
+
+//IF all data have copied into the database
+//If it is I will read from the database rather than from the disk.
+//Save the efforts of copy things.
++ (BOOL) isDataCopyDone
+{
+   NSNumber* data = [[NSUserDefaults standardUserDefaults] objectForKey:@"DataCopyDone"];
+    if(data){
+        return data.boolValue;
+    }
+    return false;
+}
+
++ (void) setDataCopyDone:(BOOL)done
+{
+    [[NSUserDefaults standardUserDefaults] setBool:done forKey:@"DataCopyDone"];
 }
 
 @end

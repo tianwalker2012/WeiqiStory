@@ -29,6 +29,16 @@
 
 @property (nonatomic, strong) NSThread* worker;
 
+//This is as if all the files are on the local main bundle or the document already,
+//Then I will not try to download it again.
+//Just use it as it is.
+//Update the database.
+//In database, I only store the episodeVO,
+//I will add another flag to indicate if the audio in the main bundle or in the document.
+//Better copy it to the document, so next time when the main bundle get updated nothing will lose, right?
+//Sound right. 
+@property (nonatomic, assign) BOOL isLocalFile;
+
 //Once this audio for this guy is over
 //I will use the blocking method here.
 //I will store the downloaded file to the document directory

@@ -50,14 +50,12 @@ static EZSoundManager* _sharedSoundManager = nil;
 -(ALuint)playSoundEffect:(NSString*)soundEffectKey {
     ALuint soundID = 0;
     if (managerSoundState == kAudioManagerReady) {
-        //NSNumber *isSFXLoaded = [soundEffectsState objectForKey:soundEffectKey];
-        //if ([isSFXLoaded boolValue] == SFX_LOADED) {
         EZDEBUG(@"Load before playing effect");
         //[soundEngine preloadEffect:soundEffectKey];
         soundID = [soundEngine playEffect:soundEffectKey];
-        //} else {
-            EZDEBUG(@"Playing: %@",soundEffectKey);
-        //}
+       
+        EZDEBUG(@"Playing: %@",soundEffectKey);
+        
     } else {
         EZDEBUG(@"GameMgr: Sound Manager is not ready, cannot play %@", soundEffectKey);
     }

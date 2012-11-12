@@ -298,6 +298,7 @@ static CCTextureCache *sharedTextureCache;
 			ccResolutionType resolution;
 			NSString *fullpath = [[CCFileUtils sharedFileUtils] fullPathFromRelativePath:path resolutionType:&resolution];
 
+            NSLog(@"Full path:%@, resolution type:%i", fullpath, resolution);
 			UIImage *image = [[UIImage alloc] initWithContentsOfFile:fullpath];
 			tex = [[CCTexture2D alloc] initWithCGImage:image.CGImage resolutionType:resolution];
 			[image release];

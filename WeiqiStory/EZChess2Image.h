@@ -54,4 +54,10 @@
 //Draw the picture in the middle point
 + (void) drawCtx:(CGContextRef)ctx image:(UIImage*)image pos:(CGPoint)pos;
 
++ (CGRect) rectPixToPoint:(CGRect)rect;
+
++ (CGSize) sizePixToPoint:(CGSize)size;
+
++ (CGSize) sizePointToPix:(CGSize)size;
+
 @end

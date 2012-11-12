@@ -35,6 +35,9 @@
 //Seems the purpose of the basicPattern is used to generate the thumbnail.
 @property (strong, nonatomic) UIImage* thumbNail;
 
+//The whole small board.
+@property (strong, nonatomic) UIImage* completeBoard;
+
 //All the audioFiles included in this episode.
 @property (strong, nonatomic) NSArray* audioFiles;
 

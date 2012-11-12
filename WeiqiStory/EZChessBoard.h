@@ -103,4 +103,7 @@ typedef enum {
 
 - (void) toggleColor;
 
+//For study mood to show the right color.
+- (void) syncChessColorWithLastMove;
+
 @end

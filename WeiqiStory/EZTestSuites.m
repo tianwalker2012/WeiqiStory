@@ -43,6 +43,7 @@
 #import "EZEpisodeDownloader.h"
 #import "EZUILoader.h"
 #import "EZEpisodeCell.h"
+#import "EZSoundPlayer.h"
 //#import "EZ"
 
 
@@ -168,7 +169,14 @@
     
     //Befor work on the platform test the whole thing first.
     //[EZTestSuites testUpload];
-    [EZTestSuites testListAllFiles];
+    //[EZTestSuites testListAllFiles];
+    //[EZTestSuites testPlayCompressedSound];
+    [EZTestSuites cleanClientDB];
+}
+
+
++ (void) cleanClientDB{
+    [EZCoreAccessor cleanClientDB];
 }
 
 + (void) testListAllFiles
@@ -182,6 +190,16 @@
     //assert(false);
 }
 
++ (void) testPlayCompressedSound
+{
+   EZSoundPlayer* soundPlayer = [[EZSoundPlayer alloc] initWithFile:@"audio2012102214.caf" inMainBundle:YES completeCall:^(){
+        EZDEBUG(@"Completed playing, %@", soundPlayer);
+       assert(false);
+    }];
+    
+    EZDEBUG("Should hear the sound");
+    
+}
 
 + (void) testFilePath
 {

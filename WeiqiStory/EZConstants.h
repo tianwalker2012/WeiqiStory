@@ -70,6 +70,14 @@ typedef enum {
 
 #define CoreDBModel @"ChessLecture"
 
+
+#define sndRefuseChessman @"refuse.wav"
+#define sndPlantChessman @"plant-chess.wav"
+#define sndButtonPress @"pressed.wav"
+#define sndBubbleBroken @"bubble-broken.wav"
+
+#define TouchEventPriority 10
+
 //What if something failed?
 //Should we do some thing about it?
 //Have some retry mechanism later.

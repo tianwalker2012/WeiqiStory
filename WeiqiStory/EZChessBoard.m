@@ -79,6 +79,16 @@
     return self;
 }
 
+//For the study mode need to get the color correct
+- (void) syncChessColorWithLastMove
+{
+    if(self.allSteps.count > 0){
+        EZChessPosition* cp = self.allSteps.lastObject;
+        if(cp.isBlack == self.isCurrentBlack){
+            [self toggleColor];
+        }
+    }
+}
 //Only show the start since this step.
 //Including this steps
 - (void) setShowStep:(BOOL)show
@@ -446,34 +456,26 @@
 
 - (void) regretMarks:(NSInteger)steps animated:(BOOL)animated
 {
-<<<<<<< HEAD
     NSMutableArray* removedMarks = [[NSMutableArray alloc] initWithCapacity:steps];
-=======
-    //EZDEBUG(@"Before regret, regret steps:%i, allMarks:%i", steps, _allMarks.count);
->>>>>>> origin/editor
+
     for(int i = 0; i < steps; i++){
         if(_allMarks.count > 0){
             EZChessMark* cm = _allMarks.lastObject;
             [self removeMarks:cm];
-<<<<<<< HEAD
             [removedMarks addObject:cm];
-=======
-            //[_allMarks removeLastObject];
->>>>>>> origin/editor
+
         }else{
             break;
         }
     }
-<<<<<<< HEAD
+
     
     if(removedMarks.count > 0){
         EZRegretAction* regAct = [[EZRegretAction alloc] init];
         regAct.chessMarks = removedMarks;
         [_regrets addObject:regAct];
     }
-=======
-    //EZDEBUG(@"after _allmarks count:%i", _allMarks.count);
->>>>>>> origin/editor
+
 }
 
 //Following is the code for the touch event.
@@ -515,14 +517,9 @@
         coord.chessType = _chessmanSetType;
         [boardStatus putButtonByCoord:coord animated:YES];
     }else{
-<<<<<<< HEAD
-        
-        NSString* markStr = [chessMarkChar objectAtIndex:(coordToMarks.count % chessMarkChar.count)];
-        EZDEBUG(@"Current marks:%i, chessMarChar.cout:%i, markStr:%@", coordToMarks.count, chessMarkChar.count, markStr);
-=======
+
         NSString* markStr = [chessMarkChar objectAtIndex:(_allMarks .count % chessMarkChar.count)];
         //EZDEBUG(@"Current marks:%i, chessMarChar.cout:%i, markStr:%@", coordToMarks.count, chessMarkChar.count, markStr);
->>>>>>> origin/editor
         //CCLabelTTF*  markText = [CCLabelTTF labelWithString:markStr fontName:@"Arial" fontSize:40];
         EZCoord* coord = [boardStatus pointToBC:localPoint];
         //[chessBoard putMark:markText coord:[[EZCoord alloc] init:10 y:10] animAction:nil];

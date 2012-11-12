@@ -9,22 +9,28 @@
 #import "EZImageView.h"
 #import "EZConstants.h"
 #import "EZChess2Image.h"
+#import "EZFileUtil.h"
 
 @implementation EZImage
 
-- (id) initWithImage:(UIImage*)image rect:(CGRect)rect z:(NSInteger)z
+- (id) initWithImage:(UIImage*)image rect:(CGRect)rect z:(NSInteger)z flip:(BOOL)flip
 {
     self = [super init];
     _image = image;
     _rect = rect;
     _zOrder = z;
-    
+    _flip = flip;
     return self;
+}
+
+- (id) initWithImage:(UIImage*)image point:(CGPoint)point z:(NSInteger)z flip:(BOOL)flip
+{
+    return [self initWithImage:image rect:CGRectMake(point.x,point.y,image.size.width, image.size.height) z:z flip:flip];
 }
 
 - (id) initWithImage:(UIImage*)image point:(CGPoint)point z:(NSInteger)z
 {
-   return [self initWithImage:image rect:CGRectMake(point.x,point.y,image.size.width, image.size.height) z:z];
+    return [self initWithImage:image rect:CGRectMake(point.x,point.y,image.size.width, image.size.height) z:z flip:TRUE];
 }
 
 @end
@@ -39,11 +45,20 @@
 
 - (id) initWithImage:(UIImage*)image position:(CGPoint)pos
 {
-    self = [super initWithFrame:CGRectMake(pos.x, pos.y, image.size.width, image.size.height)];
+    //Change the board generation.
+    return [self initWithImage:image position:pos flip:TRUE];
+}
+
+- (id) initWithImage:(UIImage*)image position:(CGPoint)pos flip:(BOOL)flip
+{
+    CGFloat scale = [UIScreen mainScreen].scale;
+    self = [super initWithFrame:CGRectMake(pos.x, pos.y, image.size.width/scale, image.size.height/scale)];
     self.clipsToBounds = TRUE;
+    //This is important for support the retina resolution screen. 
+    self.contentScaleFactor = [UIScreen mainScreen].scale;
     _images = [[NSMutableArray alloc] init];
-    image = [EZChess2Image flipImage:image];
-    [_images addObject:[[EZImage alloc] initWithImage:image rect:CGRectMake(0, 0, image.size.width, image.size.height) z:0]];
+    //DRY principle
+    [self addEZImage:[[EZImage alloc] initWithImage:image rect:CGRectMake(0, 0, image.size.width, image.size.height) z:0 flip:flip]];
     //This may not be necessary, anyway do no harm, right?
     //[self setNeedsDisplay];
     return self;
@@ -51,7 +66,9 @@
 
 - (void) addEZImage:(EZImage*)image
 {
-    image.image = [EZChess2Image flipImage:image.image];
+    if(image.flip){
+        image.image = [EZChess2Image flipImage:image.image];
+    }
     [_images addObject:image];
     [_images sortUsingComparator:^(EZImage* img1, EZImage* img2){
         return img1.zOrder - img2.zOrder;
@@ -67,7 +84,7 @@
 //Will locate at specified position, will stretch the image to fit.
 - (void) addImage:(UIImage*)image rect:(CGRect)rect z:(NSInteger)z;
 {
-    [self addEZImage:[[EZImage alloc] initWithImage:image rect:rect z:z]];
+    [self addEZImage:[[EZImage alloc] initWithImage:image rect:rect z:z flip:TRUE]];
     
 }
 //Will locate a 0,0, with zOrder zero.
@@ -86,8 +103,20 @@
     for(EZImage* image in _images){
         CGRect rect = image.rect;
         //rect.origin.y = self.bounds.size.height - rect.origin.y;
-        CGContextDrawImage(ctx, CGRectMake(rect.origin.x, rect.origin.y, rect.size.width, rect.size.height), image.image.CGImage);
+        CGContextDrawImage(ctx, CGRectMake(rect.origin.x, rect.origin.y, rect.size.width/self.contentScaleFactor, rect.size.height/self.contentScaleFactor), image.image.CGImage);
     }
+}
+
+//Draw all the content into an image
+- (UIImage*) outputAsImage
+{
+    UIGraphicsBeginImageContext([EZChess2Image sizePixToPoint:self.bounds.size]);
+    CGContextRef ctx = UIGraphicsGetCurrentContext();
+    self.layer.contentsScale = [UIScreen mainScreen].scale;
+    [self.layer drawInContext:ctx];
+    UIImage* res = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return res;
 }
 
 @end

@@ -148,11 +148,11 @@
     CGFloat xPos = (widthGap + panelWidth) * col + initX;
     CGFloat yPos = (heightGap + panelHeight) * row + initY;
     EZDEBUG(@"count:%i, col:%i, row:%i, xPos:%f, yPos:%f",_episodes.count, col, row, xPos, yPos);
-    EZBoardPanel* panel = [[EZBoardPanel alloc] initWithCoords:epv.basicPattern];
+    EZBoardPanel* panel = [[EZBoardPanel alloc] initWithEpisode:epv];
     [panel setPosition:ccp(xPos, yPos)];
     
-    panel.name.text = [NSString stringWithFormat:@"第%i讲", _episodes.count];
-    panel.intro.text = epv.introduction;
+    //panel.name.text = [NSString stringWithFormat:@"第%i讲", _episodes.count];
+    //panel.intro.text = epv.introduction;
     panel.tappedBlock = ^(){
         EZDEBUG(@"The episode %@ get tapped", epv.name);
         EZPlayPage* playPage = [[EZPlayPage alloc] initWithEpisode:epv];

@@ -192,7 +192,7 @@ NSInteger ccLoadFileIntoMemory(const char *filename, unsigned char **out)
 	{
 		NSString *pathWithoutExtension = [path stringByDeletingPathExtension];
 		NSString *name = [pathWithoutExtension lastPathComponent];
-
+        
 		// check if path already has the suffix.
 		if( [name rangeOfString:suffix].location == NSNotFound ) {
 			
@@ -217,7 +217,7 @@ NSInteger ccLoadFileIntoMemory(const char *filename, unsigned char **out)
 	NSString *ret = nil;
 	// only if it is not an absolute path
 	if( ! [path isAbsolutePath] ) {
-		
+		//NSLog(@"Make sure logic goes here");
 		// pathForResource also searches in .lproj directories. issue #1230
 		NSString *imageDirectory = [path stringByDeletingLastPathComponent];
 		
@@ -229,6 +229,7 @@ NSInteger ccLoadFileIntoMemory(const char *filename, unsigned char **out)
 	else if( [fileManager_ fileExistsAtPath:newName] )
 		ret = newName;
 
+    NSLog(@"Will check for file:%@, absolute path:%@, newName:%@", ret, path, newName);
 	if( ! ret )
 		CCLOGINFO(@"cocos2d: CCFileUtils: file not found: %@", [newName lastPathComponent] );
 
@@ -251,7 +252,7 @@ NSInteger ccLoadFileIntoMemory(const char *filename, unsigned char **out)
 #ifdef __CC_PLATFORM_IOS
 
 	NSInteger device = [self runningDevice];
-
+    NSLog(@"Device:%i", device);
 	// iPad HD ?
 	if( device == kCCiPadRetinaDisplay ) {
 		ret = [self getPath:relPath forSuffix:iPadRetinaDisplaySuffix_];
@@ -263,6 +264,8 @@ NSInteger ccLoadFileIntoMemory(const char *filename, unsigned char **out)
 		ret = [self getPath:relPath forSuffix:iPadSuffix_];
 		*resolutionType = kCCResolutioniPad;
 	}
+    
+    NSLog(@"After pad File suffixes:%@, returned:%@", iPadSuffix_, ret);
 	
 	// iPhone HD ?
 	if( device == kCCiPhoneRetinaDisplay || (enableFallbackSuffixes_ && !ret) ) {

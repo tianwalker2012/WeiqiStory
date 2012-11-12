@@ -63,9 +63,9 @@
 //Generate the thumbNail, download each files and update the data base accordingly.
 - (void) processEpisode:(EZEpisodeVO*)episode
 {
-    if(episode.thumbNail == nil){
-        [episode regenerateThumbNail];
-    }
+    //if(episode.thumbNail == nil){
+    //    [episode regenerateThumbNail];
+    //}
     [self downloadAllAudio:episode.audioFiles completeBlock:nil];
     BOOL completed = true;
     for(EZAudioFile* file in episode.audioFiles){

@@ -13,6 +13,9 @@
 #import "EZActionPlayer.h"
 #import "EZProgressBar.h"
 #import "EZExtender.h"
+#import "EZSoundManager.h"
+#import "EZBubble.h"
+#import "EZBubble2.h"
 
 //Only 2 status.
 //Let's visualize what's was going on for a while.
@@ -46,6 +49,13 @@ typedef enum {
     EZChessBoard* studyBoard;
     //Used to progress the board to current status
     EZActionPlayer* studyPlayer;
+    
+    CCNode* mainLayout;
+    
+    CCSprite* bubble;
+    CCSprite* broken;
+    
+    //CCTimer* timer;
     
     BOOL volumePressed;
     
@@ -117,17 +127,19 @@ typedef enum {
 - (void) initStudyBoard2:(EZEpisodeVO*)epv
 {
     
-    studyBoardHolder = [CCSprite spriteWithFile:@"background-pattern-pad.png" rect:CGRectMake(0, 0, 768, 878)];
+    //studyBoardHolder = [CCSprite spriteWithFile:@"background-pattern.png" rect:CGRectMake(0, 0, 768, 878)];
     //studyBoardHolder.contentSize = CGSizeMake(768, 876);
-    studyBoardHolder.anchorPoint = ccp(0, 0);
-    studyBoardHolder.position = ccp(0, 0);
+    studyBoardHolder = [[CCNode alloc] init];
+    studyBoardHolder.contentSize = CGSizeMake(768, 876);
+    studyBoardHolder.anchorPoint = ccp(0.5, 0);
+    studyBoardHolder.position = ccp(768/2, 0);
     
     
-    chessBoard2 = [[EZChessBoard alloc] initWithFile:@"chess-board-pad.png" touchRect:CGRectMake(27, 27, 632, 632) rows:19 cols:19];
+    chessBoard2 = [[EZChessBoard alloc] initWithFile:@"chess-board.png" touchRect:CGRectMake(27, 27, 632, 632) rows:19 cols:19];
     chessBoard2.position = ccp(384, 512);
-    [studyBoardHolder addChild:chessBoard2];
+    [studyBoardHolder addChild:chessBoard2 z:9];
     
-    CCSprite* boardFrame = [[CCSprite alloc] initWithFile:@"board-frame-pad.png"];
+    CCSprite* boardFrame = [[CCSprite alloc] initWithFile:@"board-frame.png"];
     boardFrame.position = ccp(384, 512);
     //Why Frame should cover the edge of the board.
     [studyBoardHolder addChild:boardFrame z:10];
@@ -135,23 +147,41 @@ typedef enum {
     
     //[self addChild:studyBoardHolder];
     player2 = [[EZActionPlayer alloc] initWithActions:epv.actions chessBoard:chessBoard2];
-    CCMenuItemImage* quitButton = [CCMenuItemImage itemWithNormalImage:@"study-over-button-pad.png" selectedImage:@"study-over-button-pad.png"
+    CCMenuItemImage* quitButton = [CCMenuItemImage itemWithNormalImage:@"study-over-button.png" selectedImage:@"study-over-button.png"
         block:^(id sender){
+            [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
+            /**
             id action = [CCScaleTo actionWithDuration:0.3 scaleX:1 scaleY:0.1];
             //id action = [CCMoveTo actionWithDuration:0.3 position:ccp(0, -studyBoardHolder.position.y)];
             CCAction* removeAction = [CCSequence actions:action,[CCCallBlock actionWithBlock:^(){
                 [studyBoardHolder removeFromParentAndCleanup:NO];
             }], nil];
+            **/
+            id animation = [CCScaleTo actionWithDuration:0.3 scaleX:0.05 scaleY:1];
+            
+            id completed = [CCCallBlock actionWithBlock:^(){
+                EZDEBUG(@"start show study board");
+                //studyBoardHolder.scaleX = 0.05;
+                //[self addChild:studyBoardHolder z:100];
+                [self addChild:mainLayout z:5];
+                id scaleDown = [CCScaleTo actionWithDuration:0.3f scaleX:1 scaleY:1];
+                //id moveTo = [CCMoveTo actionWithDuration:0.3f position:ccp(0, 0)];
+                [mainLayout runAction:scaleDown];
+                [studyBoardHolder removeFromParentAndCleanup:NO];
+            }];
+            id sequence = [CCSequence actions:animation, completed, nil];
             chessBoard2.touchEnabled = false;
-            [studyBoardHolder runAction:removeAction];
+            [studyBoardHolder runAction:sequence];
         }
     ];
+    
     CCMenu* quitButtonWrapper = [CCMenu menuWithItems:quitButton, nil];
     quitButtonWrapper.position = ccp(663, 75);
     [studyBoardHolder addChild:quitButtonWrapper];
     
     
-    CCMenuItemImage* prevButton = [CCMenuItemImage itemWithNormalImage:@"prev-button-pad.png" selectedImage:@"prev-button-pressed-pad.png" block:^(id sender) {
+    CCMenuItemImage* prevButton = [CCMenuItemImage itemWithNormalImage:@"prev-button.png" selectedImage:@"prev-button-pressed-pad.png" block:^(id sender) {
+        [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
         [chessBoard2 regretSteps:1 animated:NO];
         EZDEBUG(@"Regret queue:%i", chessBoard2.regrets.count);
     }];
@@ -162,8 +192,9 @@ typedef enum {
     
     //What's the meaning of nextStep?, It mean what?
     
-    CCMenuItemImage* nextButton = [CCMenuItemImage itemWithNormalImage:@"next-button-pad.png" selectedImage:@"next-button-pressed-pad.png" block:^(id sender){
+    CCMenuItemImage* nextButton = [CCMenuItemImage itemWithNormalImage:@"next-button.png" selectedImage:@"next-button-pressed-pad.png" block:^(id sender){
         EZDEBUG(@"Regret queue:%i", chessBoard2.regrets.count);
+        [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
         [chessBoard2 redoRegret:NO];
     }];
 
@@ -172,65 +203,105 @@ typedef enum {
     [studyBoardHolder addChild:nextMenu];
     
 }
+
+- (void) onExit
+{
+    if(chessBoard2.touchEnabled){
+        //Make sure, it get removed from the event chains
+        chessBoard2.touchEnabled = false;
+    }
+}
+
+- (void) generatedBubble:(ccTime)time
+{
+    EZDEBUG(@"Generate bubble2");
+    CGFloat xStartPos = arc4random()%768;
+    CGFloat xEndPos = arc4random()%768;
+    CGFloat yEndPos = 1048;
+    CGFloat addDuration = arc4random()%5;
+    
+    CGFloat duration = 5 + addDuration;
+    EZBubble* randBubble = [[EZBubble alloc] initWithBubble:[CCSprite spriteWithSpriteFrame:bubble.displayFrame] broken:[CCSprite spriteWithSpriteFrame:broken.displayFrame]];
+    //CCNode* randBubble = [[EZBubble2 alloc] init];
+    randBubble.contentSize = bubble.contentSize;
+    CGFloat finalScale =0.5 + 0.2 * (arc4random() % 4);
+    
+    CGFloat finalAngle = 90 * (arc4random() % 5);
+    
+    randBubble.scale = 0.5;
+    randBubble.position = ccp(xStartPos, 0);
+    [self addChild:randBubble z:100];
+    id animate =  [CCSpawn actions:[CCMoveTo actionWithDuration:duration position:ccp(xEndPos, yEndPos)],[CCRotateBy actionWithDuration:duration angle:finalAngle], [CCScaleTo actionWithDuration:duration scale:finalScale], nil];
+    id action = [CCSequence actions:animate,[CCCallBlock actionWithBlock:^(){
+        [randBubble removeFromParentAndCleanup:YES];
+    }], nil];
+    [randBubble runAction:action];
+}
 //We will only support potrait orientation
 - (id) initWithEpisode:(EZEpisodeVO*)epv
 {
     self = [super init];
     if(self){
+        //timer = [[CCTimer alloc] initWithTarget:self selector:@selector(generatedBubble) interval:1 repeat:kCCRepeatForever delay:1];
+        EZDEBUG(@"Before Called schedule");
+        [self schedule:@selector(generatedBubble:) interval:1.0 repeat:kCCRepeatForever delay:0.5];
+        EZDEBUG(@"After called");
+        
+        bubble = [CCSprite spriteWithFile:@"bubble-pad.png"];
+        broken = [CCSprite spriteWithFile:@"bubble-broken.png"];
         playButtonStatus = kPlayerPause;
         _episode = epv;
-        CGSize winsize = [CCDirector sharedDirector].winSize;
+        //CGSize winsize = [CCDirector sharedDirector].winSize;
         //CCSprite* background = [[CC]]
         volumePressed = false;
-        CCSprite* background = [[CCSprite alloc] initWithFile:@"background-pattern-pad.png"];
+        CCSprite* background = [[CCSprite alloc] initWithFile:@"background-pattern.png"];
         background.anchorPoint = ccp(0, 0);
         background.position = ccp(0, 0);
-                
-        CCMenuItemImage* backButton = [CCMenuItemImage itemWithNormalImage:@"back-button-pad.png" selectedImage:@"back-button-pressed-pad.png" block:^(id sender){
-            [[CCDirector sharedDirector] popScene];
-        }];
-        
-        CCMenu* backMenu = [CCMenu menuWithItems:backButton, nil];
-        //menu.anchorPoint = ccp(0, 0);
-        backMenu.position =  ccp(96, 950);
         
         
-        
-        CCSprite* messageRegion = [[CCSprite alloc] initWithFile:@"message-region-pad.png"];
+        CCSprite* messageRegion = [[CCSprite alloc] initWithFile:@"message-region.png"];
         messageRegion.position = ccp(461, 950);
         
         episodeName = [[CCLabelTTF alloc] initWithString:epv.name fontName:@"Adobe Kaiti Std" fontSize:24];
         episodeName.anchorPoint = ccp(0, 0);
-        episodeName.position = ccp(62, messageRegion.contentSize.height - 50);
+        episodeName.position = ccp(62, messageRegion.contentSize.height - episodeName.contentSize.height - 15);
         [messageRegion addChild:episodeName];
         
         episodeIntro = [[CCLabelTTF alloc] initWithString:epv.introduction fontName:@"Adobe Kaiti Std" fontSize:24];
         episodeIntro.anchorPoint = ccp(0, 0);
-        episodeIntro.position = ccp(62, 10);
+        episodeIntro.position = ccp(62, 0);
         
-        
+        /**
         infomationRegion = [[CCLabelTTF alloc] initWithString:@"无用之用是为大用" fontName:@"Adobe Kaiti Std" fontSize:32];
         infomationRegion.anchorPoint = ccp(0, 0.5);
         infomationRegion.position = ccp(messageRegion.contentSize.width/3, messageRegion.contentSize.height/2);
-        
-        [messageRegion addChild:episodeIntro];
         [messageRegion addChild:infomationRegion];
+        **/
+        [messageRegion addChild:episodeIntro];
+        
         
         
         [self addChild:background];
-        [self addChild:backMenu];
         [self addChild:messageRegion];
 
         
         
+        //mainLayout = [CCSprite spriteWithFile:@"background-pattern.png" rect:CGRectMake(0, 0, 768, 878)];
+        mainLayout = [[CCNode alloc] init];
+        mainLayout.contentSize = CGSizeMake(768, 878);
+        //studyBoardHolder.contentSize = CGSizeMake(768, 876);
+        mainLayout.anchorPoint = ccp(0.5, 0);
+        mainLayout.position = ccp(768/2, 0);
         
-        CCSprite* boardFrame = [[CCSprite alloc] initWithFile:@"board-frame-pad.png"];
+        [self addChild:mainLayout z:5];
+        
+        CCSprite* boardFrame = [[CCSprite alloc] initWithFile:@"board-frame.png"];
         boardFrame.position = ccp(384, 512);
         //Why Frame should cover the edge of the board.
-        [self addChild:boardFrame z:10];
+        [mainLayout addChild:boardFrame z:10];
         
         
-        chessBoard = [[EZChessBoard alloc]initWithFile:@"chess-board-pad.png" touchRect:CGRectMake(27, 27, 632, 632) rows:19 cols:19];
+        chessBoard = [[EZChessBoard alloc]initWithFile:@"chess-board.png" touchRect:CGRectMake(27, 27, 632, 632) rows:19 cols:19];
         chessBoard.position = ccp(384, 512);
         chessBoard.touchEnabled = false;
         
@@ -241,15 +312,28 @@ typedef enum {
         
         //[player2 forwardFrom:0 to:epv.actions.count];
         
-        playImg = [CCSprite spriteWithFile:@"play-button-pad.png"];
-        pauseImg = [CCSprite spriteWithFile:@"pause-button-pad.png"];
+        playImg = [CCSprite spriteWithFile:@"play-button.png"];
+        pauseImg = [CCSprite spriteWithFile:@"pause-button.png"];
         
         
-        CCMenuItemImage* playButton = [CCMenuItemImage itemWithNormalImage:@"play-button-pad.png" selectedImage:@"play-button-pressed-pad.png"
+        
+        CCMenuItemImage* backButton = [CCMenuItemImage itemWithNormalImage:@"back-button.png" selectedImage:@"back-button-pressed.png" block:^(id sender){
+            [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
+            [player stop];
+            [[CCDirector sharedDirector] popScene];
+        }];
+        
+        CCMenu* backMenu = [CCMenu menuWithItems:backButton, nil];
+        //menu.anchorPoint = ccp(0, 0);
+        backMenu.position =  ccp(96, 950);
+        [self addChild:backMenu];
+        
+        CCMenuItemImage* playButton = [CCMenuItemImage itemWithNormalImage:@"play-button.png" selectedImage:@"play-button-pressed.png"
                                        block:^(id sender) {
+                                           [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
                                             CCMenuItemImage* imageItem = sender;
                                            EZDEBUG(@"play clicked, play status:%i", playButtonStatus);
-                                           if(playButtonStatus == kPlayerPause){
+                                           if(!player.isPlaying){
                                                //It is end and user click play button again.
                                                if(player.isEnd){
                                                    [player rewind];
@@ -277,13 +361,16 @@ typedef enum {
         CCMenu* playMenu = [CCMenu menuWithItems:playButton, nil];
         playMenu.position = ccp(87, 75);
         
-        CCSprite* progressBar = [[CCSprite alloc] initWithFile:@"progress-bar-pad.png"];
+        CCSprite* progressBar = [[CCSprite alloc] initWithFile:@"progress-bar.png"];
         //progressBar.position = ccp(294, 59);
         
-        CCSprite* progressNob = [[CCSprite alloc] initWithFile:@"progress-nob-pad.png"];
+        CCSprite* progressNob = [[CCSprite alloc] initWithFile:@"progress-nob.png"];
         //progressNob.position = ccp(294, 59);
         EZProgressBar* myBar = [[EZProgressBar alloc] initWithNob:progressNob bar:progressBar maxValue:epv.actions.count changedBlock:^(NSInteger prv, NSInteger cur) {
             EZDEBUG(@"Player2 Nob position changed from:%i to %i", prv, cur);
+            //pause the player, no harm will be done
+            [player pause];
+            [playButton setNormalSpriteFrame:playImg.displayFrame];
             [player forwardFrom:prv to:cur];
             
         }];
@@ -296,27 +383,20 @@ typedef enum {
         }];
         
         myBar.position = ccp(170, 60);
-        [self addChild:myBar];
+        [mainLayout addChild:myBar];
         
-        CCMenuItemImage* studyButton = [CCMenuItemImage itemWithNormalImage:@"study-button-pad.png" selectedImage:@"study-button-pad.png"
+        if(epv.actions.count > 0){
+            [player playOneStep:0 completeBlock:nil];
+        }
+        
+        CCMenuItemImage* studyButton = [CCMenuItemImage itemWithNormalImage:@"study-button.png" selectedImage:@"study-button-pad.png"
                                         block:^(id sender){
-                                            /**
+                                            [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
+                                            [player pause];
+                                            [playButton setNormalSpriteFrame:playImg.displayFrame];
+                                            
+                                            //More straightforward.
                                             if(!studyBoardHolder){
-                                                [self initStudyBoard:epv];
-                                            }
-                                            
-                                            [self addChild:studyBoardHolder];
-                                            EZDEBUG(@"Added touch event");
-                                            //studyBoard.touchEnabled = true;
-                                            
-                                            [studyBoard cleanAll];
-                                            EZDEBUG(@"play to current position:%i", player.currentAction);
-                                            [self performBlock:^(){
-                                                [studyPlayer forwardFrom:0 to:player.currentAction];
-                                            } withDelay:0.1];
-                                            //[studyPlayer play];
-                                             **/
-                                            if(!player2){
                                                 [self initStudyBoard2:epv];
                                             }else{
                                                 chessBoard2.touchEnabled = YES;
@@ -324,28 +404,51 @@ typedef enum {
                                             //[self addChild:chessBoard2];
                                             //[studyBoardHolder setScale:0.2];
                                             //studyBoardHolder.position = ccp(studyBoardHolder.position.x, -studyBoardHolder.position.y);
-                                            studyBoardHolder.scaleY = 0.1;
-                                            [self addChild:studyBoardHolder z:100];
-                                            id scaleDown = [CCScaleTo actionWithDuration:0.3f scaleX:1 scaleY:1];
-                                            //id moveTo = [CCMoveTo actionWithDuration:0.3f position:ccp(0, 0)];
-                                            [studyBoardHolder runAction:scaleDown];
+                                            id animation = [CCScaleTo actionWithDuration:0.3 scaleX:0.05 scaleY:1];
+                                            
+                                            id completed = [CCCallBlock actionWithBlock:^(){
+                                                EZDEBUG(@"start show study board");
+                                                [mainLayout removeFromParentAndCleanup:NO];
+                                                studyBoardHolder.scaleX = 0.05;
+                                                [self addChild:studyBoardHolder z:100];
+                                                id scaleDown = [CCScaleTo actionWithDuration:0.3f scaleX:1 scaleY:1];
+                                                //id moveTo = [CCMoveTo actionWithDuration:0.3f position:ccp(0, 0)];
+                                                [studyBoardHolder runAction:scaleDown];
+                                            }];
+                                            id sequence = [CCSequence actions:animation, completed, nil];
+                                            [mainLayout runAction:sequence];
+                                            
                                             [chessBoard2 cleanAll];
                                             [player2 forwardFrom:0 to:player.currentAction];
-                                            EZDEBUG(@"successfully completed raise board");
+                                            
+                                            //mean
+                                            //This is still not very precise,
+                                            //Even no check at all will give a 50% correct rate.
+                                            //Which boost my confidence.
+                                            if(player.currentAction == 1){
+                                                //Only handle 2 simplst cases
+                                                if([epv.introduction isEqualToString:@"黑先"] != chessBoard2.isCurrentBlack){
+                                                    [chessBoard2 toggleColor];
+                                                }
+                                            }else{
+                                                [chessBoard2 syncChessColorWithLastMove];
+                                            }
+                                            
+                                            EZDEBUG(@"successfully completed raising board");
                                         }
                                         ];
         CCMenu* studyMenu = [CCMenu menuWithItems:studyButton, nil];
         studyMenu.position = ccp(663, 75);
         
-        [self addChild:chessBoard];
+        [mainLayout addChild:chessBoard z:9];
         
-        [self addChild:playMenu];
+        [mainLayout addChild:playMenu];
         
-        CCSprite* normalVolume = [CCSprite spriteWithFile:@"volume-button-pad.png"];
-        CCSprite* pressedVolume = [CCSprite spriteWithFile:@"volume-button-pressed-pad.png"];
+        CCSprite* normalVolume = [CCSprite spriteWithFile:@"volume-button.png"];
+        CCSprite* pressedVolume = [CCSprite spriteWithFile:@"volume-button-pressed.png"];
         
         
-        EZProgressBar* volumeBar = [[EZProgressBar alloc] initWithNob:[CCSprite spriteWithFile:@"volume-nob-pad.png"] bar:[CCSprite spriteWithFile:@"volume-bar-pad.png"] maxValue:10 changedBlock:^(NSInteger prv, NSInteger cur) {
+        EZProgressBar* volumeBar = [[EZProgressBar alloc] initWithNob:[CCSprite spriteWithFile:@"volume-nob.png"] bar:[CCSprite spriteWithFile:@"volume-bar.png"] maxValue:10 changedBlock:^(NSInteger prv, NSInteger cur) {
             CGFloat volume = cur/10.0f;
             EZDEBUG(@"Volume position changed from:%i to %i, final volume will be:%f", prv, cur, volume);
             //[player forwardFrom:prv to:cur];
@@ -357,7 +460,7 @@ typedef enum {
         volumeBar.position = ccp(6, 6);
         [volumeFrame addChild:volumeBar];
         
-        CCMenu* volume = [CCMenu menuWithItems:[CCMenuItemImage itemWithNormalImage:@"volume-button-pad.png" selectedImage:@"volume-button-pressed-pad.png" block:^(id sender) {
+        CCMenu* volume = [CCMenu menuWithItems:[CCMenuItemImage itemWithNormalImage:@"volume-button.png" selectedImage:@"volume-button-pressed.png" block:^(id sender) {
             CCMenuItemImage* item = sender;
             if(volumePressed){
                 EZDEBUG(@"Will hide volume bar");
@@ -386,10 +489,10 @@ typedef enum {
         
         volume.position = ccp(492, 75);
         
-        [self addChild:volume z:10];
+        [mainLayout addChild:volume z:10];
         //[self addChild:progressBar];
         //[self addChild:progressNob];
-        [self addChild:studyMenu];
+        [mainLayout addChild:studyMenu];
         
         
     }

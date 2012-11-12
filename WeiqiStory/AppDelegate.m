@@ -16,6 +16,9 @@
 #import "EZHomePage.h"
 #import "EZListPage.h"
 #import "EZEffectTester.h"
+#import "EZListTablePage.h"
+#import "EZSoundManager.h"
+
 //#import "EZPlayerStatus.h"
 
 @implementation AppController
@@ -41,7 +44,7 @@
 	director_ = (CCDirectorIOS*) [CCDirector sharedDirector];
 
 	director_.wantsFullScreenLayout = YES;
-
+    //director_.wantsFullScreenLayout = NO;
 	// Display FSP and SPF
 	[director_ setDisplayStats:YES];
 
@@ -72,19 +75,22 @@
 	// On iPad     : "-ipad", "-hd"
 	// On iPhone HD: "-hd"
 	CCFileUtils *sharedFileUtils = [CCFileUtils sharedFileUtils];
-	[sharedFileUtils setEnableFallbackSuffixes:NO];				// Default: NO. No fallback suffixes are going to be used
+	[sharedFileUtils setEnableFallbackSuffixes:YES];				// Default: NO. No fallback suffixes are going to be used
 	[sharedFileUtils setiPhoneRetinaDisplaySuffix:@"-hd"];		// Default on iPhone RetinaDisplay is "-hd"
-	[sharedFileUtils setiPadSuffix:@"-ipad"];					// Default on iPad is "ipad"
-	[sharedFileUtils setiPadRetinaDisplaySuffix:@"-ipadhd"];	// Default on iPad RetinaDisplay is "-ipadhd"
+	[sharedFileUtils setiPadSuffix:@"-pad"];					// Default on iPad is "ipad"
+	[sharedFileUtils setiPadRetinaDisplaySuffix:@"-pad-hd"];	// Default on iPad RetinaDisplay is "-ipadhd"
 
 	// Assume that PVR images have premultiplied alpha
 	[CCTexture2D PVRImagesHavePremultipliedAlpha:YES];
 
+    //This is a block function call. Why not make it blocking call?
+    [[EZSoundManager sharedSoundManager] loadSoundEffects:@[sndButtonPress, sndPlantChessman, sndRefuseChessman, sndBubbleBroken]];
 	// and add the scene to the stack. The director will run it when it automatically when the view is displayed.
-	[director_ pushScene:[EZChessEditor scene]];
+	//[director_ pushScene:[EZChessEditor scene]];
     //[director_ pushScene:[EZChessPlay scene]];
-	//[director_ pushScene:[EZListPage scene]];
+	[director_ pushScene:[EZListTablePage scene]];
     //[director_ pushScene:[EZEffectTester scene]];
+    //[director_ pushScene:[EZHomePage scene]];
 	// Create a Navigation Controller with the Director
 	navController_ = [[UINavigationController alloc] initWithRootViewController:director_];
 	navController_.navigationBarHidden = YES;
@@ -102,7 +108,9 @@
 // Supported orientations: Landscape. Customize it for your own needs
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
-	return UIInterfaceOrientationIsLandscape(interfaceOrientation);
+    
+	BOOL res = UIInterfaceOrientationIsPortrait(interfaceOrientation);
+    EZDEBUG(@"Current orientation is:%i, %@", interfaceOrientation, res?@"supported":@"not supported");
 }
 
 
