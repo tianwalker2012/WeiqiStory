@@ -147,21 +147,22 @@
     for(int i = startPos; i < endPos; i++){
         CGFloat xPos = (widthGap + panelWidth) * (i - startPos);
         
-        EZEpisodeVO* epv = [self getEpisode:i];
+        EZEpisode* ep = [self getEpisode:i];
         
-        if(epv.thumbNail == nil){
-            epv.thumbNail = [EZImageView generateSmallBoard:epv.basicPattern];
+        if(ep.thumbNail == nil){
+            ep.thumbNail = [EZImageView generateSmallBoard:ep.basicPattern];
+            [[EZCoreAccessor getClientAccessor] saveContext];
         }
         
-        EZBoardPanel* panel = [[EZBoardPanel alloc] initWithEpisode:epv];
+        EZBoardPanel* panel = [[EZBoardPanel alloc] initWithEpisodePO:ep];
         panel.userInteractionEnabled = true;
-        EZDEBUG(@"The completeBoard size:%@", NSStringFromCGSize(epv.completeBoard.size));
+        EZDEBUG(@"The completeBoard size:%@", NSStringFromCGSize(ep.thumbNail.size));
         
         [panel setPosition:ccp(xPos, 0)];
         panel.tappedBlock = ^(){
-                EZDEBUG(@"The episode %@ get tapped", epv.name);
+                EZDEBUG(@"The episode %@ get tapped", ep.name);
                 [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
-                EZPlayPage* playPage = [[EZPlayPage alloc] initWithEpisode:epv];
+                EZPlayPage* playPage = [[EZPlayPage alloc] initWithEpisode:ep];
                 [_tableView removeFromSuperview];
                 [[CCDirector sharedDirector] pushScene:[playPage createScene]];
                
@@ -176,82 +177,6 @@
     return cell;
 }
 
-//When could I reuse the cells?
-- (UITableViewCell *)tableViewOld:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    EZTableViewCell* cell = nil; //= (EZTableViewCell*)[tableView cellForRowAtIndexPath:indexPath];
-    if(cell == nil){
-        EZDEBUG(@"dequeue invisible cell");
-        cell = [tableView dequeueReusableCellWithIdentifier:@"smallboard"];
-    }else{
-        EZDEBUG(@"Find a visible Cell, for index:%i", indexPath.row);
-    }
-    if(cell == nil){
-        EZDEBUG(@"Create new cell");
-        cell = [[EZTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"smallboard"];
-        cell.backgroundColor = [UIColor clearColor];
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    }else{
-        EZDEBUG(@"Reuse old cell");
-        [self cleanCell:cell];
-    }
-    int startPos = indexPath.row * 4;
-    int endPos = startPos + 4;
-    if(endPos > _recentEpisodes){
-        endPos = _recentEpisodes;
-    }
-
-    //int col = (indexPath.ro-1) % 4;
-    
-    CGFloat widthGap = 45;
-    CGFloat panelWidth = 142;
-    EZDEBUG(@"current row %i, will add item:%i",indexPath.row, (endPos - startPos));
-    for(int i = startPos; i < endPos; i++){
-        CGFloat xPos = (widthGap + panelWidth) * (i - startPos);
-        
-        CGPoint position = ccp(xPos, 0);
-        
-        
-        EZEpisodeVO* epv = [self getEpisode:i];
-        EZBoardPanel* panel = [cell.panels objectForKey:NSStringFromCGPoint(position)];
-        
-        if(![_dirtyFlags objectForKey:[NSString stringWithFormat:@"%i",i]] || ![cell isIndexExist:ccp(i, xPos)]){
-            //[_dirtyFlags setValue:@"" forKey:[NSString stringWithFormat:@"%i",i]];
-            //[cell addIndex:ccp(i, xPos)];
-            EZDEBUG(@"start update panel:%@, at position:%@", epv.name, NSStringFromCGPoint(position));
-            if(!panel){
-                panel = [[EZBoardPanel alloc] initWithEpisode:epv];
-                [panel setPosition:ccp(xPos, 0)];
-                [cell.panels setValue:panel forKey:NSStringFromCGPoint(position)];
-            }else{
-                EZDEBUG(@"Reuse the panel, name:%@ for %@ position:%@", panel.name.text, epv.name, NSStringFromCGPoint(position));
-                [panel updateWithEpisode:epv];
-            }
-            //panel.name.text = [NSString stringWithFormat:@"%@:%i, xPos:%f", epv.name, i, xPos];
-            //panel.intro.text = epv.introduction;
-            
-            panel.tappedBlock = ^(){
-                EZDEBUG(@"The episode %@ get tapped", epv.name);
-                EZPlayPage* playPage = [[EZPlayPage alloc] initWithEpisode:epv];
-                [_tableView removeFromSuperview];
-                [[CCDirector sharedDirector] pushScene:[playPage createScene]];
-                [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
-            };
-
-        }else if([cell isIndexExist:ccp(i, xPos)]){
-            EZDEBUG(@"%@:panel is exist and not dirty, let's relax, panel name:%@", epv.name, panel.name.text);
-        }
-        
-               
-        [cell addSubview:panel];
-        
-    }
-    //UIView* testHide =  [[UIView alloc] initWithFrame:CGRectMake(20, 20, 100, 100)];
-    //testHide.backgroundColor = [UIColor redColor];
-    //[cell addSubview:testHide];
-    //[self refreshView:cell];
-    return cell;
-}
 
 - (void) addTableView
 {
@@ -280,15 +205,14 @@
     NSArray* arr = [[EZCoreAccessor getClientAccessor] fetchObject:[EZEpisode class] begin:begin limit:BatchFetchSize];
     NSInteger count = 0;
     for(EZEpisode* ep in arr){
-        EZEpisodeVO* epv = [[EZEpisodeVO alloc] initWithPO:ep];
-        [_episodeMap setObject:epv forKey:@(begin + count)];
+        [_episodeMap setObject:ep forKey:@(begin + count)];
         count ++;
     }
 }
 
-- (EZEpisodeVO*) getEpisode:(NSInteger)pos
+- (EZEpisode*) getEpisode:(NSInteger)pos
 {
-    EZEpisodeVO* res = [_episodeMap getObjectForKey:@(pos)];
+    EZEpisode* res = [_episodeMap getObjectForKey:@(pos)];
     if(res == nil){
         EZDEBUG(@"didn't exist in map, let fetch from DB");
         [self loadFromDB:pos limit:BatchFetchSize];

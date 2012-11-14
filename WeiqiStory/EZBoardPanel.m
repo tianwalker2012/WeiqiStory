@@ -10,6 +10,7 @@
 #import "EZChess2Image.h"
 #import "cocos2d.h"
 #import "EZEpisodeVO.h"
+#import "EZEpisode.h"
 #import "EZFileUtil.h"
 #import "EZChess2Image.h"
 
@@ -48,25 +49,24 @@
 }
 
 
-- (id) initWithEpisode:(EZEpisodeVO*) epv
+- (id) initWithEpisodePO:(EZEpisode*)po
 {
-    
     //self = [super initWithImage:[EZFileUtil imageFromFile:@"small-board.png"]];
     //CGFloat scale = [UIScreen mainScreen].scale;
-    self = [super initWithImage:epv.thumbNail];
+    self = [super initWithImage:po.thumbNail];
     self.userInteractionEnabled = true;
     _name = [[UILabel alloc] initWithFrame:CGRectMake(10, 142, 100, 25)];
     _name.backgroundColor = [UIColor clearColor];
     _name.font = [UIFont fontWithName:@"Adobe Kaiti Std" size:14];
     _name.textColor = [UIColor whiteColor];
-    _name.text = epv.name;
+    _name.text = po.name;
     [self addSubview:_name];
     
-    _intro = [[UILabel alloc] initWithFrame:CGRectMake(92, 142, 50, 25)];
+    _intro = [[UILabel alloc] initWithFrame:CGRectMake(100, 142, 50, 25)];
     _intro.backgroundColor = [UIColor clearColor];
     _intro.font = [UIFont fontWithName:@"Adobe Kaiti Std" size:14];
     _intro.textColor = [UIColor whiteColor];
-    _intro.text = epv.introduction;
+    _intro.text = po.introduction;
     [self addSubview:_intro];
     
     //EZImage* chessImage = nil;
@@ -74,6 +74,13 @@
     UIGestureRecognizer* guesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapped:)];
     [self addGestureRecognizer:guesture];
     return self;
+
+}
+
+//Will remove this later.
+- (id) initWithEpisode:(EZEpisodeVO*) epv
+{
+    return [self initWithEpisodePO:epv.PO];
 }
 
 //Get touched
