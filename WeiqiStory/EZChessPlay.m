@@ -180,7 +180,7 @@
                 NSStringFromCGRect(chessBoard.boundingBox), chessBoard.boundingBox.size.width/2+glTopRight.x
                 );
         //[self initScript];
-        _actPlayer = [[EZActionPlayer alloc] initWithActions:nil chessBoard:chessBoard];
+        _actPlayer = [[EZActionPlayer alloc] initWithActions:nil chessBoard:chessBoard inMainBundle:false];
         //[chessBoard setScale:0.7];
         
         [CCMenuItemFont setFontSize:25];

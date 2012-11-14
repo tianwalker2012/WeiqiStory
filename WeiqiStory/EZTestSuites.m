@@ -44,6 +44,8 @@
 #import "EZUILoader.h"
 #import "EZEpisodeCell.h"
 #import "EZSoundPlayer.h"
+#import "EZLRUMap.h"
+#import "EZQueue.h"
 //#import "EZ"
 
 
@@ -171,9 +173,62 @@
     //[EZTestSuites testUpload];
     //[EZTestSuites testListAllFiles];
     //[EZTestSuites testPlayCompressedSound];
-    [EZTestSuites cleanClientDB];
+    //[EZTestSuites cleanClientDB];
+    //[EZTestSuites testCoreDataPagination];
+    //[EZTestSuites testLRUMapMeetMyStandard];
+    [EZTestSuites sortDataOut];
+}
++ (void) sortDataOut
+{
+    NSArray* episodes = [[EZCoreAccessor getClientAccessor] fetchAll:[EZEpisode class] sortField:nil];
+    int count = 0;
+    for(EZEpisode* ep in episodes){
+       // ep.name = [NSString stringWithFormat:@"%i,%@", count, ep.name];
+       // EZDEBUG(@"Modified name is :%@", ep.name);
+       // count++;
+    }
+    //[[EZCoreAccessor getClientAccessor] saveContext];
+    EZDEBUG(@"Total count:%i all the modified data", episodes.count);
 }
 
++ (void) testLRUMapMeetMyStandard
+{
+    EZLRUMap* lruMap = [[EZLRUMap alloc] initWithLimit:10];
+    [lruMap setObject:@"cool" forKey:@"cool"];
+    [lruMap setObject:@"hot" forKey:@"hot"];
+    assert([@"hot" isEqualToString:[lruMap recentlyVisited]]);
+    [lruMap getObjectForKey:@"cool"];
+    assert([@"cool" isEqualToString:[lruMap recentlyVisited]]);
+    [lruMap getObjectForKey:@"any"];
+    assert([@"cool" isEqualToString:[lruMap recentlyVisited]]);
+    assert(false);
+}
+
+
+
++ (void) testCoreDataPagination
+{
+    EZCoreAccessor* accessor = [EZCoreAccessor getClientAccessor];
+    EZDEBUG(@"Fetch the total count");
+    NSInteger total = [accessor count:[EZEpisode class]];
+    EZDEBUG(@"Total count for episode is:%i", total);
+    NSInteger batchSize = 10;
+    NSInteger curCursor = 0;
+    
+    while(curCursor < total){
+        EZDEBUG(@"Before fetch");
+        NSArray* episodes = [accessor fetchObject:[EZEpisode class] begin:curCursor limit:batchSize];
+        EZDEBUG(@"Fetched back:%i", episodes.count);
+        curCursor += episodes.count;
+        if(episodes.count == 0){
+            break;
+        }
+        for(EZEpisode* episode in episodes){
+            EZDEBUG(@"Episode details:%@", episode.name);
+        }
+    }
+    assert(false);
+}
 
 + (void) cleanClientDB{
     [EZCoreAccessor cleanClientDB];

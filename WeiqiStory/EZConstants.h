@@ -84,6 +84,8 @@ typedef enum {
 //Add them later. 
 #define EpisodeDownloadDone @"EpisodeDownloadDone"
 
+#define BatchFetchSize 8
+
 #define ChessMarkColor ccc3(122, 190, 83)
 
 #define AUDIO_MAX_WAITTIME 1.0

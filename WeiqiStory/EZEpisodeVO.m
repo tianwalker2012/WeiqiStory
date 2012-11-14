@@ -40,6 +40,7 @@
     _thumbNail = po.thumbNail;
     _audioFiles = po.audioFiles;
     _completed = po.completed.boolValue;
+    _inMainBundle = po.inMainBundle.boolValue;
     _PO = po;
     return self;
 }
@@ -58,6 +59,7 @@
     _PO.thumbNail = _thumbNail;
     _PO.audioFiles = _audioFiles;
     _PO.completed = @(_completed);
+    _PO.inMainBundle = @(_inMainBundle);
     [[EZCoreAccessor getClientAccessor] saveContext];
 }
 

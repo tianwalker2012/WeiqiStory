@@ -13,6 +13,9 @@
 #import "EZThreadPool.h"
 #import "EZEpisodeVO.h"
 #import "SBJson.h"
+#import "EZImageView.h"
+
+
 
 @implementation EZEpisodeDownloader
 
@@ -47,6 +50,7 @@
         if(episodeData){
             EZDEBUG(@"Successfully download %i from %@", episodeData.length, url);
             NSArray* episodes = [NSKeyedUnarchiver unarchiveObjectWithData:episodeData];
+            _episodeCounts += episodes.count;
             for(EZEpisodeVO* ep in episodes){
                 [self processEpisode:ep];
             }
@@ -66,12 +70,16 @@
     //if(episode.thumbNail == nil){
     //    [episode regenerateThumbNail];
     //}
+    episode.thumbNail = [EZImageView generateSmallBoard:episode.basicPattern];
+    episode.inMainBundle = self.isMainBundle;
     [self downloadAllAudio:episode.audioFiles completeBlock:nil];
     BOOL completed = true;
+    
     for(EZAudioFile* file in episode.audioFiles){
         //For downloaded files, It could never be in the mainbundle.
-        file.inMainBundle = false;
-        
+        //Wrong assumption
+        //It is possible some file just locate in the bundles
+        //file.inMainBundle = self.isMainBundle;
         if(!file.downloaded){
             completed = false;
             break;
@@ -80,10 +88,9 @@
     episode.completed = completed;
     [episode persist];
     if(episode.completed){
-        EZDEBUG(@"Completed download, thumbNail:%@, object:%i", episode.thumbNail, (int)episode);
+        EZDEBUG(@"Completed download, object:%@", episode.name);
         [[NSNotificationCenter defaultCenter] postNotificationName:EpisodeDownloadDone object:episode
          ];
-        
     }else{
         EZDEBUG(@"Let's retry download later");
     }
@@ -100,6 +107,10 @@
 - (void) downloadAllAudio:(NSArray*)files completeBlock:(EZOperationBlock)block
 {
     for(EZAudioFile* file in files){
+        if(_isMainBundle){//Keep it as it is.
+            file.inMainBundle = true;
+            file.downloaded = true;
+        }else
         if(!file.downloaded){
             EZDEBUG(@"Start downloading:%@", file.fileName);
             NSString* combinedURL = [NSString stringWithFormat:@"%@/%@", _baseURL, file.fileName];

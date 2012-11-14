@@ -90,6 +90,16 @@ static NSMutableDictionary* accessors;
     return self;
 }
 
+- (NSInteger) count:(Class)classType
+{
+    NSFetchRequest*request =[[NSFetchRequest alloc] init];
+    [request setEntity:[NSEntityDescription entityForName:[classType description] inManagedObjectContext: context]];
+    NSError*error = nil;
+    NSUInteger count =[context countForFetchRequest:request error:&error];
+    return count;
+}
+
+
 
 + (void) cleanDB:(NSString*)fileName
 {
@@ -157,6 +167,22 @@ static NSMutableDictionary* accessors;
 {
     [po.managedObjectContext deleteObject:po];
     return true;
+}
+
+- (NSArray*) fetchObject:(Class)classType begin:(NSInteger)begin limit:(NSInteger)limit
+{
+    NSFetchRequest* request = [[NSFetchRequest alloc] init];
+    [request setFetchLimit:limit];
+    [request setFetchOffset:begin];
+    NSEntityDescription* entity = [NSEntityDescription entityForName:[classType description] inManagedObjectContext:context];
+    [request setEntity:entity];
+    NSError* error = nil;
+    NSArray* res = [context executeFetchRequest:request error:&error];
+    if(error){
+        EZDEBUG(@"Error fetch object %@", classType);
+    }
+    return res;
+
 }
 
 //If passing nil, System will use "name" to sort the result.

@@ -96,7 +96,7 @@ typedef enum {
 
 @interface EZActionPlayer : NSObject
 
-- (id) initWithActions:(NSArray*)actions chessBoard:(NSObject<EZBoardDelegate>*)board;
+- (id) initWithActions:(NSArray*)actions chessBoard:(NSObject<EZBoardDelegate>*)board inMainBundle:(BOOL)mainBundle;
 
 - (void) playFrom:(NSInteger)begin;
 
@@ -165,6 +165,7 @@ typedef enum {
 @property (strong, nonatomic) NSObject<EZBoardDelegate>* board;
 @property (strong, nonatomic) NSObject<EZActionCompleted>* completedHandler;
 @property (strong, nonatomic) EZOperationBlock completeBlock;
+@property (assign, nonatomic) BOOL inMainBundle;
 
 @property (strong, readonly) NSMutableArray* stepCompletionBlocks;
 

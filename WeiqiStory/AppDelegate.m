@@ -18,6 +18,10 @@
 #import "EZEffectTester.h"
 #import "EZListTablePage.h"
 #import "EZSoundManager.h"
+#import "EZEpisodeDownloader.h"
+#import "EZFileUtil.h"
+#import "EZCoreAccessor.h"
+#import "EZListEditPage.h"
 
 //#import "EZPlayerStatus.h"
 
@@ -25,9 +29,32 @@
 
 @synthesize window=window_, navController=navController_, director=director_;
 
+//The purpose of this method call is for test purpose.
+//Make the whole application as if it is run the first time on the device.
+- (void) returnToVirgin
+{
+    //Clean the databases
+    [EZCoreAccessor cleanClientDB];
+    //Clean all the audio files
+    [EZFileUtil removeAllAudioFiles];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"Executed"];
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    CCFileUtils *sharedFileUtils = [CCFileUtils sharedFileUtils];
+	[sharedFileUtils setEnableFallbackSuffixes:YES];				// Default: NO. No fallback suffixes are going to be used
+	[sharedFileUtils setiPhoneRetinaDisplaySuffix:@"-hd"];		// Default on iPhone RetinaDisplay is "-hd"
+	[sharedFileUtils setiPadSuffix:@"-pad"];					// Default on iPad is "ipad"
+	[sharedFileUtils setiPadRetinaDisplaySuffix:@"-pad-hd"];	// Default on iPad RetinaDisplay is "-ipadhd"
+
     [EZTestSuites runAllTests];
+    //[self returnToVirgin];
+
+    if(![[NSUserDefaults standardUserDefaults] boolForKey:@"Executed"]){
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"Executed"];
+        [self loadAllFromBundle];
+    }
 	// Create the main window
 	window_ = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 
@@ -74,12 +101,7 @@
 	// On iPad HD  : "-ipadhd", "-ipad",  "-hd"
 	// On iPad     : "-ipad", "-hd"
 	// On iPhone HD: "-hd"
-	CCFileUtils *sharedFileUtils = [CCFileUtils sharedFileUtils];
-	[sharedFileUtils setEnableFallbackSuffixes:YES];				// Default: NO. No fallback suffixes are going to be used
-	[sharedFileUtils setiPhoneRetinaDisplaySuffix:@"-hd"];		// Default on iPhone RetinaDisplay is "-hd"
-	[sharedFileUtils setiPadSuffix:@"-pad"];					// Default on iPad is "ipad"
-	[sharedFileUtils setiPadRetinaDisplaySuffix:@"-pad-hd"];	// Default on iPad RetinaDisplay is "-ipadhd"
-
+	
 	// Assume that PVR images have premultiplied alpha
 	[CCTexture2D PVRImagesHavePremultipliedAlpha:YES];
 
@@ -91,6 +113,7 @@
 	[director_ pushScene:[EZListTablePage scene]];
     //[director_ pushScene:[EZEffectTester scene]];
     //[director_ pushScene:[EZHomePage scene]];
+    //[director_ pushScene:[EZListEditPage scene]];
 	// Create a Navigation Controller with the Director
 	navController_ = [[UINavigationController alloc] initWithRootViewController:director_];
 	navController_.navigationBarHidden = YES;
@@ -111,8 +134,21 @@
     
 	BOOL res = UIInterfaceOrientationIsPortrait(interfaceOrientation);
     EZDEBUG(@"Current orientation is:%i, %@", interfaceOrientation, res?@"supported":@"not supported");
+    //Have done some stupid thing?
+    return res;
+    
 }
 
+
+- (void) loadAllFromBundle
+{
+    EZEpisodeDownloader* downloader = [[EZEpisodeDownloader alloc] init];
+    downloader.isMainBundle = true;
+    downloader.baseURL = ((NSURL*)[NSURL fileURLWithPath:[[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@""]]).absoluteString;
+    //[downloader downloadEpisode:fileURL completeBlock:nil];
+    [downloader downloadAccordingToList:[EZFileUtil fileToURL:@"episode-small.lst"]];
+    
+}
 
 // getting a call, pause the game
 -(void) applicationWillResignActive:(UIApplication *)application

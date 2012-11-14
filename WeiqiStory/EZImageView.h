@@ -56,6 +56,12 @@
 
 //What's the purpose of this method
 //Store the whole thing as a image.
-- (UIImage*) outputAsImage;
+//- (UIImage*) outputAsImage;
+
+//What's the purpose of this method?
+//It will generate the whole picture for the board,
+//So, you only need to add the characters.
++ (UIImage*) generateSmallBoard:(NSArray*) coords;
+
 
 @end

@@ -45,7 +45,7 @@
 @implementation EZActionPlayer
 //@synthesize currentAction, playingStatus, actions, board;
 
-- (id) initWithActions:(NSArray*)acts chessBoard:(NSObject<EZBoardDelegate>*)bd
+- (id) initWithActions:(NSArray*)acts chessBoard:(NSObject<EZBoardDelegate>*)bd inMainBundle:(BOOL)mainBundle
 {
     self = [super init];
     if(self){
@@ -56,6 +56,7 @@
         timerArray = [[NSMutableArray alloc] init];
         _stepCompletionBlocks = [[NSMutableArray alloc] init];
         _soundVolume = InitialVolume;
+        _inMainBundle = mainBundle;
     }
     return self;
 }
@@ -332,7 +333,7 @@
     };
     EZAudioFile* audio = [soundAction.audioFiles objectAtIndex:soundAction.currentAudio];
     soundAction.currentAudio = soundAction.currentAudio + 1;
-    soundPlayer = [[EZSoundPlayer alloc] initWithFile:audio.fileName inMainBundle:audio.inMainBundle completeCall:block];
+    soundPlayer = [[EZSoundPlayer alloc] initWithFile:audio.fileName inMainBundle:_inMainBundle completeCall:block];
     [soundPlayer setVolume:_soundVolume];
 }
 

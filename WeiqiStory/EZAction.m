@@ -28,7 +28,7 @@
 
 - (void) dealloc
 {
-    EZDEBUG(@"dealloc:%@, pointer:%i",_name, (int)self);
+    //EZDEBUG(@"dealloc:%@, pointer:%i",_name, (int)self);
 }
 
 

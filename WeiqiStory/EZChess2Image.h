@@ -51,6 +51,7 @@
 
 + (UIImage*) generateOrgBoard:(NSArray*)coords;
 
+
 //Draw the picture in the middle point
 + (void) drawCtx:(CGContextRef)ctx image:(UIImage*)image pos:(CGPoint)pos;
 

@@ -17,4 +17,12 @@
     return loader.episodeCell;
 }
 
+
++ (EZEpisodeEditor*) createEditor
+{
+    EZUILoader* loader = [[EZUILoader alloc] init];
+    [[NSBundle mainBundle] loadNibNamed:@"EZEpisodeEditor" owner:loader options:nil];
+    return loader.episodeEditor;
+}
+
 @end

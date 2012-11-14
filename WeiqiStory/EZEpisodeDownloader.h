@@ -39,6 +39,10 @@
 //Sound right. 
 @property (nonatomic, assign) BOOL isLocalFile;
 
+@property (nonatomic, assign) BOOL isMainBundle;
+
+@property (nonatomic, assign) NSInteger episodeCounts;
+
 //Once this audio for this guy is over
 //I will use the blocking method here.
 //I will store the downloaded file to the document directory

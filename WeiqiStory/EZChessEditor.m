@@ -107,10 +107,10 @@
         //[self addChild:previewBoard z:popupZOrder];
         
         //Will change the chessBoard later
-        actPlayer = [[EZActionPlayer alloc] initWithActions:nil chessBoard:previewBoard];
+        actPlayer = [[EZActionPlayer alloc] initWithActions:nil chessBoard:previewBoard inMainBundle:false];
                 
         
-        currActPlayer = [[EZActionPlayer alloc] initWithActions:nil chessBoard:chessBoard];
+        currActPlayer = [[EZActionPlayer alloc] initWithActions:nil chessBoard:chessBoard inMainBundle:false];
         //One test cover all the functionality
         
         [chessBoard setScale:0.7];

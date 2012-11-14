@@ -48,4 +48,7 @@
 @property (strong, nonatomic) NSNumber* completed;
 
 
+//Whether all the resource in the mainBundle or not
+@property (strong, nonatomic) NSNumber* inMainBundle;
+
 @end

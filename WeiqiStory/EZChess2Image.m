@@ -12,6 +12,7 @@
 #import "EZFileUtil.h"
 
 
+
 @implementation EZChess2Image
 
 
@@ -38,6 +39,7 @@
     CGFloat scale = [UIScreen mainScreen].scale;
     return CGSizeMake(size.width*scale, size.height*scale);
 }
+
 
 + (UIImage*) generateOrgBoard:(NSArray*)coords
 {

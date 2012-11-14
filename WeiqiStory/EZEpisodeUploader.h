@@ -43,4 +43,6 @@
 
 - (void) uploadEpisode:(EZEpisodeVO*)episode nextBlk:(EZOperationBlock)block;
 
+- (void) uploadOnlyEpisodes:(NSArray*)episodes;
+
 @end

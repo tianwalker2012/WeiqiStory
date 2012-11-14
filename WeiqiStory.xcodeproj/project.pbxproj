@@ -874,69 +874,6 @@
 		185BF9BC164B7F9C0044214A /* audio20121107806.caf in Resources */ = {isa = PBXBuildFile; fileRef = 185BF71E164B7F990044214A /* audio20121107806.caf */; };
 		185BF9BD164B7F9C0044214A /* audio20121107807.caf in Resources */ = {isa = PBXBuildFile; fileRef = 185BF71F164B7F990044214A /* audio20121107807.caf */; };
 		185BFA00164B81340044214A /* episode.lst in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9BF164B81340044214A /* episode.lst */; };
-		185BFA01164B81340044214A /* episode20121105111706.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9C0164B81340044214A /* episode20121105111706.ar */; };
-		185BFA02164B81340044214A /* episode20121105113100.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9C1164B81340044214A /* episode20121105113100.ar */; };
-		185BFA03164B81340044214A /* episode20121105120032.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9C2164B81340044214A /* episode20121105120032.ar */; };
-		185BFA04164B81340044214A /* episode20121105122151.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9C3164B81340044214A /* episode20121105122151.ar */; };
-		185BFA05164B81340044214A /* episode20121105130127.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9C4164B81340044214A /* episode20121105130127.ar */; };
-		185BFA06164B81340044214A /* episode20121105134528.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9C5164B81340044214A /* episode20121105134528.ar */; };
-		185BFA07164B81340044214A /* episode20121105191443.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9C6164B81340044214A /* episode20121105191443.ar */; };
-		185BFA08164B81340044214A /* episode20121105192715.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9C7164B81340044214A /* episode20121105192715.ar */; };
-		185BFA09164B81340044214A /* episode20121105194829.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9C8164B81340044214A /* episode20121105194829.ar */; };
-		185BFA0A164B81340044214A /* episode20121105200011.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9C9164B81340044214A /* episode20121105200011.ar */; };
-		185BFA0B164B81340044214A /* episode20121105201400.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9CA164B81340044214A /* episode20121105201400.ar */; };
-		185BFA0C164B81340044214A /* episode20121105201448.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9CB164B81340044214A /* episode20121105201448.ar */; };
-		185BFA0D164B81340044214A /* episode20121105202547.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9CC164B81340044214A /* episode20121105202547.ar */; };
-		185BFA0E164B81340044214A /* episode20121105204146.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9CD164B81340044214A /* episode20121105204146.ar */; };
-		185BFA0F164B81340044214A /* episode20121105210128.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9CE164B81340044214A /* episode20121105210128.ar */; };
-		185BFA10164B81340044214A /* episode20121105211202.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9CF164B81340044214A /* episode20121105211202.ar */; };
-		185BFA11164B81340044214A /* episode20121105212609.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9D0164B81340044214A /* episode20121105212609.ar */; };
-		185BFA12164B81340044214A /* episode20121105213846.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9D1164B81340044214A /* episode20121105213846.ar */; };
-		185BFA13164B81340044214A /* episode20121105215432.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9D2164B81340044214A /* episode20121105215432.ar */; };
-		185BFA14164B81340044214A /* episode20121105221441.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9D3164B81340044214A /* episode20121105221441.ar */; };
-		185BFA15164B81340044214A /* episode20121105222354.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9D4164B81340044214A /* episode20121105222354.ar */; };
-		185BFA16164B81340044214A /* episode20121105224024.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9D5164B81340044214A /* episode20121105224024.ar */; };
-		185BFA17164B81340044214A /* episode20121106101157.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9D6164B81340044214A /* episode20121106101157.ar */; };
-		185BFA18164B81340044214A /* episode20121106102624.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9D7164B81340044214A /* episode20121106102624.ar */; };
-		185BFA19164B81340044214A /* episode20121106110252.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9D8164B81340044214A /* episode20121106110252.ar */; };
-		185BFA1A164B81340044214A /* episode20121106112642.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9D9164B81340044214A /* episode20121106112642.ar */; };
-		185BFA1B164B81340044214A /* episode20121106115256.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9DA164B81340044214A /* episode20121106115256.ar */; };
-		185BFA1C164B81340044214A /* episode20121106120144.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9DB164B81340044214A /* episode20121106120144.ar */; };
-		185BFA1D164B81340044214A /* episode20121106121108.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9DC164B81340044214A /* episode20121106121108.ar */; };
-		185BFA1E164B81340044214A /* episode20121106122618.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9DD164B81340044214A /* episode20121106122618.ar */; };
-		185BFA1F164B81340044214A /* episode20121106123308.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9DE164B81340044214A /* episode20121106123308.ar */; };
-		185BFA20164B81340044214A /* episode20121106131451.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9DF164B81340044214A /* episode20121106131451.ar */; };
-		185BFA21164B81340044214A /* episode20121106132805.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9E0164B81340044214A /* episode20121106132805.ar */; };
-		185BFA22164B81340044214A /* episode20121106133548.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9E1164B81340044214A /* episode20121106133548.ar */; };
-		185BFA23164B81340044214A /* episode20121106134914.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9E2164B81340044214A /* episode20121106134914.ar */; };
-		185BFA24164B81340044214A /* episode20121106140048.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9E3164B81340044214A /* episode20121106140048.ar */; };
-		185BFA25164B81340044214A /* episode20121106142340.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9E4164B81340044214A /* episode20121106142340.ar */; };
-		185BFA26164B81340044214A /* episode20121106143810.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9E5164B81340044214A /* episode20121106143810.ar */; };
-		185BFA27164B81340044214A /* episode20121106144845.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9E6164B81340044214A /* episode20121106144845.ar */; };
-		185BFA28164B81340044214A /* episode20121106145931.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9E7164B81340044214A /* episode20121106145931.ar */; };
-		185BFA29164B81340044214A /* episode20121106151605.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9E8164B81340044214A /* episode20121106151605.ar */; };
-		185BFA2A164B81340044214A /* episode20121106151738.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9E9164B81340044214A /* episode20121106151738.ar */; };
-		185BFA2B164B81340044214A /* episode20121106152722.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9EA164B81340044214A /* episode20121106152722.ar */; };
-		185BFA2C164B81340044214A /* episode20121106154028.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9EB164B81340044214A /* episode20121106154028.ar */; };
-		185BFA2D164B81340044214A /* episode20121106155241.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9EC164B81340044214A /* episode20121106155241.ar */; };
-		185BFA2E164B81340044214A /* episode20121106155956.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9ED164B81340044214A /* episode20121106155956.ar */; };
-		185BFA2F164B81340044214A /* episode20121106161424.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9EE164B81340044214A /* episode20121106161424.ar */; };
-		185BFA30164B81340044214A /* episode20121106162959.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9EF164B81340044214A /* episode20121106162959.ar */; };
-		185BFA31164B81340044214A /* episode20121106164123.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9F0164B81340044214A /* episode20121106164123.ar */; };
-		185BFA32164B81340044214A /* episode20121106171302.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9F1164B81340044214A /* episode20121106171302.ar */; };
-		185BFA33164B81340044214A /* episode20121106172626.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9F2164B81340044214A /* episode20121106172626.ar */; };
-		185BFA34164B81340044214A /* episode20121106174443.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9F3164B81340044214A /* episode20121106174443.ar */; };
-		185BFA35164B81340044214A /* episode20121106175455.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9F4164B81340044214A /* episode20121106175455.ar */; };
-		185BFA36164B81340044214A /* episode20121106180520.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9F5164B81340044214A /* episode20121106180520.ar */; };
-		185BFA37164B81340044214A /* episode20121107101905.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9F6164B81340044214A /* episode20121107101905.ar */; };
-		185BFA38164B81340044214A /* episode20121107103815.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9F7164B81340044214A /* episode20121107103815.ar */; };
-		185BFA39164B81340044214A /* episode20121107105213.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9F8164B81340044214A /* episode20121107105213.ar */; };
-		185BFA3A164B81340044214A /* episode20121107112506.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9F9164B81340044214A /* episode20121107112506.ar */; };
-		185BFA3B164B81340044214A /* episode20121107114052.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9FA164B81340044214A /* episode20121107114052.ar */; };
-		185BFA3C164B81340044214A /* episode20121107115232.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9FB164B81340044214A /* episode20121107115232.ar */; };
-		185BFA3D164B81340044214A /* episode20121107121531.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9FC164B81340044214A /* episode20121107121531.ar */; };
-		185BFA3E164B81340044214A /* episode20121107124540.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9FD164B81340044214A /* episode20121107124540.ar */; };
-		185BFA3F164B81340044214A /* episode20121107125530.ar in Resources */ = {isa = PBXBuildFile; fileRef = 185BF9FE164B81340044214A /* episode20121107125530.ar */; };
 		185BFA41164B99640044214A /* background-pattern-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 185BFA40164B99640044214A /* background-pattern-pad.png */; };
 		185BFA44164BA4C10044214A /* EZTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 185BFA43164BA4C00044214A /* EZTableViewCell.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		185BFA46164BB03D0044214A /* small-chessboard-frame-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 185BFA45164BB03C0044214A /* small-chessboard-frame-pad.png */; };
@@ -1001,6 +938,14 @@
 		18C3112C164FE349007F3990 /* bubble-broken.wav in Resources */ = {isa = PBXBuildFile; fileRef = 18C3112B164FE349007F3990 /* bubble-broken.wav */; };
 		18C3112F164FE9DD007F3990 /* EZBubble2.m in Sources */ = {isa = PBXBuildFile; fileRef = 18C3112E164FE9DD007F3990 /* EZBubble2.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		18C311321650D962007F3990 /* EZSimpleImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18C311311650D962007F3990 /* EZSimpleImageView.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		18C311341651F758007F3990 /* small-chessboard-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 18C311331651F757007F3990 /* small-chessboard-pad.png */; };
+		18C3114016521BBB007F3990 /* EZQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 18C3113D16521BB7007F3990 /* EZQueue.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		18C3114116521BBB007F3990 /* EZLRUMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 18C3113F16521BBA007F3990 /* EZLRUMap.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		18C3114416523007007F3990 /* EZEditPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 18C3114316523006007F3990 /* EZEditPage.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		18C3114616523D3A007F3990 /* EZEpisodeEditor.xib in Resources */ = {isa = PBXBuildFile; fileRef = 18C3114516523D39007F3990 /* EZEpisodeEditor.xib */; };
+		18C3114916523DFF007F3990 /* EZEpisodeEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = 18C3114816523DFE007F3990 /* EZEpisodeEditor.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		18C3114C16524760007F3990 /* EZListEditPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 18C3114B1652475F007F3990 /* EZListEditPage.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		18C3114E16527EE4007F3990 /* episode20121113211142.ar in Resources */ = {isa = PBXBuildFile; fileRef = 18C3114D16527EE3007F3990 /* episode20121113211142.ar */; };
 		18CDA9C416154BDD0090BD04 /* EZChessMoveAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 18CDA9C316154BDD0090BD04 /* EZChessMoveAction.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		18CDA9C716154BFC0090BD04 /* EZChessPresetAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 18CDA9C616154BFC0090BD04 /* EZChessPresetAction.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		18CDA9CA16154C150090BD04 /* EZSoundAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 18CDA9C916154C150090BD04 /* EZSoundAction.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
@@ -2078,69 +2023,6 @@
 		185BF71E164B7F990044214A /* audio20121107806.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = audio20121107806.caf; sourceTree = "<group>"; };
 		185BF71F164B7F990044214A /* audio20121107807.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = audio20121107807.caf; sourceTree = "<group>"; };
 		185BF9BF164B81340044214A /* episode.lst */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = episode.lst; path = ../../../web/weiqi_server/myapp/uploads/episode.lst; sourceTree = "<group>"; };
-		185BF9C0164B81340044214A /* episode20121105111706.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121105111706.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121105111706.ar; sourceTree = "<group>"; };
-		185BF9C1164B81340044214A /* episode20121105113100.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121105113100.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121105113100.ar; sourceTree = "<group>"; };
-		185BF9C2164B81340044214A /* episode20121105120032.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121105120032.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121105120032.ar; sourceTree = "<group>"; };
-		185BF9C3164B81340044214A /* episode20121105122151.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121105122151.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121105122151.ar; sourceTree = "<group>"; };
-		185BF9C4164B81340044214A /* episode20121105130127.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121105130127.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121105130127.ar; sourceTree = "<group>"; };
-		185BF9C5164B81340044214A /* episode20121105134528.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121105134528.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121105134528.ar; sourceTree = "<group>"; };
-		185BF9C6164B81340044214A /* episode20121105191443.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121105191443.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121105191443.ar; sourceTree = "<group>"; };
-		185BF9C7164B81340044214A /* episode20121105192715.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121105192715.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121105192715.ar; sourceTree = "<group>"; };
-		185BF9C8164B81340044214A /* episode20121105194829.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121105194829.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121105194829.ar; sourceTree = "<group>"; };
-		185BF9C9164B81340044214A /* episode20121105200011.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121105200011.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121105200011.ar; sourceTree = "<group>"; };
-		185BF9CA164B81340044214A /* episode20121105201400.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121105201400.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121105201400.ar; sourceTree = "<group>"; };
-		185BF9CB164B81340044214A /* episode20121105201448.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121105201448.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121105201448.ar; sourceTree = "<group>"; };
-		185BF9CC164B81340044214A /* episode20121105202547.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121105202547.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121105202547.ar; sourceTree = "<group>"; };
-		185BF9CD164B81340044214A /* episode20121105204146.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121105204146.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121105204146.ar; sourceTree = "<group>"; };
-		185BF9CE164B81340044214A /* episode20121105210128.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121105210128.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121105210128.ar; sourceTree = "<group>"; };
-		185BF9CF164B81340044214A /* episode20121105211202.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121105211202.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121105211202.ar; sourceTree = "<group>"; };
-		185BF9D0164B81340044214A /* episode20121105212609.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121105212609.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121105212609.ar; sourceTree = "<group>"; };
-		185BF9D1164B81340044214A /* episode20121105213846.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121105213846.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121105213846.ar; sourceTree = "<group>"; };
-		185BF9D2164B81340044214A /* episode20121105215432.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121105215432.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121105215432.ar; sourceTree = "<group>"; };
-		185BF9D3164B81340044214A /* episode20121105221441.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121105221441.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121105221441.ar; sourceTree = "<group>"; };
-		185BF9D4164B81340044214A /* episode20121105222354.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121105222354.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121105222354.ar; sourceTree = "<group>"; };
-		185BF9D5164B81340044214A /* episode20121105224024.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121105224024.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121105224024.ar; sourceTree = "<group>"; };
-		185BF9D6164B81340044214A /* episode20121106101157.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121106101157.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121106101157.ar; sourceTree = "<group>"; };
-		185BF9D7164B81340044214A /* episode20121106102624.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121106102624.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121106102624.ar; sourceTree = "<group>"; };
-		185BF9D8164B81340044214A /* episode20121106110252.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121106110252.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121106110252.ar; sourceTree = "<group>"; };
-		185BF9D9164B81340044214A /* episode20121106112642.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121106112642.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121106112642.ar; sourceTree = "<group>"; };
-		185BF9DA164B81340044214A /* episode20121106115256.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121106115256.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121106115256.ar; sourceTree = "<group>"; };
-		185BF9DB164B81340044214A /* episode20121106120144.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121106120144.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121106120144.ar; sourceTree = "<group>"; };
-		185BF9DC164B81340044214A /* episode20121106121108.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121106121108.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121106121108.ar; sourceTree = "<group>"; };
-		185BF9DD164B81340044214A /* episode20121106122618.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121106122618.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121106122618.ar; sourceTree = "<group>"; };
-		185BF9DE164B81340044214A /* episode20121106123308.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121106123308.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121106123308.ar; sourceTree = "<group>"; };
-		185BF9DF164B81340044214A /* episode20121106131451.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121106131451.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121106131451.ar; sourceTree = "<group>"; };
-		185BF9E0164B81340044214A /* episode20121106132805.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121106132805.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121106132805.ar; sourceTree = "<group>"; };
-		185BF9E1164B81340044214A /* episode20121106133548.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121106133548.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121106133548.ar; sourceTree = "<group>"; };
-		185BF9E2164B81340044214A /* episode20121106134914.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121106134914.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121106134914.ar; sourceTree = "<group>"; };
-		185BF9E3164B81340044214A /* episode20121106140048.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121106140048.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121106140048.ar; sourceTree = "<group>"; };
-		185BF9E4164B81340044214A /* episode20121106142340.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121106142340.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121106142340.ar; sourceTree = "<group>"; };
-		185BF9E5164B81340044214A /* episode20121106143810.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121106143810.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121106143810.ar; sourceTree = "<group>"; };
-		185BF9E6164B81340044214A /* episode20121106144845.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121106144845.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121106144845.ar; sourceTree = "<group>"; };
-		185BF9E7164B81340044214A /* episode20121106145931.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121106145931.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121106145931.ar; sourceTree = "<group>"; };
-		185BF9E8164B81340044214A /* episode20121106151605.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121106151605.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121106151605.ar; sourceTree = "<group>"; };
-		185BF9E9164B81340044214A /* episode20121106151738.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121106151738.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121106151738.ar; sourceTree = "<group>"; };
-		185BF9EA164B81340044214A /* episode20121106152722.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121106152722.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121106152722.ar; sourceTree = "<group>"; };
-		185BF9EB164B81340044214A /* episode20121106154028.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121106154028.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121106154028.ar; sourceTree = "<group>"; };
-		185BF9EC164B81340044214A /* episode20121106155241.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121106155241.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121106155241.ar; sourceTree = "<group>"; };
-		185BF9ED164B81340044214A /* episode20121106155956.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121106155956.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121106155956.ar; sourceTree = "<group>"; };
-		185BF9EE164B81340044214A /* episode20121106161424.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121106161424.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121106161424.ar; sourceTree = "<group>"; };
-		185BF9EF164B81340044214A /* episode20121106162959.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121106162959.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121106162959.ar; sourceTree = "<group>"; };
-		185BF9F0164B81340044214A /* episode20121106164123.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121106164123.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121106164123.ar; sourceTree = "<group>"; };
-		185BF9F1164B81340044214A /* episode20121106171302.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121106171302.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121106171302.ar; sourceTree = "<group>"; };
-		185BF9F2164B81340044214A /* episode20121106172626.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121106172626.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121106172626.ar; sourceTree = "<group>"; };
-		185BF9F3164B81340044214A /* episode20121106174443.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121106174443.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121106174443.ar; sourceTree = "<group>"; };
-		185BF9F4164B81340044214A /* episode20121106175455.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121106175455.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121106175455.ar; sourceTree = "<group>"; };
-		185BF9F5164B81340044214A /* episode20121106180520.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121106180520.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121106180520.ar; sourceTree = "<group>"; };
-		185BF9F6164B81340044214A /* episode20121107101905.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121107101905.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121107101905.ar; sourceTree = "<group>"; };
-		185BF9F7164B81340044214A /* episode20121107103815.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121107103815.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121107103815.ar; sourceTree = "<group>"; };
-		185BF9F8164B81340044214A /* episode20121107105213.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121107105213.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121107105213.ar; sourceTree = "<group>"; };
-		185BF9F9164B81340044214A /* episode20121107112506.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121107112506.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121107112506.ar; sourceTree = "<group>"; };
-		185BF9FA164B81340044214A /* episode20121107114052.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121107114052.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121107114052.ar; sourceTree = "<group>"; };
-		185BF9FB164B81340044214A /* episode20121107115232.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121107115232.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121107115232.ar; sourceTree = "<group>"; };
-		185BF9FC164B81340044214A /* episode20121107121531.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121107121531.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121107121531.ar; sourceTree = "<group>"; };
-		185BF9FD164B81340044214A /* episode20121107124540.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121107124540.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121107124540.ar; sourceTree = "<group>"; };
-		185BF9FE164B81340044214A /* episode20121107125530.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; name = episode20121107125530.ar; path = ../../../web/weiqi_server/myapp/uploads/episode20121107125530.ar; sourceTree = "<group>"; };
 		185BFA40164B99640044214A /* background-pattern-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "background-pattern-pad.png"; path = "../../../icons/weiqi/background-pattern-pad.png"; sourceTree = "<group>"; };
 		185BFA42164BA4BF0044214A /* EZTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZTableViewCell.h; sourceTree = "<group>"; };
 		185BFA43164BA4C00044214A /* EZTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZTableViewCell.m; sourceTree = "<group>"; };
@@ -2219,6 +2101,19 @@
 		18C3112E164FE9DD007F3990 /* EZBubble2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZBubble2.m; sourceTree = "<group>"; };
 		18C311301650D961007F3990 /* EZSimpleImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZSimpleImageView.h; sourceTree = "<group>"; };
 		18C311311650D962007F3990 /* EZSimpleImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZSimpleImageView.m; sourceTree = "<group>"; };
+		18C311331651F757007F3990 /* small-chessboard-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "small-chessboard-pad.png"; path = "../../../icons/weiqi/small-chessboard-pad.png"; sourceTree = "<group>"; };
+		18C3113C16521BB7007F3990 /* EZQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZQueue.h; sourceTree = "<group>"; };
+		18C3113D16521BB7007F3990 /* EZQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZQueue.m; sourceTree = "<group>"; };
+		18C3113E16521BB9007F3990 /* EZLRUMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZLRUMap.h; sourceTree = "<group>"; };
+		18C3113F16521BBA007F3990 /* EZLRUMap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZLRUMap.m; sourceTree = "<group>"; };
+		18C3114216523006007F3990 /* EZEditPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZEditPage.h; sourceTree = "<group>"; };
+		18C3114316523006007F3990 /* EZEditPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZEditPage.m; sourceTree = "<group>"; };
+		18C3114516523D39007F3990 /* EZEpisodeEditor.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EZEpisodeEditor.xib; sourceTree = "<group>"; };
+		18C3114716523DFE007F3990 /* EZEpisodeEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZEpisodeEditor.h; sourceTree = "<group>"; };
+		18C3114816523DFE007F3990 /* EZEpisodeEditor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZEpisodeEditor.m; sourceTree = "<group>"; };
+		18C3114A1652475E007F3990 /* EZListEditPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZListEditPage.h; sourceTree = "<group>"; };
+		18C3114B1652475F007F3990 /* EZListEditPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZListEditPage.m; sourceTree = "<group>"; };
+		18C3114D16527EE3007F3990 /* episode20121113211142.ar */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = episode20121113211142.ar; sourceTree = "<group>"; };
 		18CDA9C216154BDC0090BD04 /* EZChessMoveAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZChessMoveAction.h; sourceTree = "<group>"; };
 		18CDA9C316154BDD0090BD04 /* EZChessMoveAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZChessMoveAction.m; sourceTree = "<group>"; };
 		18CDA9C516154BFB0090BD04 /* EZChessPresetAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZChessPresetAction.h; sourceTree = "<group>"; };
@@ -2857,6 +2752,7 @@
 				185BF445164373460044214A /* back-button-pad.png */,
 				185BF446164373460044214A /* next-button-pressed-pad.png */,
 				185BF447164373460044214A /* prev-button-pressed-pad.png */,
+				18C311331651F757007F3990 /* small-chessboard-pad.png */,
 				185BF448164373460044214A /* board-frame-pad.png */,
 				185BF449164373460044214A /* chess-board-pad.png */,
 				185BF44A164373460044214A /* message-region-pad.png */,
@@ -2916,6 +2812,10 @@
 			isa = PBXGroup;
 			children = (
 				18451E43160B103000BF530C /* EZVoiceRecorder.h */,
+				18C3113C16521BB7007F3990 /* EZQueue.h */,
+				18C3113D16521BB7007F3990 /* EZQueue.m */,
+				18C3113E16521BB9007F3990 /* EZLRUMap.h */,
+				18C3113F16521BBA007F3990 /* EZLRUMap.m */,
 				18451E44160B103000BF530C /* EZVoiceRecorder.m */,
 				18451E011609CE0000BF530C /* EZSoundManager.m */,
 				189269CB1631066E00199D76 /* EZThreadPool.h */,
@@ -3689,6 +3589,9 @@
 				18F87407163FD55A00FB617D /* EZBoardPanel.m */,
 				18F87430164212B400FB617D /* EZProgressBar.h */,
 				18F87431164212B400FB617D /* EZProgressBar.m */,
+				18C3114516523D39007F3990 /* EZEpisodeEditor.xib */,
+				18C3114716523DFE007F3990 /* EZEpisodeEditor.h */,
+				18C3114816523DFE007F3990 /* EZEpisodeEditor.m */,
 			);
 			name = "Custom UI";
 			sourceTree = "<group>";
@@ -3737,6 +3640,10 @@
 				18C31129164FDCB5007F3990 /* EZBubble.m */,
 				18C3112D164FE9DD007F3990 /* EZBubble2.h */,
 				18C3112E164FE9DD007F3990 /* EZBubble2.m */,
+				18C3114216523006007F3990 /* EZEditPage.h */,
+				18C3114316523006007F3990 /* EZEditPage.m */,
+				18C3114A1652475E007F3990 /* EZListEditPage.h */,
+				18C3114B1652475F007F3990 /* EZListEditPage.m */,
 			);
 			name = Layers;
 			sourceTree = "<group>";
@@ -3754,69 +3661,7 @@
 			isa = PBXGroup;
 			children = (
 				185BF9BF164B81340044214A /* episode.lst */,
-				185BF9C0164B81340044214A /* episode20121105111706.ar */,
-				185BF9C1164B81340044214A /* episode20121105113100.ar */,
-				185BF9C2164B81340044214A /* episode20121105120032.ar */,
-				185BF9C3164B81340044214A /* episode20121105122151.ar */,
-				185BF9C4164B81340044214A /* episode20121105130127.ar */,
-				185BF9C5164B81340044214A /* episode20121105134528.ar */,
-				185BF9C6164B81340044214A /* episode20121105191443.ar */,
-				185BF9C7164B81340044214A /* episode20121105192715.ar */,
-				185BF9C8164B81340044214A /* episode20121105194829.ar */,
-				185BF9C9164B81340044214A /* episode20121105200011.ar */,
-				185BF9CA164B81340044214A /* episode20121105201400.ar */,
-				185BF9CB164B81340044214A /* episode20121105201448.ar */,
-				185BF9CC164B81340044214A /* episode20121105202547.ar */,
-				185BF9CD164B81340044214A /* episode20121105204146.ar */,
-				185BF9CE164B81340044214A /* episode20121105210128.ar */,
-				185BF9CF164B81340044214A /* episode20121105211202.ar */,
-				185BF9D0164B81340044214A /* episode20121105212609.ar */,
-				185BF9D1164B81340044214A /* episode20121105213846.ar */,
-				185BF9D2164B81340044214A /* episode20121105215432.ar */,
-				185BF9D3164B81340044214A /* episode20121105221441.ar */,
-				185BF9D4164B81340044214A /* episode20121105222354.ar */,
-				185BF9D5164B81340044214A /* episode20121105224024.ar */,
-				185BF9D6164B81340044214A /* episode20121106101157.ar */,
-				185BF9D7164B81340044214A /* episode20121106102624.ar */,
-				185BF9D8164B81340044214A /* episode20121106110252.ar */,
-				185BF9D9164B81340044214A /* episode20121106112642.ar */,
-				185BF9DA164B81340044214A /* episode20121106115256.ar */,
-				185BF9DB164B81340044214A /* episode20121106120144.ar */,
-				185BF9DC164B81340044214A /* episode20121106121108.ar */,
-				185BF9DD164B81340044214A /* episode20121106122618.ar */,
-				185BF9DE164B81340044214A /* episode20121106123308.ar */,
-				185BF9DF164B81340044214A /* episode20121106131451.ar */,
-				185BF9E0164B81340044214A /* episode20121106132805.ar */,
-				185BF9E1164B81340044214A /* episode20121106133548.ar */,
-				185BF9E2164B81340044214A /* episode20121106134914.ar */,
-				185BF9E3164B81340044214A /* episode20121106140048.ar */,
-				185BF9E4164B81340044214A /* episode20121106142340.ar */,
-				185BF9E5164B81340044214A /* episode20121106143810.ar */,
-				185BF9E6164B81340044214A /* episode20121106144845.ar */,
-				185BF9E7164B81340044214A /* episode20121106145931.ar */,
-				185BF9E8164B81340044214A /* episode20121106151605.ar */,
-				185BF9E9164B81340044214A /* episode20121106151738.ar */,
-				185BF9EA164B81340044214A /* episode20121106152722.ar */,
-				185BF9EB164B81340044214A /* episode20121106154028.ar */,
-				185BF9EC164B81340044214A /* episode20121106155241.ar */,
-				185BF9ED164B81340044214A /* episode20121106155956.ar */,
-				185BF9EE164B81340044214A /* episode20121106161424.ar */,
-				185BF9EF164B81340044214A /* episode20121106162959.ar */,
-				185BF9F0164B81340044214A /* episode20121106164123.ar */,
-				185BF9F1164B81340044214A /* episode20121106171302.ar */,
-				185BF9F2164B81340044214A /* episode20121106172626.ar */,
-				185BF9F3164B81340044214A /* episode20121106174443.ar */,
-				185BF9F4164B81340044214A /* episode20121106175455.ar */,
-				185BF9F5164B81340044214A /* episode20121106180520.ar */,
-				185BF9F6164B81340044214A /* episode20121107101905.ar */,
-				185BF9F7164B81340044214A /* episode20121107103815.ar */,
-				185BF9F8164B81340044214A /* episode20121107105213.ar */,
-				185BF9F9164B81340044214A /* episode20121107112506.ar */,
-				185BF9FA164B81340044214A /* episode20121107114052.ar */,
-				185BF9FB164B81340044214A /* episode20121107115232.ar */,
-				185BF9FC164B81340044214A /* episode20121107121531.ar */,
-				185BF9FD164B81340044214A /* episode20121107124540.ar */,
-				185BF9FE164B81340044214A /* episode20121107125530.ar */,
+				18C3114D16527EE3007F3990 /* episode20121113211142.ar */,
 				1876722E164CF7670023391B /* episode-small.lst */,
 			);
 			name = episodes;
@@ -4589,69 +4434,6 @@
 				185BF9BC164B7F9C0044214A /* audio20121107806.caf in Resources */,
 				185BF9BD164B7F9C0044214A /* audio20121107807.caf in Resources */,
 				185BFA00164B81340044214A /* episode.lst in Resources */,
-				185BFA01164B81340044214A /* episode20121105111706.ar in Resources */,
-				185BFA02164B81340044214A /* episode20121105113100.ar in Resources */,
-				185BFA03164B81340044214A /* episode20121105120032.ar in Resources */,
-				185BFA04164B81340044214A /* episode20121105122151.ar in Resources */,
-				185BFA05164B81340044214A /* episode20121105130127.ar in Resources */,
-				185BFA06164B81340044214A /* episode20121105134528.ar in Resources */,
-				185BFA07164B81340044214A /* episode20121105191443.ar in Resources */,
-				185BFA08164B81340044214A /* episode20121105192715.ar in Resources */,
-				185BFA09164B81340044214A /* episode20121105194829.ar in Resources */,
-				185BFA0A164B81340044214A /* episode20121105200011.ar in Resources */,
-				185BFA0B164B81340044214A /* episode20121105201400.ar in Resources */,
-				185BFA0C164B81340044214A /* episode20121105201448.ar in Resources */,
-				185BFA0D164B81340044214A /* episode20121105202547.ar in Resources */,
-				185BFA0E164B81340044214A /* episode20121105204146.ar in Resources */,
-				185BFA0F164B81340044214A /* episode20121105210128.ar in Resources */,
-				185BFA10164B81340044214A /* episode20121105211202.ar in Resources */,
-				185BFA11164B81340044214A /* episode20121105212609.ar in Resources */,
-				185BFA12164B81340044214A /* episode20121105213846.ar in Resources */,
-				185BFA13164B81340044214A /* episode20121105215432.ar in Resources */,
-				185BFA14164B81340044214A /* episode20121105221441.ar in Resources */,
-				185BFA15164B81340044214A /* episode20121105222354.ar in Resources */,
-				185BFA16164B81340044214A /* episode20121105224024.ar in Resources */,
-				185BFA17164B81340044214A /* episode20121106101157.ar in Resources */,
-				185BFA18164B81340044214A /* episode20121106102624.ar in Resources */,
-				185BFA19164B81340044214A /* episode20121106110252.ar in Resources */,
-				185BFA1A164B81340044214A /* episode20121106112642.ar in Resources */,
-				185BFA1B164B81340044214A /* episode20121106115256.ar in Resources */,
-				185BFA1C164B81340044214A /* episode20121106120144.ar in Resources */,
-				185BFA1D164B81340044214A /* episode20121106121108.ar in Resources */,
-				185BFA1E164B81340044214A /* episode20121106122618.ar in Resources */,
-				185BFA1F164B81340044214A /* episode20121106123308.ar in Resources */,
-				185BFA20164B81340044214A /* episode20121106131451.ar in Resources */,
-				185BFA21164B81340044214A /* episode20121106132805.ar in Resources */,
-				185BFA22164B81340044214A /* episode20121106133548.ar in Resources */,
-				185BFA23164B81340044214A /* episode20121106134914.ar in Resources */,
-				185BFA24164B81340044214A /* episode20121106140048.ar in Resources */,
-				185BFA25164B81340044214A /* episode20121106142340.ar in Resources */,
-				185BFA26164B81340044214A /* episode20121106143810.ar in Resources */,
-				185BFA27164B81340044214A /* episode20121106144845.ar in Resources */,
-				185BFA28164B81340044214A /* episode20121106145931.ar in Resources */,
-				185BFA29164B81340044214A /* episode20121106151605.ar in Resources */,
-				185BFA2A164B81340044214A /* episode20121106151738.ar in Resources */,
-				185BFA2B164B81340044214A /* episode20121106152722.ar in Resources */,
-				185BFA2C164B81340044214A /* episode20121106154028.ar in Resources */,
-				185BFA2D164B81340044214A /* episode20121106155241.ar in Resources */,
-				185BFA2E164B81340044214A /* episode20121106155956.ar in Resources */,
-				185BFA2F164B81340044214A /* episode20121106161424.ar in Resources */,
-				185BFA30164B81340044214A /* episode20121106162959.ar in Resources */,
-				185BFA31164B81340044214A /* episode20121106164123.ar in Resources */,
-				185BFA32164B81340044214A /* episode20121106171302.ar in Resources */,
-				185BFA33164B81340044214A /* episode20121106172626.ar in Resources */,
-				185BFA34164B81340044214A /* episode20121106174443.ar in Resources */,
-				185BFA35164B81340044214A /* episode20121106175455.ar in Resources */,
-				185BFA36164B81340044214A /* episode20121106180520.ar in Resources */,
-				185BFA37164B81340044214A /* episode20121107101905.ar in Resources */,
-				185BFA38164B81340044214A /* episode20121107103815.ar in Resources */,
-				185BFA39164B81340044214A /* episode20121107105213.ar in Resources */,
-				185BFA3A164B81340044214A /* episode20121107112506.ar in Resources */,
-				185BFA3B164B81340044214A /* episode20121107114052.ar in Resources */,
-				185BFA3C164B81340044214A /* episode20121107115232.ar in Resources */,
-				185BFA3D164B81340044214A /* episode20121107121531.ar in Resources */,
-				185BFA3E164B81340044214A /* episode20121107124540.ar in Resources */,
-				185BFA3F164B81340044214A /* episode20121107125530.ar in Resources */,
 				185BFA41164B99640044214A /* background-pattern-pad.png in Resources */,
 				185BFA46164BB03D0044214A /* small-chessboard-frame-pad.png in Resources */,
 				185BFA48164BB0470044214A /* small-chessboard-pad.png in Resources */,
@@ -4700,6 +4482,9 @@
 				18C31125164FDC5E007F3990 /* bubble-broken-pad-hd.png in Resources */,
 				18C31126164FDC5E007F3990 /* bubble-broken-pad.png in Resources */,
 				18C3112C164FE349007F3990 /* bubble-broken.wav in Resources */,
+				18C311341651F758007F3990 /* small-chessboard-pad.png in Resources */,
+				18C3114616523D3A007F3990 /* EZEpisodeEditor.xib in Resources */,
+				18C3114E16527EE4007F3990 /* episode20121113211142.ar in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4892,6 +4677,11 @@
 				18C3112A164FDCB5007F3990 /* EZBubble.m in Sources */,
 				18C3112F164FE9DD007F3990 /* EZBubble2.m in Sources */,
 				18C311321650D962007F3990 /* EZSimpleImageView.m in Sources */,
+				18C3114016521BBB007F3990 /* EZQueue.m in Sources */,
+				18C3114116521BBB007F3990 /* EZLRUMap.m in Sources */,
+				18C3114416523007007F3990 /* EZEditPage.m in Sources */,
+				18C3114916523DFF007F3990 /* EZEpisodeEditor.m in Sources */,
+				18C3114C16524760007F3990 /* EZListEditPage.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

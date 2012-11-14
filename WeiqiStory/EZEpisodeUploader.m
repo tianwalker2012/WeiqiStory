@@ -39,6 +39,21 @@
     }
 }
 
+- (void) uploadOnlyEpisodes:(NSArray*)episodes
+{
+    NSString* uniqueFileName = [NSString stringWithFormat:@"episode%@.ar", [[NSDate date] stringWithFormat:@"yyyyMMddHHmmss"]];
+    [self updateList:uniqueFileName];
+    //NSString* jsonStr = episodes.JSONRepresentation;
+    NSData* data = [NSKeyedArchiver archivedDataWithRootObject:episodes];
+    
+    EZUploader* uploader = [[EZUploader alloc] initWithURL:[NSURL URLWithString:UploadBaseURL]];
+    EZDEBUG(@"Begin upload to URL:%@", UploadBaseURL);
+    [uploader uploadToServer:data fileName:uniqueFileName contentType:@"episode" resultBlock:^(id sender){
+        EZDEBUG(@"upload episode script success");
+    }];
+}
+
+
 //What I will do here?
 //Upload all the files for this episode.
 - (void) uploadEpisode:(EZEpisodeVO*)episode nextBlk:(EZOperationBlock)block

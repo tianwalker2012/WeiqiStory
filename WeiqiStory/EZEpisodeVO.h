@@ -48,6 +48,8 @@
 //All the download episode to the list, user could enjoy playing the episode.
 @property (assign, nonatomic) BOOL completed;
 
+@property (assign, nonatomic) BOOL inMainBundle;
+
 @property (strong, nonatomic) EZEpisode* PO;
 
 

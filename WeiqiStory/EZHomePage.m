@@ -11,6 +11,7 @@
 #import "EZListPage.h"
 #import "EZSoundPlayer.h"
 #import "EZSoundManager.h"
+#import "EZListTablePage.h"
 
 @interface EZHomePage()
 {
@@ -47,7 +48,7 @@
         CCSprite* background = [[CCSprite alloc] initWithFile:@"home-page.png"];
         CCMenuItemImage* startButton = [CCMenuItemImage itemWithNormalImage:@"start-button.png" selectedImage:@"start-button-pressed.png" block:^(id sender){
             [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
-            [[CCDirector sharedDirector] replaceScene:[EZListPage node]];
+            [[CCDirector sharedDirector] replaceScene:[EZListTablePage node]];
         }];
         
         background.position = ccp(winsize.width/2, winsize.height/2);

@@ -83,18 +83,18 @@
     //[coder encodeInt:_syncType forKey:@"syncType"];
     [coder encodeObject:_cleanedMarks forKey:@"cleanedMarks"];
     [coder encodeObject:_cleanedMoves forKey:@"cleanedMoves"];
-    EZDEBUG(@"Complete encode");
+    //EZDEBUG(@"Complete encode");
 }
 
 
 
 -(id)initWithCoder:(NSCoder *)decoder {
     self =  [super initWithCoder:decoder];
-    EZDEBUG(@"initWithCoder");
+    //EZDEBUG(@"initWithCoder");
     _cleanType = [decoder decodeIntForKey:@"cleanType"];
     _cleanedMarks = [decoder decodeObjectForKey:@"cleanedMarks"];
     _cleanedMoves = [decoder decodeObjectForKey:@"cleanedMoves"];
-    EZDEBUG(@"complete initWithCoder");
+    //EZDEBUG(@"complete initWithCoder");
     return self;
     
 }

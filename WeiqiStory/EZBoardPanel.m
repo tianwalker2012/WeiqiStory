@@ -38,54 +38,54 @@
 
 - (void) updateWithEpisode:(EZEpisodeVO*)epv
 {
-    //Remove the basic Patterns first.
-    CGFloat scale = [UIScreen mainScreen].scale;
-    [self.images removeObject:_chessPattern];
     if(!epv.thumbNail){
-        epv.thumbNail = [EZChess2Image generateAdjustedBoard:epv.basicPattern size:CGSizeMake(130*scale, 130*scale)];
+        epv.thumbNail = [EZImageView generateSmallBoard:epv.basicPattern];
     }
-    _chessPattern = [[EZImage alloc] initWithImage:epv.thumbNail point:ccp(6, 6) z:2 flip:FALSE];
-    [self addEZImage:_chessPattern];
-    
+    self.image = epv.thumbNail;
+
     _name.text =  epv.name;
     _intro.text = epv.introduction;
-    //Redraw on the updated one.
-    [self setNeedsDisplay];
 }
 
 
 - (id) initWithEpisode:(EZEpisodeVO*) epv
 {
     
-    self = [super initWithImage:[EZFileUtil imageFromFile:@"small-board.png"]];
+    //self = [super initWithImage:[EZFileUtil imageFromFile:@"small-board.png"]];
     //CGFloat scale = [UIScreen mainScreen].scale;
-    
-    
-    _name = [[UILabel alloc] initWithFrame:CGRectMake(10, 142, 70, 25)];
+    self = [super initWithImage:epv.thumbNail];
+    self.userInteractionEnabled = true;
+    _name = [[UILabel alloc] initWithFrame:CGRectMake(10, 142, 100, 25)];
     _name.backgroundColor = [UIColor clearColor];
     _name.font = [UIFont fontWithName:@"Adobe Kaiti Std" size:14];
     _name.textColor = [UIColor whiteColor];
-    
+    _name.text = epv.name;
+    [self addSubview:_name];
     
     _intro = [[UILabel alloc] initWithFrame:CGRectMake(92, 142, 50, 25)];
     _intro.backgroundColor = [UIColor clearColor];
     _intro.font = [UIFont fontWithName:@"Adobe Kaiti Std" size:14];
     _intro.textColor = [UIColor whiteColor];
+    _intro.text = epv.introduction;
+    [self addSubview:_intro];
     
     //EZImage* chessImage = nil;
-    [self updateWithEpisode:epv];
-    EZImage* chessFrame = [[EZImage alloc] initWithImage:[EZFileUtil imageFromFile:@"small-chessboard-frame.png"] point:ccp(5, 5) z:3];
-    
-    [self addEZImage:chessFrame];
-    [self addEZImage:_chessPattern];
-    
-    [self addSubview:_name];
-    [self addSubview:_intro];
+    //[self updateWithEpisode:epv];
     UIGestureRecognizer* guesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapped:)];
     [self addGestureRecognizer:guesture];
     return self;
 }
 
+//Get touched
+/**
+- (void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    EZDEBUG(@"Touch ended");
+    if(_tappedBlock){
+        _tappedBlock();
+    }
+}
+ **/
 /*
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.
@@ -95,6 +95,7 @@
 }
 */
 
+/**
 - (UIImage*) outputAsImage
 {
     CGFloat scale = [UIScreen mainScreen].scale;
@@ -114,5 +115,5 @@
     return res;
 
 }
-
+**/
 @end

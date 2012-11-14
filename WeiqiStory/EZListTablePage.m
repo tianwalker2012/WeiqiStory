@@ -25,13 +25,16 @@
 #import "EZTableViewCell.h"
 #import "EZSoundManager.h"
 #import "EZSimpleImageView.h"
+#import "EZCoreAccessor.h"
+#import "EZExtender.h"
+#import "EZCoreAccessor.h"
 
 @interface EZListTablePage()
 {
     //EZUIViewWrapper* scrollWrapper;
     //UIScrollView* scroll;
     UITableView* _tableView;
-    NSMutableArray* _episodes;
+    //NSMutableArray* _episodes;
     
     //It is there mean not dirty.
     //Not exist mean dirty
@@ -57,33 +60,6 @@
 }
 
 
-- (void) loadAllFromBundle
-{
-    EZEpisodeDownloader* downloader = [[EZEpisodeDownloader alloc] init];
-    downloader.baseURL = ((NSURL*)[NSURL fileURLWithPath:[[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@""]]).absoluteString;
-    //[downloader downloadEpisode:fileURL completeBlock:nil];
-    [downloader downloadAccordingToList:[EZFileUtil fileToURL:@"episode-small.lst"]];
-     
-}
-
-- (void) loadEpisode
-{
-    
-    /**
-     EZCoreAccessor* accessor = [EZCoreAccessor getClientAccessor];
-     NSArray* episodes = [accessor fetchAll:[EZEpisode class] sortField:nil];
-     EZDEBUG(@"Fetched:%i", episodes.count);
-     for(EZEpisode* ep in episodes){
-     [self showEpisode:[[EZEpisodeVO alloc] initWithPO:ep]];
-     }
-     **/
-    EZEpisodeDownloader* downloader = [[EZEpisodeDownloader alloc] init];
-    NSURL* fileURL = [EZFileUtil fileToURL:@"episode20121022141041.ar"];
-    downloader.baseURL = ((NSURL*)[NSURL fileURLWithPath:[[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@""]]).absoluteString;
-    [downloader downloadEpisode:fileURL completeBlock:nil];
-    //[downloader downloadAccordingToList:listURL];
-    
-}
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -91,10 +67,16 @@
 }
 
 
+- (NSInteger) totalEpisodes
+{
+    return [[EZCoreAccessor getClientAccessor] count:[EZEpisode class]];
+}
+
 - (NSInteger) currentRows
 {
-    int row = _episodes.count / 4;
-    int col = _episodes.count % 4;
+    
+    int row = _recentEpisodes / 4;
+    int col = _recentEpisodes % 4;
     if(col > 0){
         row ++;
     }
@@ -114,7 +96,7 @@
 - (void) cleanCell:(UITableViewCell*) cell
 {
     for(UIView* view in cell.subviews){
-        if([view.class isSubclassOfClass:[EZSimpleImageView class]]){
+        if([view.class isSubclassOfClass:[EZBoardPanel class]]){
             [view removeFromSuperview];
         }
     }
@@ -150,42 +132,41 @@
     }
     int startPos = indexPath.row * 4;
     int endPos = startPos + 4;
-    if(endPos > _episodes.count){
-        endPos = _episodes.count;
+    if(endPos > _recentEpisodes){
+        endPos = _recentEpisodes;
     }
     
     //int col = (indexPath.ro-1) % 4;
     
     CGFloat widthGap = 45;
     CGFloat panelWidth = 142;
+    
+   
+                         
     EZDEBUG(@"current row %i, will add item:%i",indexPath.row, (endPos - startPos));
     for(int i = startPos; i < endPos; i++){
         CGFloat xPos = (widthGap + panelWidth) * (i - startPos);
         
-        EZEpisodeVO* epv = [_episodes objectAtIndex:i];
-        if(!epv.completeBoard){
-            EZBoardPanel* panel = [[EZBoardPanel alloc] initWithEpisode:epv];
-            epv.completeBoard = [panel outputAsImage];
+        EZEpisodeVO* epv = [self getEpisode:i];
+        
+        if(epv.thumbNail == nil){
+            epv.thumbNail = [EZImageView generateSmallBoard:epv.basicPattern];
         }
         
-        EZImageView* orgView = [[EZImageView alloc] initWithImage:epv.completeBoard];
-        [orgView setPosition:ccp(300, 400)];
-        [tableView addSubview:orgView];
-        
+        EZBoardPanel* panel = [[EZBoardPanel alloc] initWithEpisode:epv];
+        panel.userInteractionEnabled = true;
         EZDEBUG(@"The completeBoard size:%@", NSStringFromCGSize(epv.completeBoard.size));
-        EZSimpleImageView* imageView = [[EZSimpleImageView alloc] initWithImage:epv.completeBoard];
-        //EZBoardPanel* panel = [cell.panels objectForKey:NSStringFromCGPoint(position)];
         
-        [imageView setPosition:ccp(xPos, 0)];
-        imageView.tappedBlock = ^(){
+        [panel setPosition:ccp(xPos, 0)];
+        panel.tappedBlock = ^(){
                 EZDEBUG(@"The episode %@ get tapped", epv.name);
+                [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
                 EZPlayPage* playPage = [[EZPlayPage alloc] initWithEpisode:epv];
                 [_tableView removeFromSuperview];
                 [[CCDirector sharedDirector] pushScene:[playPage createScene]];
-                [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
+               
             };
-            
-        [cell addSubview:imageView];
+        [cell addSubview:panel];
         
     }
     //UIView* testHide =  [[UIView alloc] initWithFrame:CGRectMake(20, 20, 100, 100)];
@@ -216,8 +197,8 @@
     }
     int startPos = indexPath.row * 4;
     int endPos = startPos + 4;
-    if(endPos > _episodes.count){
-        endPos = _episodes.count;
+    if(endPos > _recentEpisodes){
+        endPos = _recentEpisodes;
     }
 
     //int col = (indexPath.ro-1) % 4;
@@ -231,7 +212,7 @@
         CGPoint position = ccp(xPos, 0);
         
         
-        EZEpisodeVO* epv = [_episodes objectAtIndex:i];
+        EZEpisodeVO* epv = [self getEpisode:i];
         EZBoardPanel* panel = [cell.panels objectForKey:NSStringFromCGPoint(position)];
         
         if(![_dirtyFlags objectForKey:[NSString stringWithFormat:@"%i",i]] || ![cell isIndexExist:ccp(i, xPos)]){
@@ -282,6 +263,40 @@
     
 }
 
+
+//What's the responsbility of this method
+//First I will check what's the lastest accessed position?
+//later will add query the database, if the limit reached.
+- (void) loadFromDB:(NSInteger)pos limit:(NSInteger)limit
+{
+    NSInteger mostRecent = ((NSNumber*)[_episodeMap recentlyVisited]).integerValue;
+    NSInteger begin = pos;
+    if(mostRecent > pos){ //I need to read from, mean user scroll up.
+        begin = pos - BatchFetchSize + 1;
+        if(begin < 0){
+            begin = 0;
+        }
+    }
+    NSArray* arr = [[EZCoreAccessor getClientAccessor] fetchObject:[EZEpisode class] begin:begin limit:BatchFetchSize];
+    NSInteger count = 0;
+    for(EZEpisode* ep in arr){
+        EZEpisodeVO* epv = [[EZEpisodeVO alloc] initWithPO:ep];
+        [_episodeMap setObject:epv forKey:@(begin + count)];
+        count ++;
+    }
+}
+
+- (EZEpisodeVO*) getEpisode:(NSInteger)pos
+{
+    EZEpisodeVO* res = [_episodeMap getObjectForKey:@(pos)];
+    if(res == nil){
+        EZDEBUG(@"didn't exist in map, let fetch from DB");
+        [self loadFromDB:pos limit:BatchFetchSize];
+        res = [_episodeMap getObjectForKey:@(pos)];
+    }
+    return res;
+}
+
 //We will only support potrait orientation
 - (id) init
 {
@@ -299,14 +314,19 @@
         [self addChild:background z:10];
         
         
-        CCSprite* smallBoard = [CCSprite spriteWithFile:@"small-board.png"];
-        [[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFrame:smallBoard.displayFrame name:@"small-board.png"];
+        //CCSprite* smallBoard = [CCSprite spriteWithFile:@"small-board.png"];
+        //[[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFrame:smallBoard.displayFrame name:@"small-board.png"];
         [self addTableView];
-        _episodes = [[NSMutableArray alloc] init];
-        
+        //_episodes = [[NSMutableArray alloc] init];
+        EZDEBUG(@"Added tableView");
+        _recentEpisodes = [[EZCoreAccessor getClientAccessor] count:[EZEpisode class]];
+        EZDEBUG(@"recentEpisodes:%i", _recentEpisodes);
+        _episodeMap = [[EZLRUMap alloc] initWithLimit:30];
+        EZDEBUG(@"map initalized");
         //Download the source from the server
         //[self startDownload];
-        [self loadAllFromBundle];
+        [self loadFromDB:0 limit:30];
+        EZDEBUG(@"loadedFromDB, map count %i", _episodeMap.count);
         //[self loadEpisode];
         //[self startDownload];
     }
@@ -345,8 +365,10 @@
 - (void) showEpisode:(EZEpisodeVO*)epv
 {
     int previousRow = [self currentRows];
-    [_episodes addObject:epv];
-    
+    //[_episodes addObject:epv];
+    EZDEBUG(@"Before Query for data:%i", _recentEpisodes);
+    _recentEpisodes = [[EZCoreAccessor getClientAccessor] count:[EZEpisode class]];
+    EZDEBUG(@"After Query for data:%i", _recentEpisodes);
     int curRow = [self currentRows];
 
     if(curRow > previousRow){
@@ -366,10 +388,9 @@
     EZDEBUG(@"currentThread:%i, mainThread:%i",(int)[NSThread currentThread], (int)[NSThread mainThread]);
     EZEpisodeVO* episode = notify.object;
     EZDEBUG(@"Object id:%i, thumberNail:%@", (int)episode, episode.thumbNail);
-    [self  executeBlockInMainThread:^(){
-        [self showEpisode:episode];
-        
-    }];
+    //[_episodes addObject:episode];
+    [self showEpisode:episode];
+    
 }
 
 

@@ -52,6 +52,10 @@
 
 - (id) fetchByID:(NSManagedObjectID*)oid;
 
+- (NSInteger) count:(Class)classType;
+
+- (NSArray*) fetchObject:(Class)classType begin:(NSInteger)begin limit:(NSInteger)limit;
+
 //Fetch object by the specified predication
 - (NSArray*) fetchObject:(Class)classType byPredicate:(NSPredicate*)predicate withSortField:(NSString*)sortField;
 

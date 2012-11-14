@@ -146,7 +146,7 @@ typedef enum {
 
     
     //[self addChild:studyBoardHolder];
-    player2 = [[EZActionPlayer alloc] initWithActions:epv.actions chessBoard:chessBoard2];
+    player2 = [[EZActionPlayer alloc] initWithActions:epv.actions chessBoard:chessBoard2 inMainBundle:epv.inMainBundle];
     CCMenuItemImage* quitButton = [CCMenuItemImage itemWithNormalImage:@"study-over-button.png" selectedImage:@"study-over-button.png"
         block:^(id sender){
             [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
@@ -307,7 +307,7 @@ typedef enum {
         
                 
         //[self addChild:chessBoard2];
-        player = [[EZActionPlayer alloc] initWithActions:epv.actions chessBoard:chessBoard];
+        player = [[EZActionPlayer alloc] initWithActions:epv.actions chessBoard:chessBoard inMainBundle:epv.inMainBundle];
         
         
         //[player2 forwardFrom:0 to:epv.actions.count];
