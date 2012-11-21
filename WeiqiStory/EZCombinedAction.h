@@ -7,7 +7,7 @@
 //
 
 #import "EZAction.h"
-
+#import "EZConstants.h"
 
 //What's the purpose of the defaul actions?
 //The default actions will do to things,
@@ -16,5 +16,7 @@
 @interface EZCombinedAction : EZAction
 
 @property(strong, nonatomic) NSArray* actions;
+
+@property(strong, nonatomic) EZOperationBlock pauseBlock;
 
 @end

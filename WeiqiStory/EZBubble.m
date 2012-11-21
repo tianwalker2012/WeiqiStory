@@ -13,6 +13,8 @@
 
 @implementation EZBubble
 
+static CCSprite* bubble;
+static CCSprite* broken;
 
 - (id) initWithBubble:(CCSprite *)bubble broken:(CCSprite *)broken
 {
@@ -31,14 +33,14 @@
 - (void) onEnter
 {
     [super onEnter];
-    EZDEBUG(@"Accept touch");
-    [[CCDirector sharedDirector].touchDispatcher addTargetedDelegate:self priority:TouchEventPriority swallowsTouches:YES];
+    //EZDEBUG(@"Accept touch");
+    [[CCDirector sharedDirector].touchDispatcher addTargetedDelegate:self priority:BubbleTouchPriority swallowsTouches:NO];
 }
 
 - (void) onExit
 {
     [super onExit];
-    EZDEBUG(@"Quit for touch");
+    //EZDEBUG(@"Quit for touch");
     [[[CCDirector sharedDirector] touchDispatcher] removeDelegate:self];
 }
 
@@ -52,8 +54,7 @@
 {
     CGRect boundingBox = self.boundingBox;
     CGPoint localPt = [self.parent locationInSelf:touch];
-    EZDEBUG(@"Bubble clicked %@, boundingBox:%@", NSStringFromCGPoint(localPt),
-            NSStringFromCGRect(boundingBox));
+    //EZDEBUG(@"Bubble clicked %@, boundingBox:%@", NSStringFromCGPoint(localPt),NSStringFromCGRect(boundingBox));
 
     if(CGRectContainsPoint(boundingBox, localPt) && !_isBroken){
         EZDEBUG(@"Broken triggered %@, boundingBox:%@", NSStringFromCGPoint(localPt),
@@ -75,6 +76,36 @@
         return true;
     }
     return false;
+}
+
++ (void) generatedBubble:(CCNode*)node z:(NSInteger)zOrder
+{
+    if(bubble == nil){
+        bubble = [CCSprite spriteWithFile:@"bubble-pad.png"];
+        broken = [CCSprite spriteWithFile:@"bubble-broken-pad.png"];
+    }
+    EZDEBUG(@"Generate bubble, size:%@", NSStringFromCGSize(bubble.boundingBox.size));
+    CGFloat xStartPos = arc4random()%768;
+    CGFloat xEndPos = arc4random()%768;
+    CGFloat yEndPos = 1048;
+    CGFloat addDuration = arc4random()%5;
+    
+    CGFloat duration = 5 + addDuration;
+    EZBubble* randBubble = [[EZBubble alloc] initWithBubble:[CCSprite spriteWithSpriteFrame:bubble.displayFrame] broken:[CCSprite spriteWithSpriteFrame:broken.displayFrame]];
+    //CCNode* randBubble = [[EZBubble2 alloc] init];
+    randBubble.contentSize = bubble.contentSize;
+    CGFloat finalScale =0.4 + 0.15 * (arc4random() % 4);
+    
+    CGFloat finalAngle = 90 * (arc4random() % 5);
+    
+    randBubble.scale = 0.5;
+    randBubble.position = ccp(xStartPos, 0);
+    [node addChild:randBubble z:zOrder];
+    id animate =  [CCSpawn actions:[CCMoveTo actionWithDuration:duration position:ccp(xEndPos, yEndPos)],[CCRotateBy actionWithDuration:duration angle:finalAngle], [CCScaleTo actionWithDuration:duration scale:finalScale], nil];
+    id action = [CCSequence actions:animate,[CCCallBlock actionWithBlock:^(){
+        [randBubble removeFromParentAndCleanup:YES];
+    }], nil];
+    [randBubble runAction:action];
 }
 
 @end

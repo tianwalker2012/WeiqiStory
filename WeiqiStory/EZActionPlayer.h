@@ -156,6 +156,8 @@ typedef enum {
 - (void) playSound:(EZAction*)action completeBlock:(void(^)())blk;
 - (void) stopSound;
 
+- (void) stopPlayMoves;
+
 - (void) playMoves:(EZAction*)action completeBlock:(void (^)())blk withDelay:(CGFloat)delay;
 
 

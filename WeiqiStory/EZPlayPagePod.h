@@ -1,8 +1,8 @@
 //
-//  EZPlayPage.h
+//  EZPlayPage-pod4.h
 //  WeiqiStory
 //
-//  Created by xietian on 12-10-30.
+//  Created by xietian on 12-11-20.
 //
 //
 
@@ -10,7 +10,7 @@
 #import "EZLayer.h"
 
 @class EZEpisodeVO;
-@interface EZPlayPage : EZLayer
+@interface EZPlayPagePod : EZLayer
 
 + (CCScene*) scene;
 
@@ -19,5 +19,6 @@
 @property (nonatomic, strong) EZEpisodeVO* episode;
 
 - (id) initWithEpisode:(EZEpisodeVO*)epv;
+
 
 @end

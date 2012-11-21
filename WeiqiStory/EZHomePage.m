@@ -12,6 +12,7 @@
 #import "EZSoundPlayer.h"
 #import "EZSoundManager.h"
 #import "EZListTablePage.h"
+#import "EZBubble.h"
 
 @interface EZHomePage()
 {
@@ -46,15 +47,20 @@
         //CCSprite* background = [[CC]]
         
         CCSprite* background = [[CCSprite alloc] initWithFile:@"home-page.png"];
-        CCMenuItemImage* startButton = [CCMenuItemImage itemWithNormalImage:@"start-button.png" selectedImage:@"start-button-pressed.png" block:^(id sender){
+        CCMenuItemImage* startButton = [CCMenuItemImage itemWithNormalImage:@"start-button-pad.png" selectedImage:@"start-button-pressed-pad.png" block:^(id sender){
+            EZDEBUG(@"Button get clicked");
             [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
             [[CCDirector sharedDirector] replaceScene:[EZListTablePage node]];
         }];
         
+        [self scheduleBlock:^(){
+            [EZBubble generatedBubble:self z:10];
+        } interval:1.0 repeat:kCCRepeatForever delay:0.5];
+
         background.position = ccp(winsize.width/2, winsize.height/2);
         
         CCMenu* menu = [CCMenu menuWithItems:startButton, nil];
-        menu.position =  ccp(winsize.width/2, winsize.height/2);
+        menu.position =  ccp(385, 556);
         
         [self addChild:background];
         [self addChild:menu];
@@ -63,6 +69,12 @@
     
     return self;
 }
+
+- (void) onEnter{
+    [super onEnter];
+    [[EZSoundManager sharedSoundManager] playBackgroundTrack:@"background.mp3"];
+}
+
 
 
 @end

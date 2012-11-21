@@ -22,6 +22,11 @@
 #import "EZFileUtil.h"
 #import "EZCoreAccessor.h"
 #import "EZListEditPage.h"
+#import "EZEpisodeVO.h"
+#import "EZChessMoveAction.h"
+#import "EZCoord.h"
+#import "EZPlayPagePod.h"
+#import "EZEnlargeTester.h"
 
 //#import "EZPlayerStatus.h"
 
@@ -40,6 +45,17 @@
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"Executed"];
 }
 
+- (EZEpisodeVO*) generateEpisodeVO
+{
+    EZEpisodeVO* res = [[EZEpisodeVO alloc] init];
+    res.name = @"黑先";
+    res.introduction = @"简介";
+    EZChessMoveAction* chessMove = [[EZChessMoveAction alloc] init];
+    chessMove.plantMoves = @[[[EZCoord alloc]init:5 y:5],[[EZCoord alloc] init:6 y:6]];
+    res.actions = @[chessMove];
+    return res;
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     CCFileUtils *sharedFileUtils = [CCFileUtils sharedFileUtils];
@@ -53,7 +69,7 @@
 
     if(![[NSUserDefaults standardUserDefaults] boolForKey:@"Executed"]){
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"Executed"];
-        [self loadAllFromBundle];
+        //[self loadAllFromBundle];
     }
 	// Create the main window
 	window_ = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
@@ -73,7 +89,7 @@
 	director_.wantsFullScreenLayout = YES;
     //director_.wantsFullScreenLayout = NO;
 	// Display FSP and SPF
-	[director_ setDisplayStats:YES];
+	//[director_ setDisplayStats:YES];
 
 	// set FPS at 60
 	[director_ setAnimationInterval:1.0/60];
@@ -97,11 +113,6 @@
 	// You can change anytime.
 	[CCTexture2D setDefaultAlphaPixelFormat:kCCTexture2DPixelFormat_RGBA8888];
 
-	// If the 1st suffix is not found and if fallback is enabled then fallback suffixes are going to searched. If none is found, it will try with the name without suffix.
-	// On iPad HD  : "-ipadhd", "-ipad",  "-hd"
-	// On iPad     : "-ipad", "-hd"
-	// On iPhone HD: "-hd"
-	
 	// Assume that PVR images have premultiplied alpha
 	[CCTexture2D PVRImagesHavePremultipliedAlpha:YES];
 
@@ -110,10 +121,12 @@
 	// and add the scene to the stack. The director will run it when it automatically when the view is displayed.
 	//[director_ pushScene:[EZChessEditor scene]];
     //[director_ pushScene:[EZChessPlay scene]];
-	[director_ pushScene:[EZListTablePage scene]];
+	//[director_ pushScene:[EZListTablePage scene]];
     //[director_ pushScene:[EZEffectTester scene]];
     //[director_ pushScene:[EZHomePage scene]];
     //[director_ pushScene:[EZListEditPage scene]];
+    //[director_ pushScene:[[[EZPlayPagePod alloc] initWithEpisode:[self generateEpisodeVO]] createScene]];
+    [director_ pushScene:[EZEnlargeTester node]];
 	// Create a Navigation Controller with the Director
 	navController_ = [[UINavigationController alloc] initWithRootViewController:director_];
 	navController_.navigationBarHidden = YES;

@@ -342,6 +342,15 @@
     [soundPlayer stop];
 }
 
+//Will be called by the pause in the action body
+- (void) stopPlayMoves
+{
+    if(actionTimer){
+        [actionTimer invalidate];
+        actionTimer = nil;
+    }
+}
+
 - (void) playMoves:(EZAction*)act completeBlock:(void (^)())blk withDelay:(CGFloat)delay
 {
     EZChessMoveAction* action = (EZChessMoveAction*)act;

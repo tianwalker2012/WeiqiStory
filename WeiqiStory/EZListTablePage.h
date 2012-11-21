@@ -8,8 +8,9 @@
 
 #import "cocos2d.h"
 #import "EZLRUMap.h"
+#import "EZLayer.h"
 
-@interface EZListTablePage : CCLayer<UITableViewDelegate, UITableViewDataSource>
+@interface EZListTablePage : EZLayer<UITableViewDelegate, UITableViewDataSource>
 
 + (CCScene*) scene;
 

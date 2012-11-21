@@ -154,9 +154,10 @@
     //EZDEBUG(@"LocalPoint:%@, rect is:%@", NSStringFromCGPoint(locPt), NSStringFromCGRect(nobBox));
     
     if(!CGRectContainsPoint(nobBox, locPt)){
+        EZDEBUG(@"Deny touch event. nobBox:%@, locationPoint:%@", NSStringFromCGRect(nobBox), NSStringFromCGPoint(locPt));
         return false;
     }
-    //EZDEBUG(@"Accept the touch event");
+    EZDEBUG(@"Accept the touch event");
     prevTouch = locPt;
     nobMovePrev = locPt;
     return true;
@@ -170,7 +171,7 @@
     
     CGFloat movedX = _nob.position.x + deltaMove;
     
-    //EZDEBUG(@"movedX:%f, begin:%f, end:%f, deltaMove:%f", movedX, begin, end, deltaMove);
+    EZDEBUG(@"movedX:%f, begin:%f, end:%f, deltaMove:%f", movedX, begin, end, deltaMove);
     
     if(movedX < begin){
         movedX = begin;
@@ -196,7 +197,7 @@
     
     NSInteger newValue = [self calcValueForDelta:delta];
     
-    //EZDEBUG(@"curPt:%@, prevPt:%@, newValue:%i, _curentValue:%i",NSStringFromCGPoint(curPt), NSStringFromCGPoint(prevTouch), newValue, _currentValue);
+    EZDEBUG(@"curPt:%@, prevPt:%@, newValue:%i, _curentValue:%i",NSStringFromCGPoint(curPt), NSStringFromCGPoint(prevTouch), newValue, _currentValue);
     
     
     if(newValue != _currentValue){

@@ -8,9 +8,10 @@
 
 //#import "CCLayer.h"
 #import "cocos2d.h"
+#import "EZLayer.h"
 //This will be the page, which will load the button and the background image.
 //Cool. 
-@interface EZHomePage : CCLayer
+@interface EZHomePage : EZLayer
 
 + (CCScene*) scene;
 

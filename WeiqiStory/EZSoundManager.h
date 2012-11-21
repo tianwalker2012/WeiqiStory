@@ -41,6 +41,10 @@
 -(void)stopSoundEffect:(ALuint)soundEffectID;
 -(void)playBackgroundTrack:(NSString*)trackFileName;
 
+- (BOOL) isBackgrondPlaying;
+- (void) stopBackground;
+
+
 //Newly added.
 -(void)loadSoundEffects:(NSArray*)effectsFiles;
 -(void)unloadSoundEffects:(NSArray*)effectsFiles;

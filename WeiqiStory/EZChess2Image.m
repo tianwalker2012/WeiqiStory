@@ -63,7 +63,7 @@
     
     //Seems this is ok. because the chessboard is at the right size
     CGContextDrawImage(cgContext, CGRectMake(0, 0, 250, 250), image.CGImage);
-    EZDEBUG(@"Background size is:%@", NSStringFromCGSize(image.size));
+    //EZDEBUG(@"Background size is:%@", NSStringFromCGSize(image.size));
     //[self drawCtx:cgContext image:image pos:CGPointMake(0, 0)];
     
     
@@ -73,7 +73,7 @@
     CGFloat padY = 7.5;
     
     for(EZCoord* coord in coords){
-        EZDEBUG(@"Will draw coord x:%i, y:%i", coord.x, coord.y);
+        //EZDEBUG(@"Will draw coord x:%i, y:%i", coord.x, coord.y);
         CGPoint pos = CGPointMake(padX+ gapX*coord.x, padY + gapY*coord.y);
         UIImage* btn = (coord.chessType == kWhiteChess)?white:black;
         
@@ -129,7 +129,7 @@
     //CGContextTranslateCTM(cgContext, rect.origin.x, rect.origin.y);
     
     //I assume this will get adjusted according to scale,
-    EZDEBUG(@"Final Size is:%@, adjustedRect:%@", NSStringFromCGSize(finalSize), NSStringFromCGRect(adjustedRect));
+    //EZDEBUG(@"Final Size is:%@, adjustedRect:%@", NSStringFromCGSize(finalSize), NSStringFromCGRect(adjustedRect));
     CGContextDrawImage(cgContext, CGRectMake(0, 0, finalSize.width, finalSize.height), partialImage);
     
     //CGContextDrawTiledImage(cgContext, CGRectMake(-rect.origin.x, -rect.origin.y, finalSize.width, finalSize.height), image.CGImage);
@@ -148,7 +148,7 @@
     CGFloat orgWidth = res.size.width/scale;
     
     CGRect alignRect = [self shrinkBoard:coords];
-    EZDEBUG(@"alignedRect:%@", NSStringFromCGRect(alignRect));
+    //EZDEBUG(@"alignedRect:%@", NSStringFromCGRect(alignRect));
     int iWidth = MAX(alignRect.size.height,alignRect.size.width);
     //CGFloat scala = orgWidth/size.width;
     
@@ -172,7 +172,7 @@
         orgY = orgWidth - fWidth;
     }
     CGRect clippedRect = CGRectMake(orgX, orgY, fWidth, fWidth);
-    EZDEBUG(@"Final clippedRect is:%@", NSStringFromCGRect(clippedRect));
+    //EZDEBUG(@"Final clippedRect is:%@", NSStringFromCGRect(clippedRect));
     //The clippedRect is not have scale adjusted.
     return [self generatePartialImage:res rect:[self rectPointToPix:clippedRect] finalSize:size];
 
@@ -364,7 +364,7 @@
     //So I need to turnt he image to point first, it is imageSize.width/scale, then divide with 2.
     //So combine the 2 operation, it is size/(2*scale)
     CGPoint adjusted = CGPointMake(pos.x - imgSize.width/2  , pos.y - imgSize.height/2);
-    EZDEBUG(@"image orgPos:%@, adjustedPos:%@, imageSize:%@, scaleless size:%@",NSStringFromCGPoint(pos), NSStringFromCGPoint(adjusted), NSStringFromCGSize(imgSize), NSStringFromCGSize(image.size));
+    //EZDEBUG(@"image orgPos:%@, adjustedPos:%@, imageSize:%@, scaleless size:%@",NSStringFromCGPoint(pos), NSStringFromCGPoint(adjusted), NSStringFromCGSize(imgSize), NSStringFromCGSize(image.size));
 
     //Seems the draw image method need to pass pixel.
     CGContextDrawImage(ctx, CGRectMake(adjusted.x, adjusted.y, imgSize.width, imgSize.height), image.CGImage);

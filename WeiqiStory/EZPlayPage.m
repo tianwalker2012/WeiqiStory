@@ -17,6 +17,7 @@
 #import "EZBubble.h"
 #import "EZBubble2.h"
 
+
 //Only 2 status.
 //Let's visualize what's was going on for a while.
 //Should I disable the progress.
@@ -91,38 +92,6 @@ typedef enum {
 
 }
 
-/**
-//This is criminal secene, I have no time to check it yet.
-//It eats up about half hours of my prcious time, I could absolutely squeeze some time out of it.
-- (void) initStudyBoard:(EZEpisodeVO*) epv
-{
-    studyBoardHolder = [[CCNode alloc] init];
-    studyBoardHolder.contentSize = CGSizeMake(768, 876);
-    studyBoardHolder.anchorPoint = ccp(0, 0);
-    studyBoardHolder.position = ccp(0, 0);
-    
-    studyBoard  = [[EZChessBoard alloc]initWithFile:@"chess-board-pad.png" touchRect:CGRectMake(20, 20, 646, 646) rows:19 cols:19];
-    studyBoard.position = ccp(387,475+30);
-    //studyBoard.touchEnabled = false;
-    
-    studyPlayer = [[EZActionPlayer alloc] initWithActions:epv.actions chessBoard:chessBoard];
-    EZDEBUG(@"Action count:%i", epv.actions.count);
-    
-    [self addChild:studyBoard];
-    
-    CCMenuItemImage* quitButton = [CCMenuItemImage itemWithNormalImage:@"studyover-pad.png" selectedImage:@"study-btn-pad.png"
-        block:^(id sender){
-            [studyBoardHolder removeFromParentAndCleanup:NO];
-            studyBoard.touchEnabled = false;
-        }
-    ];
-    CCMenu* quitButtonWrapper = [CCMenu menuWithItems:quitButton, nil];
-    quitButtonWrapper.position = ccp(663, 59);
-    [studyBoardHolder addChild:quitButtonWrapper];
-    //[self addChild:studyBoardHolder];
-    
-}
-**/
 
 - (void) initStudyBoard2:(EZEpisodeVO*)epv
 {
@@ -163,7 +132,7 @@ typedef enum {
                 EZDEBUG(@"start show study board");
                 //studyBoardHolder.scaleX = 0.05;
                 //[self addChild:studyBoardHolder z:100];
-                [self addChild:mainLayout z:5];
+                [self addChild:mainLayout z:10];
                 id scaleDown = [CCScaleTo actionWithDuration:0.3f scaleX:1 scaleY:1];
                 //id moveTo = [CCMoveTo actionWithDuration:0.3f position:ccp(0, 0)];
                 [mainLayout runAction:scaleDown];
@@ -187,7 +156,7 @@ typedef enum {
     }];
     
     CCMenu* prevMenu = [CCMenu menuWithItems:prevButton, nil];
-    prevMenu.position = ccp(231, 75);
+    prevMenu.position = ccp(125, 75);
     [studyBoardHolder addChild:prevMenu];
     
     //What's the meaning of nextStep?, It mean what?
@@ -212,40 +181,70 @@ typedef enum {
     }
 }
 
-- (void) generatedBubble:(ccTime)time
+
+
+//Since, the control make no effects, so I hide it. 
+- (void) addVolumeControl
 {
-    EZDEBUG(@"Generate bubble2");
-    CGFloat xStartPos = arc4random()%768;
-    CGFloat xEndPos = arc4random()%768;
-    CGFloat yEndPos = 1048;
-    CGFloat addDuration = arc4random()%5;
     
-    CGFloat duration = 5 + addDuration;
-    EZBubble* randBubble = [[EZBubble alloc] initWithBubble:[CCSprite spriteWithSpriteFrame:bubble.displayFrame] broken:[CCSprite spriteWithSpriteFrame:broken.displayFrame]];
-    //CCNode* randBubble = [[EZBubble2 alloc] init];
-    randBubble.contentSize = bubble.contentSize;
-    CGFloat finalScale =0.5 + 0.2 * (arc4random() % 4);
+    CCSprite* normalVolume = [CCSprite spriteWithFile:@"volume-button.png"];
+    CCSprite* pressedVolume = [CCSprite spriteWithFile:@"volume-button-pressed.png"];
     
-    CGFloat finalAngle = 90 * (arc4random() % 5);
     
-    randBubble.scale = 0.5;
-    randBubble.position = ccp(xStartPos, 0);
-    [self addChild:randBubble z:100];
-    id animate =  [CCSpawn actions:[CCMoveTo actionWithDuration:duration position:ccp(xEndPos, yEndPos)],[CCRotateBy actionWithDuration:duration angle:finalAngle], [CCScaleTo actionWithDuration:duration scale:finalScale], nil];
-    id action = [CCSequence actions:animate,[CCCallBlock actionWithBlock:^(){
-        [randBubble removeFromParentAndCleanup:YES];
+    EZProgressBar* volumeBar = [[EZProgressBar alloc] initWithNob:[CCSprite spriteWithFile:@"volume-nob.png"] bar:[CCSprite spriteWithFile:@"volume-bar.png"] maxValue:10 changedBlock:^(NSInteger prv, NSInteger cur) {
+        CGFloat volume = cur/10.0f;
+        EZDEBUG(@"Volume position changed from:%i to %i, final volume will be:%f", prv, cur, volume);
+        //[player forwardFrom:prv to:cur];
+        player2.soundVolume = volume;
+    }];
+    volumeBar.currentValue = player2.soundVolume;
+    
+    CCSprite* volumeFrame = [CCSprite spriteWithFile:@"volume-frame-pad.png"];
+    volumeBar.position = ccp(6, 6);
+    [volumeFrame addChild:volumeBar];
+    
+    CCMenu* volume = [CCMenu menuWithItems:[CCMenuItemImage itemWithNormalImage:@"volume-button.png" selectedImage:@"volume-button-pressed.png" block:^(id sender) {
+        CCMenuItemImage* item = sender;
+        if(volumePressed){
+            EZDEBUG(@"Will hide volume bar");
+            volumePressed = false;
+            //Hide the volume adjust region.
+            [item setNormalSpriteFrame:normalVolume.displayFrame];
+            CCSpawn* action = [CCSpawn actions:[CCMoveTo actionWithDuration:0.3 position:ccp(492, 70)], [CCScaleTo actionWithDuration:0.3 scale:0.1], nil];
+            CCAction* combined = [CCSequence actions:action,[CCCallBlock actionWithBlock:^(){
+                [volumeFrame removeFromParentAndCleanup:NO];
+            }], nil];
+            [volumeFrame runAction:combined];
+        }else{
+            EZDEBUG(@"Will show volume bar");
+            [item setNormalSpriteFrame:pressedVolume.displayFrame];
+            //Enlarge the volume adjust region.
+            volumePressed = true;
+            volumeFrame.scale = 0.1;
+            volumeFrame.position = ccp(492, 70);
+            //Why 9, make it small than the volume button,
+            //So it will hide below the volume button
+            [self addChild:volumeFrame z:9];
+            CCSpawn* action = [CCSpawn actions:[CCMoveTo actionWithDuration:0.3 position:ccp(529, 32)],[CCScaleTo actionWithDuration:0.3 scale:1], nil];
+            [volumeFrame runAction:action];
+        }
     }], nil];
-    [randBubble runAction:action];
+    
+    volume.position = ccp(492, 75);
+    
+    [mainLayout addChild:volume z:10];
+
 }
+
 //We will only support potrait orientation
 - (id) initWithEpisode:(EZEpisodeVO*)epv
 {
     self = [super init];
     if(self){
         //timer = [[CCTimer alloc] initWithTarget:self selector:@selector(generatedBubble) interval:1 repeat:kCCRepeatForever delay:1];
-        EZDEBUG(@"Before Called schedule");
-        [self schedule:@selector(generatedBubble:) interval:1.0 repeat:kCCRepeatForever delay:0.5];
-        EZDEBUG(@"After called");
+        [self scheduleBlock:^(){
+            [EZBubble generatedBubble:self z:9];
+        } interval:1.0 repeat:kCCRepeatForever delay:0.5];
         
         bubble = [CCSprite spriteWithFile:@"bubble-pad.png"];
         broken = [CCSprite spriteWithFile:@"bubble-broken.png"];
@@ -293,7 +292,7 @@ typedef enum {
         mainLayout.anchorPoint = ccp(0.5, 0);
         mainLayout.position = ccp(768/2, 0);
         
-        [self addChild:mainLayout z:5];
+        [self addChild:mainLayout z:10];
         
         CCSprite* boardFrame = [[CCSprite alloc] initWithFile:@"board-frame.png"];
         boardFrame.position = ccp(384, 512);
@@ -359,7 +358,7 @@ typedef enum {
                                        }
                                        ];
         CCMenu* playMenu = [CCMenu menuWithItems:playButton, nil];
-        playMenu.position = ccp(87, 75);
+        playMenu.position = ccp(125, 75);
         
         CCSprite* progressBar = [[CCSprite alloc] initWithFile:@"progress-bar.png"];
         //progressBar.position = ccp(294, 59);
@@ -382,7 +381,7 @@ typedef enum {
             myBar.currentValue = curPlayer.currentAction;
         }];
         
-        myBar.position = ccp(170, 60);
+        myBar.position = ccp(200, 60);
         [mainLayout addChild:myBar];
         
         if(epv.actions.count > 0){
@@ -410,7 +409,7 @@ typedef enum {
                                                 EZDEBUG(@"start show study board");
                                                 [mainLayout removeFromParentAndCleanup:NO];
                                                 studyBoardHolder.scaleX = 0.05;
-                                                [self addChild:studyBoardHolder z:100];
+                                                [self addChild:studyBoardHolder z:10];
                                                 id scaleDown = [CCScaleTo actionWithDuration:0.3f scaleX:1 scaleY:1];
                                                 //id moveTo = [CCMoveTo actionWithDuration:0.3f position:ccp(0, 0)];
                                                 [studyBoardHolder runAction:scaleDown];
@@ -444,52 +443,6 @@ typedef enum {
         
         [mainLayout addChild:playMenu];
         
-        CCSprite* normalVolume = [CCSprite spriteWithFile:@"volume-button.png"];
-        CCSprite* pressedVolume = [CCSprite spriteWithFile:@"volume-button-pressed.png"];
-        
-        
-        EZProgressBar* volumeBar = [[EZProgressBar alloc] initWithNob:[CCSprite spriteWithFile:@"volume-nob.png"] bar:[CCSprite spriteWithFile:@"volume-bar.png"] maxValue:10 changedBlock:^(NSInteger prv, NSInteger cur) {
-            CGFloat volume = cur/10.0f;
-            EZDEBUG(@"Volume position changed from:%i to %i, final volume will be:%f", prv, cur, volume);
-            //[player forwardFrom:prv to:cur];
-            player2.soundVolume = volume;
-        }];
-        volumeBar.currentValue = player2.soundVolume;
-        
-        CCSprite* volumeFrame = [CCSprite spriteWithFile:@"volume-frame-pad.png"];
-        volumeBar.position = ccp(6, 6);
-        [volumeFrame addChild:volumeBar];
-        
-        CCMenu* volume = [CCMenu menuWithItems:[CCMenuItemImage itemWithNormalImage:@"volume-button.png" selectedImage:@"volume-button-pressed.png" block:^(id sender) {
-            CCMenuItemImage* item = sender;
-            if(volumePressed){
-                EZDEBUG(@"Will hide volume bar");
-                volumePressed = false;
-                //Hide the volume adjust region.
-                [item setNormalSpriteFrame:normalVolume.displayFrame];
-                CCSpawn* action = [CCSpawn actions:[CCMoveTo actionWithDuration:0.3 position:ccp(492, 70)], [CCScaleTo actionWithDuration:0.3 scale:0.1], nil];
-                CCAction* combined = [CCSequence actions:action,[CCCallBlock actionWithBlock:^(){
-                    [volumeFrame removeFromParentAndCleanup:NO];
-                }], nil];
-                [volumeFrame runAction:combined];
-            }else{
-                EZDEBUG(@"Will show volume bar");
-                [item setNormalSpriteFrame:pressedVolume.displayFrame];
-                //Enlarge the volume adjust region.
-                volumePressed = true;
-                volumeFrame.scale = 0.1;
-                volumeFrame.position = ccp(492, 70);
-                //Why 9, make it small than the volume button,
-                //So it will hide below the volume button
-                [self addChild:volumeFrame z:9];
-                CCSpawn* action = [CCSpawn actions:[CCMoveTo actionWithDuration:0.3 position:ccp(529, 32)],[CCScaleTo actionWithDuration:0.3 scale:1], nil];
-                [volumeFrame runAction:action];
-            }
-        }], nil];
-        
-        volume.position = ccp(492, 75);
-        
-        [mainLayout addChild:volume z:10];
         //[self addChild:progressBar];
         //[self addChild:progressNob];
         [mainLayout addChild:studyMenu];

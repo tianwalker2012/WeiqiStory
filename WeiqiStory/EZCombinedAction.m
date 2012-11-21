@@ -34,7 +34,6 @@
     EZDEBUG(@"End of undo actions");
 }
 
-
 //For the subclass, override this method.
 - (void) actionBody:(EZActionPlayer*)player
 {
@@ -47,6 +46,14 @@
     EZDEBUG(@"Fastforward for Combined action");
     for(EZAction* action in _actions){
         [action fastForward:player];
+    }
+}
+
+- (void) pause:(EZActionPlayer *)player
+{
+    EZDEBUG(@"pause get called");
+    if(_pauseBlock){
+        _pauseBlock();
     }
 }
 
@@ -63,6 +70,21 @@
         [self doActionAt:pos+1 player:player];
     };
     action.nextBlock = combinedBlock;
+    
+    __weak EZCombinedAction* weakSelf = self;
+    
+    //Only block can provide this kind of power
+    _pauseBlock = ^(){
+        EZDEBUG(@"In pause block, i will pause and fastforward");
+        //Ask the action to stop
+        [action pause:player];
+        for(int i = pos+1; i < weakSelf.actions.count; i++){
+            EZAction* act = [weakSelf.actions objectAtIndex:i];
+            [act fastForward:player];
+        }
+        //No need to call nextBlock, because it triggered by the player,so.
+        //weakSelf.nextBlock();
+    };
     
     if(action.syncType == kSync){
         [action actionBody:player];

@@ -117,6 +117,16 @@ static NSMutableDictionary* accessors;
 }
 
 
+- (void)performBlock:(void (^)())block
+{
+    [context performBlock:block];
+}
+
+- (void)performBlockAndWait:(void (^)())block
+{
+    [context performBlock:block];
+}
+
 - (NSPersistentStoreCoordinator*) createCoordinator:(NSURL*)storeURL model:(NSManagedObjectModel *)mod
 {
     NSError* error = nil;

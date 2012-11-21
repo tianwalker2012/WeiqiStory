@@ -76,7 +76,7 @@ typedef enum {
 #define sndButtonPress @"pressed.wav"
 #define sndBubbleBroken @"bubble-broken.wav"
 
-#define TouchEventPriority 10
+#define BubbleTouchPriority 20
 
 //What if something failed?
 //Should we do some thing about it?

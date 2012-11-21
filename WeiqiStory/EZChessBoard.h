@@ -80,6 +80,11 @@ typedef enum {
 
 @property (strong, nonatomic) NSMutableArray* regrets;
 
+//Sometimes we need customized chessman
+@property (strong, nonatomic) NSString* whiteChessName;
+
+@property (strong, nonatomic) NSString* blackChessName;
+
 //The touch Rect determined what's the region for chess board.
 - (id)initWithFile:(NSString*)filename touchRect:(CGRect)rect rows:(NSInteger)rows cols:(NSInteger)cols;
 

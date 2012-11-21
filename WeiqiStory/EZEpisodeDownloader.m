@@ -14,6 +14,7 @@
 #import "EZEpisodeVO.h"
 #import "SBJson.h"
 #import "EZImageView.h"
+#import "EZCoreAccessor.h"
 
 
 
@@ -51,7 +52,9 @@
             EZDEBUG(@"Successfully download %i from %@", episodeData.length, url);
             NSArray* episodes = [NSKeyedUnarchiver unarchiveObjectWithData:episodeData];
             _episodeCounts += episodes.count;
+            NSInteger count = 0;
             for(EZEpisodeVO* ep in episodes){
+                ep.name = [NSString stringWithFormat:@"%i:%@", count++, ep.name];
                 [self processEpisode:ep];
             }
             
@@ -71,6 +74,7 @@
     //    [episode regenerateThumbNail];
     //}
     episode.thumbNail = [EZImageView generateSmallBoard:episode.basicPattern];
+    
     episode.inMainBundle = self.isMainBundle;
     [self downloadAllAudio:episode.audioFiles completeBlock:nil];
     BOOL completed = true;
@@ -86,14 +90,19 @@
         }
     }
     episode.completed = completed;
-    [episode persist];
-    if(episode.completed){
-        EZDEBUG(@"Completed download, object:%@", episode.name);
-        [[NSNotificationCenter defaultCenter] postNotificationName:EpisodeDownloadDone object:episode
-         ];
-    }else{
-        EZDEBUG(@"Let's retry download later");
-    }
+    
+    NSInteger workerID = (int)[NSThread currentThread];
+    [self executeBlockInMainThread:^(){
+        EZDEBUG(@"worker:%i, main:%i, blockID:%i", workerID, (int)[NSThread mainThread], (int)[NSThread currentThread]);
+        [episode persist];
+        if(episode.completed){
+            //EZDEBUG(@"Completed download, object:%@", episode.name);
+            [[NSNotificationCenter defaultCenter] postNotificationName:EpisodeDownloadDone object:episode
+             ];
+        }else{
+            EZDEBUG(@"Failed download %@, Let's retry download later", episode.name);
+        }
+    }];
 }
 
 //Once this audio for this guy is over

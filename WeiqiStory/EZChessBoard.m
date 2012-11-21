@@ -272,7 +272,14 @@
 //Enjoy it my dear.
 - (void) recoveredButton:(EZChessPosition*)chessPos animated:(BOOL)animated
 {
-    EZChessman* btn = [[EZChessman alloc] initWithSpriteFrameName:chessPos.isBlack?BlackBtnName:WhiteBtnName step:chessPos.step showStep:showStep isBlack:chessPos.isBlack showedStep:chessPos.step - showStepStarted];
+    NSString* chessmanFile = nil;
+    if(chessPos.isBlack){
+        chessmanFile = _blackChessName?_blackChessName:BlackBtnName;
+    }else{
+        chessmanFile = _whiteChessName?_whiteChessName:WhiteBtnName;
+    }
+    
+    EZChessman* btn = [[EZChessman alloc] initWithSpriteFrameName:chessmanFile step:chessPos.step showStep:showStep isBlack:chessPos.isBlack showedStep:chessPos.step - showStepStarted];
     CGPoint pt = [boardStatus bcToPoint:chessPos.coord];
     [btn setZOrder:ExistingChess];
     [btn setPosition:pt];
@@ -299,9 +306,9 @@
     //EZDEBUG(@"Button on:%@", NSStringFromCGPoint(pt));
     EZChessman* btn = nil;
     if(isBlack){
-        btn = [[EZChessman alloc] initWithSpriteFrameName:BlackBtnName step:boardStatus.steps showStep:showStep isBlack:isBlack showedStep:boardStatus.steps - showStepStarted];
+        btn = [[EZChessman alloc] initWithSpriteFrameName:_blackChessName?_blackChessName:BlackBtnName step:boardStatus.steps showStep:showStep isBlack:isBlack showedStep:boardStatus.steps - showStepStarted];
     }else{
-        btn = [[EZChessman alloc] initWithSpriteFrameName:WhiteBtnName step:boardStatus.steps showStep:showStep isBlack:isBlack showedStep:boardStatus.steps - showStepStarted];
+        btn = [[EZChessman alloc] initWithSpriteFrameName:_whiteChessName?_whiteChessName:WhiteBtnName step:boardStatus.steps showStep:showStep isBlack:isBlack showedStep:boardStatus.steps - showStepStarted];
     }
     [btn setZOrder:ExistingChess];
     [btn setPosition:pt];
@@ -342,11 +349,11 @@
 
 - (void) initializeCursor
 {
-    virtualWhite = [CCSprite spriteWithFile:WhiteBtnName];
-    virtualBlack = [CCSprite spriteWithFile:BlackBtnName];
+    virtualWhite = [CCSprite spriteWithFile:_whiteChessName?_whiteChessName:WhiteBtnName];
+    virtualBlack = [CCSprite spriteWithFile:_blackChessName?_blackChessName:BlackBtnName];
     
-    [[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFrame:virtualWhite.displayFrame name:WhiteBtnName];
-    [[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFrame:virtualBlack.displayFrame name:BlackBtnName];
+    [[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFrame:virtualWhite.displayFrame name:_whiteChessName?_whiteChessName:WhiteBtnName];
+    [[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFrame:virtualBlack.displayFrame name:_blackChessName?_blackChessName: BlackBtnName];
     //[whiteBtn setPosition:ccp(size.width/2+36, size.height/2)];
     [virtualBlack setZOrder:OverExistingChess];
     [virtualWhite setZOrder:OverExistingChess];
@@ -357,6 +364,17 @@
     virtualWhite.scale = 2.0;
 }
 
+- (void) setBlackChessName:(NSString *)blackChessName
+{
+    _blackChessName = blackChessName;
+    [self initializeCursor];
+}
+
+- (void) setWhiteChessName:(NSString *)whiteChessName
+{
+    _whiteChessName = whiteChessName;
+    [self initializeCursor];
+}
 
 - (void) moveCursorButton:(CGPoint)point
 {
@@ -488,7 +506,7 @@
 {
     CGPoint localPt = [self locationInSelf:touch];
     CGPoint regularizedPt = [boardStatus adjustLocation:localPt];
-    //EZDEBUG(@"TouchRect:%@, touchPoint:%@",NSStringFromCGRect(touchRect), NSStringFromCGPoint(localPt));
+    EZDEBUG(@"TouchRect:%@, touchPoint:%@",NSStringFromCGRect(touchRect), NSStringFromCGPoint(localPt));
     if(CGRectContainsPoint(touchRect, localPt)){
         //EZDEBUG(@"Will plant chessman");
         [self putCursorButton:regularizedPt];
@@ -501,7 +519,7 @@
 {
     CGPoint localPoint = [self locationInSelf:touch];
     CGPoint regularizedPt = [boardStatus adjustLocation:localPoint];
-    //EZDEBUG(@"Move local GL:%@, ajusted: %@", NSStringFromCGPoint(localPoint), NSStringFromCGPoint(regularizedPt));
+    EZDEBUG(@"Move local GL:%@, ajusted: %@", NSStringFromCGPoint(localPoint), NSStringFromCGPoint(regularizedPt));
     [self moveCursorButton:regularizedPt];
 }
 

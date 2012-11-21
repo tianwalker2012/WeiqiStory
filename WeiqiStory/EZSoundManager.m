@@ -7,6 +7,7 @@
 //
 
 #import "EZSoundManager.h"
+#import "EZExtender.h"
 
 @implementation EZSoundManager
 @synthesize isMusicON;
@@ -32,6 +33,7 @@ static EZSoundManager* _sharedSoundManager = nil;
 
 -(void)playBackgroundTrack:(NSString*)trackFileName {
     // Wait to make sure soundEngine is initialized
+    EZDEBUG(@"start playing background music");
     if (managerSoundState == kAudioManagerReady) {
         if ([soundEngine isBackgroundMusicPlaying]) {
             [soundEngine stopBackgroundMusic];
@@ -39,6 +41,7 @@ static EZSoundManager* _sharedSoundManager = nil;
         [soundEngine preloadBackgroundMusic:trackFileName];
         [soundEngine playBackgroundMusic:trackFileName loop:YES];
     }
+    EZDEBUG(@"Completed play background music");
 }
 
 -(void)stopSoundEffect:(ALuint)soundEffectID {
@@ -253,6 +256,18 @@ static EZSoundManager* _sharedSoundManager = nil;
 }
 
 
+- (BOOL) isBackgrondPlaying
+{
+    return [soundEngine isBackgroundMusicPlaying];
+}
+- (void) stopBackground
+{
+    //EZDEBUG(@"Music started");
+    if([self isBackgrondPlaying]){
+        [soundEngine stopBackgroundMusic];
+    }
+    //EZDEBUG(@"Muscic over");
+}
 
 -(void)initAudio{
     // Initializes the audio engine asynchronously

@@ -12,8 +12,12 @@
 
 - (id) initWithBubble:(CCSprite*)bubble broken:(CCSprite*)broken;
 
++ (void) generatedBubble:(CCNode*)node z:(NSInteger)zOrder;
+
+
 @property (nonatomic, strong) CCSprite* bubble;
 @property (nonatomic, strong) CCSprite* broken;
 @property (nonatomic, assign) BOOL isBroken;
+
 
 @end

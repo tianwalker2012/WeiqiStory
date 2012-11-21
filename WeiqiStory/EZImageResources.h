@@ -12,9 +12,9 @@
 //Can do the retina and non-retina tricks here
 #define BoardFileName @"weiqi-board-pad.png"
 
-#define WhiteBtnName @"white-btn-pad.png"
+#define WhiteBtnName @"white-button.png"
 
-#define BlackBtnName @"black-btn-pad.png"
+#define BlackBtnName @"black-button.png"
 
 
 #endif

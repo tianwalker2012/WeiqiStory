@@ -21,11 +21,30 @@
 }
 
 
+//Why do I undo the behavior?
+//I undo it because, I want the board to have a consistent status
+//It depends on which status the pause will be on?
+//If it means this steps already completed or simpley 
+- (void) pause:(EZActionPlayer*)player
+{
+    //Not the move stopped
+    EZDEBUG(@"PlantMoveAction get called");
+    [player stopPlayMoves];
+    
+    //clean the effects.
+    [self undoAction:player];
+    
+    //Keep the status on board consistent
+    [self fastForward:player];
+}
+
 
 - (void) undoAction:(EZActionPlayer*)player
 {
-    EZDEBUG(@"Will undo PlantMove Action");
-    [player cleanActionMove:_plantMoves];
+    
+    EZDEBUG(@"Will undo PlantMove Action, beginat:%i, startWith:%i, regret:%i", _beginStep, player.board.allSteps.count, (player.board.allSteps.count - _beginStep));
+    //[player cleanActionMove:(player.board.allSteps.count - _beginStep)];
+    [player.board regretSteps:player.board.allSteps.count - _beginStep animated:NO];
 }
 
 
@@ -35,6 +54,11 @@
 {
     EZDEBUG(@"Will plant moves");
     EZChessMoveAction* cloned = (EZChessMoveAction*)[self clone];
+    
+    //I need to memorize the beginning steps, because I will in charge of the undo.
+    //Cool.
+    self.beginStep = player.board.allSteps.count;
+    //self.beginStep = player.board.allSteps.count;
     [player playMoves:cloned completeBlock:self.nextBlock withDelay:cloned.unitDelay];
 }
 

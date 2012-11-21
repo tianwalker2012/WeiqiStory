@@ -63,6 +63,9 @@
 
 - (void)saveContext;
 
+- (void)performBlock:(void (^)())block;
+- (void)performBlockAndWait:(void (^)())block;
+
 @property (strong, nonatomic) NSManagedObjectContext* context;
 @property (strong, nonatomic) NSManagedObjectModel* model;
 @property (strong, nonatomic) NSPersistentStoreCoordinator* coordinator;

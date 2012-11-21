@@ -114,7 +114,7 @@
     CGFloat scale = [UIScreen mainScreen].scale;
     EZImageView* imageView = [[EZImageView alloc] initWithImage:[EZFileUtil imageFromFile:@"small-board.png"]];
     UIImage* boardImg = [EZChess2Image generateAdjustedBoard:coords size:CGSizeMake(130*scale, 130*scale)];
-    [imageView addEZImage:[[EZImage alloc] initWithImage:boardImg point:ccp(6, 6) z:2 flip:FALSE]];
+    [imageView addEZImage:[[EZImage alloc] initWithImage:boardImg point:ccp(7, 7) z:2 flip:FALSE]];
     EZImage* chessFrame = [[EZImage alloc] initWithImage:[EZFileUtil imageFromFile:@"small-chessboard-frame.png"] point:ccp(5, 5) z:3];
     [imageView addEZImage:chessFrame];
     
@@ -123,14 +123,14 @@
     for(EZImage* image in imageView.images){
         CGRect rect = image.rect;
         //rect.origin.y = self.bounds.size.height - rect.origin.y;
-        EZDEBUG(@"images rect:%@", NSStringFromCGRect(rect));
+        //EZDEBUG(@"images rect:%@", NSStringFromCGRect(rect));
         CGContextDrawImage(ctx, CGRectMake(rect.origin.x, rect.origin.y, rect.size.width/scale, rect.size.height/scale), image.image.CGImage);
     }
     //[_name.layer drawInContext:ctx];
     //[_intro.layer drawInContext:ctx];
     UIImage* res = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-    EZDEBUG(@"Final image size:%@", NSStringFromCGSize(res.size));
+    //EZDEBUG(@"Final image size:%@", NSStringFromCGSize(res.size));
     return res;
 }
 
