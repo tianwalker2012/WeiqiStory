@@ -32,8 +32,13 @@
 {
     self = [super init];
     if(self){
+        
+        
         EZResizeChessBoard* chessBoard = [[EZResizeChessBoard alloc] initWithOrgBoard:@"chess-board.png" orgRect:CGRectMake(13, 13, 271, 271) largeBoard:@"chess-board-large.png" largeRect:CGRectMake(27, 27, 632, 632)];
         
+        EZDEBUG(@"Before seting Content size:%@", NSStringFromCGSize(chessBoard.contentSize));
+        chessBoard.contentSize = CGSizeMake(297, 297);
+        EZDEBUG(@"After settting content size:%@", NSStringFromCGSize(chessBoard.contentSize));
         [self addChild:chessBoard];
         
         //This proved the orginal 
@@ -45,10 +50,11 @@
         EZChessBoardWrapper* testBoard = [[EZChessBoardWrapper alloc] initWithBoard:board];
         
         testBoard.anchorPoint = ccp(0, 0);
-        testBoard.position = ccp(0, 0);
+        testBoard.position = ccp(20, 20);
+        testBoard.contentSize = CGSizeMake(297, 297);
         
         [self addChild:testBoard];
-         **/
+        **/
         //Let's debug the virual cursor issue, why no cursor show off.
         
     }

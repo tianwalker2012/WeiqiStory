@@ -315,6 +315,8 @@ NSInteger ccLoadFileIntoMemory(const char *filename, unsigned char **out)
 {
 	NSInteger ret=-1;
 
+    return kCCiPhoneRetinaDisplay;
+    
 	if( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
 	{
 		if( CC_CONTENT_SCALE_FACTOR() == 2 )

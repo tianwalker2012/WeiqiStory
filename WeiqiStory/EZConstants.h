@@ -86,6 +86,10 @@ typedef enum {
 
 #define BatchFetchSize 8
 
+#define PodBatchFetchSize 6
+
+#define ImageCacheSize 15
+
 #define ChessMarkColor ccc3(122, 190, 83)
 
 #define AUDIO_MAX_WAITTIME 1.0

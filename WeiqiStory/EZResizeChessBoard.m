@@ -16,6 +16,7 @@
 #import "EZRegretAction.h"
 #import "EZChessPosition.h"
 #import "EZBoardStatus.h"
+#import "EZChess2Image.h"
 
 @implementation EZResizeChessBoard
 
@@ -37,6 +38,7 @@
     _enlargedBoard.blackChessName = @"black-button-large.png";
     _enlargedBoard.whiteChessName = @"white-button-large.png";
     [self addChild:_orgBoard z:OrginalZorder];
+    //[self addChild:_enlargedBoard z:LargerZorder];
     
     _largeSize = _enlargedBoard.boundingBox.size;
     _orgSize = _orgBoard.boundingBox.size;
@@ -44,8 +46,15 @@
     return self;
 }
 
+//If I add a similarity check what will happen?
+//Then it will not call the add again if it is already exist.
+
 - (void) setTouchEnabled:(BOOL)touchEnabled
 {
+    if(_touchEnabled == touchEnabled){
+        EZDEBUG(@"Return without repeat");
+        return;
+    }
     if(touchEnabled){
         [[[CCDirector sharedDirector]  touchDispatcher] addTargetedDelegate:self priority:10 swallowsTouches:YES];
     }else{
@@ -55,11 +64,43 @@
 }
 
 
+- (void) visit
+{
+    //EZDEBUG(@"Visit get called:%@", [NSThread callStackSymbols]);
+    glEnable(GL_SCISSOR_TEST);
+    CGRect pixRect = [EZChess2Image rectPointToPix:self.boundingBox];
+    
+    glScissor(pixRect.origin.x, pixRect.origin.y,  pixRect.size.width, pixRect.size.height);
+    
+    [super visit];
+    glDisable(GL_SCISSOR_TEST);
+}
+
+//The possible problem could be that the GL coordinator didn't match the point in the screen.
+//Let's test them carefully.
+//Let's check the CCSprite code see what's the case with the sprite.
+//Why call 2 times, what's the tricks behind it?
+//This is very interesting.
+- (void) draw
+{
+    glEnable(GL_SCISSOR_TEST);
+    
+    CGRect pixRect = [EZChess2Image rectPointToPix:self.boundingBox];
+    
+    glScissor(pixRect.origin.x, pixRect.origin.y,  pixRect.size.width, pixRect.size.height);    //if (stop)
+    
+    [super draw];
+}
+
 - (void) setBoardBack:(ccTime) passed
 {
     EZDEBUG(@"setBoardBack get called");
     _isLargeBoard = false;
+    //[self addChild:_orgBoard];
     [_enlargedBoard removeFromParentAndCleanup:NO];
+    _enlargedBoard.visible = false;
+    _orgBoard.visible = true;
+    
     //Add animation later, mean shink at the initial touch point
     //sync up largeBoard and small board
     //Assume some chess are planted
@@ -77,8 +118,62 @@
     
     CGFloat deltaY = (pt.y/_orgSize.height) * _largeSize.height - pt.y;
     
+    _orgBoard.anchorPoint = ccp(pt.x/_orgSize.width, pt.y/_orgSize.height);
+    _orgBoard.position = ccp(pt.x, pt.y);
     _enlargedBoard.position = ccp(-deltaX, -deltaY);
     [self addChild:_enlargedBoard z:LargerZorder];
+    
+    id action = [CCScaleTo actionWithDuration:0.15 scale:_largeSize.width/_orgSize.width];
+    id completeAct = [CCCallBlock actionWithBlock:^(){
+        //[_orgBoard removeFromParentAndCleanup:NO];
+        _enlargedBoard.visible = true;
+        _orgBoard.visible = false;
+        _orgBoard.scale = 1;
+    }];
+    
+    [_orgBoard runAction:[CCSequence actions:action, completeAct, nil]];
+}
+
+
+- (void) syncMarks
+{
+    if(_orgBoard.allMarks.count > _enlargedBoard.allMarks.count){
+        //add marks.
+        for(int i = _enlargedBoard.allMarks.count; i < _orgBoard.allMarks.count; i++){
+            [_enlargedBoard putMarks:@[[_orgBoard.allMarks objectAtIndex:i]]];
+        }
+        
+    }else if(_orgBoard.allMarks.count < _enlargedBoard.allMarks.count){
+        NSInteger regretSteps = _enlargedBoard.allMarks.count - _orgBoard.allMarks.count;
+        _enlargedBoard.chessmanSetType = kChessMark;
+        [_enlargedBoard regretSteps:regretSteps animated:NO];
+        _enlargedBoard.chessmanSetType = kChessMan;
+    }
+    
+}
+
+// Sync all the chessmans. 
+- (void) syncChessmans
+{
+    if(_orgBoard.allSteps.count > _enlargedBoard.allSteps.count){
+        for(int i = _enlargedBoard.allSteps.count; i < _orgBoard.allSteps.count; i++){
+            EZChessPosition* cp = [_orgBoard.allSteps objectAtIndex:i];
+            [_enlargedBoard putChessman:cp.coord animated:NO];
+        }
+    }else if(_orgBoard.allSteps.count < _enlargedBoard.allSteps.count){
+        NSInteger regretSteps = _enlargedBoard.allSteps.count - _orgBoard.allSteps.count;
+        [_enlargedBoard regretSteps:regretSteps animated:NO];
+    }
+}
+
+//Sync the orgBoard to the large board.
+- (void) syncBoards
+{
+    if(_orgBoard.allMarks.count == _enlargedBoard.allMarks.count && _orgBoard.allSteps.count == _enlargedBoard.allSteps.count){
+        return;
+    }
+    [self syncMarks];
+    [self syncChessmans];
 }
 //I don't like to ask for help.
 //It mean to owe people something. I have to pay it back.
@@ -89,6 +184,7 @@
     CGPoint localPt = [self locationInSelf:touch];
     if(CGRectContainsPoint(_touchZone, localPt)){
         EZDEBUG(@"Unschedule get called");
+        [self syncBoards];
         [self unschedule:@selector(setBoardBack:)];
         if(_isLargeBoard){
            //Ya, I got the whole logic sort out.

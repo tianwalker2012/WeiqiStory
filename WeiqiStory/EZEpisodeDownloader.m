@@ -50,12 +50,19 @@
         NSData* episodeData = [NSData dataWithContentsOfURL:url];
         if(episodeData){
             EZDEBUG(@"Successfully download %i from %@", episodeData.length, url);
-            NSArray* episodes = [NSKeyedUnarchiver unarchiveObjectWithData:episodeData];
+            NSMutableArray* episodes =[NSMutableArray arrayWithArray:[NSKeyedUnarchiver unarchiveObjectWithData:episodeData]];
             _episodeCounts += episodes.count;
             NSInteger count = 0;
-            for(EZEpisodeVO* ep in episodes){
+            while(episodes.count > 0){
+                EZEpisodeVO* ep = [episodes objectAtIndex:0];
+                [episodes removeObjectAtIndex:0];
                 ep.name = [NSString stringWithFormat:@"%i:%@", count++, ep.name];
-                [self processEpisode:ep];
+                @autoreleasepool {
+                    [self processEpisode:ep];
+                }
+                //Release the object.
+                ep = nil;
+                break;
             }
             
         }else{
@@ -73,7 +80,11 @@
     //if(episode.thumbNail == nil){
     //    [episode regenerateThumbNail];
     //}
-    episode.thumbNail = [EZImageView generateSmallBoard:episode.basicPattern];
+    UIImage* image = [EZImageView generateSmallBoard:episode.basicPattern];
+    NSString* fileName = [EZFileUtil generateFileName:@"smallboard"];
+    [EZFileUtil storeImageFile:image file:fileName];
+    image = nil;
+    episode.thumbNailFile = fileName;
     
     episode.inMainBundle = self.isMainBundle;
     [self downloadAllAudio:episode.audioFiles completeBlock:nil];
@@ -97,7 +108,7 @@
         [episode persist];
         if(episode.completed){
             //EZDEBUG(@"Completed download, object:%@", episode.name);
-            [[NSNotificationCenter defaultCenter] postNotificationName:EpisodeDownloadDone object:episode
+            [[NSNotificationCenter defaultCenter] postNotificationName:EpisodeDownloadDone object:nil
              ];
         }else{
             EZDEBUG(@"Failed download %@, Let's retry download later", episode.name);

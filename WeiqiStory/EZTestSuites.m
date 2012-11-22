@@ -46,8 +46,24 @@
 #import "EZSoundPlayer.h"
 #import "EZLRUMap.h"
 #import "EZQueue.h"
+#import "EZImageView.h"
 //#import "EZ"
 
+
+static NSInteger releaseCount;
+@interface EZReleaseTest : NSObject
+
+@end
+
+@implementation EZReleaseTest
+
+- (void) dealloc
+{
+    EZDEBUG(@"release object");
+    releaseCount ++;
+}
+
+@end
 
 
 
@@ -96,6 +112,8 @@
 //Lack of feeling, you didn't put yourself into your product.
 //Without put yourself into your product, your product will die out of mal-nourishment.
 @interface EZTestSuites()
+{
+}
 
 + (void) testThisSuite;
 
@@ -117,7 +135,7 @@
 
 + (void) testRecuringBlockIssue;
 
- 
+
 @end
 
 @implementation EZTestSuites
@@ -176,7 +194,203 @@
     //[EZTestSuites cleanClientDB];
     //[EZTestSuites testCoreDataPagination];
     //[EZTestSuites testLRUMapMeetMyStandard];
-    [EZTestSuites sortDataOut];
+    //[EZTestSuites sortDataOut];
+    
+    //[EZTestSuites testRelease];
+    //[EZTestSuites testCoreMemoryRelease];
+    //[EZTestSuites testDocumentDirectory];
+    //[EZTestSuites testImageStorageAndFetch];
+    
+    //[EZTestSuites testMemoryConsumption];
+}
+
++ (void) imagesProcess:(UIImage*)image
+{
+    EZDEBUG(@"print image information:%@", NSStringFromCGSize(image.size));
+}
+
++ (void) testMemoryConsumption
+{
+    UIImage* smallBoard = [EZFileUtil imageFromFile:@"small-chessboard.png"];
+    EZDEBUG(@"smallboard is:%@", NSStringFromCGSize(smallBoard.size));
+    CGFloat scale = [[UIScreen mainScreen] scale];
+    
+    NSArray* basicPattern = @[[[EZCoord alloc] init:1 y:2],[[EZCoord alloc] init:2 y:2],[[EZCoord alloc] init:3 y:3]];
+    NSArray* coords = basicPattern;
+    for(int i = 0; i < 10000; i++){
+        @autoreleasepool {
+          [EZImageView generateSmallBoard:basicPattern];
+        }
+        EZDEBUG(@"After flip:%i",i);
+    }
+    assert(false);
+}
+
++ (void) testMemoryConsumptionOld
+{
+    UIImage* smallBoard = [EZFileUtil imageFromFile:@"small-chessboard.png"];
+    EZDEBUG(@"smallboard is:%@", NSStringFromCGSize(smallBoard.size));
+    CGFloat scale = [[UIScreen mainScreen] scale];
+    
+    NSArray* basicPattern = @[[[EZCoord alloc] init:1 y:2],[[EZCoord alloc] init:2 y:2],[[EZCoord alloc] init:3 y:3]];
+    NSArray* coords = basicPattern;
+    for(int i = 0; i < 10000; i++){
+        @autoreleasepool {
+            //UIImage* res = [UIImage imageNamed:@"small-chessboard.png"];
+            //CGFloat scale = [UIScreen mainScreen].scale;
+            UIImage* boardImage =  [EZChess2Image generateOrgBoard:basicPattern];
+            EZDEBUG(@"BoardImage size:%@", NSStringFromCGSize(boardImage.size));
+            
+            //CGImageRef partialImage = CGImageCreateWithImageInRect(image.CGImage, adjustedRect);
+            //[EZTestSuites imagesProcess:res];
+            [EZChess2Image generatePartialImage:boardImage rect:CGRectMake(10,10,200, 200) finalSize:CGSizeMake(255, 255)];
+        }
+        EZDEBUG(@"After flip:%i",i);
+    }
+    assert(false);
+}
+
++ (void) testImageStorageAndFetch
+{
+    UIImage* image = [UIImage imageNamed:@"white-button-pad.png"];
+    NSString* fileName = [EZFileUtil generateFileName:@"img"];
+    EZDEBUG(@"generated file name:%@", fileName);
+    [EZFileUtil storeImageFile:image file:fileName];
+    
+    EZDEBUG(@"Stored file name");
+    
+    
+    UIImage* readImage = [EZFileUtil imageFromDocument:fileName];
+    assert(readImage.size.height == image.size.height);
+    
+    EZDEBUG(@"org:%@, target:%@", NSStringFromCGSize(image.size), NSStringFromCGSize(readImage.size));
+    assert(false);
+}
+
++ (void) testDocumentDirectory
+{
+    NSString* fileName = @"cool";
+    NSString *documentsPath = @"document/"; //Get the docs directory
+    NSString *filePath = [documentsPath stringByAppendingPathComponent:fileName]; //Add the file name
+    assert([@"document/cool" isEqualToString:filePath]);
+    
+    documentsPath = @"document";
+    filePath = [documentsPath stringByAppendingPathComponent:fileName];
+    assert([@"document/cool" isEqualToString:filePath]);
+    
+    filePath = [documentsPath stringByAppendingPathComponent:@"//cool"];
+    assert([@"document/cool" isEqualToString:filePath]);
+    
+    assert(false);
+}
+//What's the purpose of this method
+//To verify if the core data instance will get released as long as nobody hold it.
+//How should I knew?
+//I assume, core data will use different piece of memory to hold the object if I hold it again.
++ (void) testCoreMemoryRelease
+{
+    EZEpisode* ep1 = [[EZCoreAccessor getClientAccessor] create:[EZEpisode class]];
+    NSManagedObjectID* objID1 = ep1.objectID;
+    
+    
+    
+    ep1.name = @"Cool guy";
+    //Should we use the refreshObject to achieve this?
+    //[[EZCoreAccessor getClientAccessor].context refreshObject:ep1 mergeChanges:YES];
+    
+    [[EZCoreAccessor getClientAccessor] saveContext];
+    NSArray* allObjs = [[EZCoreAccessor getClientAccessor] fetchAll:[EZEpisode class] sortField:nil];
+    assert(allObjs.count == 1);
+    EZEpisode* ep1f = [allObjs objectAtIndex:0];
+    
+    NSManagedObjectID* objIDF = ep1f.objectID;
+    
+    EZDEBUG(@"ep1 memory:%i,refreshed do we have changes:%@, orginal:%@, fetchedBack:%@, after save ep1 id:%@", (int)ep1, [EZCoreAccessor getClientAccessor].context.hasChanges?@"YES":@"NO", objID1, objIDF, ep1.objectID);
+    ep1f.name = @"Haha";
+    [[EZCoreAccessor getClientAccessor] saveContext];
+    ep1f = nil;
+    
+    EZEpisode* fetchedObj2 = [[EZCoreAccessor getClientAccessor] fetchByID:objIDF];
+    EZDEBUG(@"fetchedObj2:%@, pointer:%i", fetchedObj2.name, (int)fetchedObj2);
+    
+    
+    ep1 = nil;
+    EZDEBUG(@"Supposed to be released");
+    
+    EZEpisode* ep2 = [[EZCoreAccessor getClientAccessor] create:[EZEpisode class]];
+    ep2.name = @"A passionate man";
+    NSManagedObjectID* objID = ep2.objectID;
+    EZDEBUG("ep2 memory:%i, objID:%@", (int)ep2, objID);
+    ep2 = nil;
+    ep2 = [[EZCoreAccessor getClientAccessor] fetchByID:objID];
+    EZDEBUG(@"Fetched back by id: memory:%i, name:%@", (int)ep2, ep2.name);
+    [[EZCoreAccessor getClientAccessor] saveContext];
+    //[[EZCoreAccessor getClientAccessor].context processPendingChanges];
+    //I expecting, after this, the data should have stored. 
+    //[[EZCoreAccessor getClientAccessor].context refreshObject:ep2 mergeChanges:NO];
+    ep2 = nil;
+    
+    //[[EZCoreAccessor getClientAccessor].context reset];
+    ep2 = [[EZCoreAccessor getClientAccessor] fetchByID:objID];
+    EZDEBUG(@"saveContext then Fetched back by id: memory:%i, name:%@", (int)ep2, ep2.name);
+    
+    ep2 = nil;
+    
+    [[EZCoreAccessor getClientAccessor] performBlock:^(){
+    
+        EZEpisode* ep3 = [[EZCoreAccessor getClientAccessor] fetchByID:objID];
+        EZDEBUG(@"in delay block set to nil, then Fetched back by id: memory:%i, name:%@", (int)ep3, ep3.name);
+        //assert(FALSE);
+        
+        ep3 = nil;
+        
+        //Release again, see if it is fetched again.
+        ep3 = [[EZCoreAccessor getClientAccessor] fetchByID:objID];
+        EZDEBUG(@"Second Time delay block set to nil, then Fetched back by id: memory:%i, name:%@", (int)ep3, ep3.name);
+
+        EZEpisode* ep4 = [[EZCoreAccessor getClientAccessor] fetchByID:objID1];
+        EZDEBUG(@"the undefaulted object is then Fetched back by id: memory:%i, name:%@", (int)ep4, ep4.name);
+        
+        NSArray* arr = [[EZCoreAccessor getClientAccessor] fetchAll:[EZEpisode class] sortField:nil];
+        
+        for(EZEpisode* epp in arr){
+            EZDEBUG(@"%@, %i, objectID:%@", epp.name, (int)epp, epp.objectID);
+        }
+        
+        //I guess now, I could got the right object OUT.
+        EZEpisode* ep5 = [[EZCoreAccessor getClientAccessor] fetchByID:objID1];
+        EZDEBUG(@"From cache,ObjectID:%@, name:%@", objID1, ep5.name);
+        
+    } withDelay:0.1];
+    
+    
+}
+
++ (void) callStaticMethod
+{
+    static int rel = 10;
+    
+    rel++;
+    
+    EZDEBUG(@"rel %i", rel);
+    
+}
+
++ (void) testRelease
+{
+    EZReleaseTest* rel = [[EZReleaseTest alloc] init];
+    rel = nil;
+    assert(releaseCount == 1);
+    
+    for(int i = 0; i < 5; i++){
+        rel = [[EZReleaseTest alloc] init];
+        EZDEBUG(@"rel pointer:%i", (int)rel);
+    }
+    EZDEBUG(@"releaseCount:%i", releaseCount);
+    assert(releaseCount == 5);
+    
+    assert(false);
+    
 }
 + (void) sortDataOut
 {

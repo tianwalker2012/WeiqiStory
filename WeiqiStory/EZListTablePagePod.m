@@ -1,12 +1,12 @@
 //
-//  EZListTablePage.m
+//  EZListTablePagePod.m
 //  WeiqiStory
 //
-//  Created by xietian on 12-11-7.
+//  Created by xietian on 12-11-21.
 //
 //
 
-#import "EZListTablePage.h"
+#import "EZListTablePagePod.h"
 #import "EZConstants.h"
 #import "EZChess2Image.h"
 #import "EZCoord.h"
@@ -29,8 +29,10 @@
 #import "EZExtender.h"
 #import "EZCoreAccessor.h"
 #import "EZBubble.h"
+#import "EZLRUMap.h"
+#import "EZPlayPagePod.h"
 
-@interface EZListTablePage()
+@interface EZListTablePagePod()
 {
     //EZUIViewWrapper* scrollWrapper;
     //UIScrollView* scroll;
@@ -46,7 +48,7 @@
 
 @end
 
-@implementation EZListTablePage
+@implementation EZListTablePagePod
 
 +(CCScene *) scene
 {
@@ -54,7 +56,7 @@
 	CCScene *scene = [CCScene node];
 	
 	// 'layer' is an autorelease object.
-	EZListTablePage *layer = [EZListTablePage node];
+	EZListTablePagePod *layer = [EZListTablePagePod node];
 	
 	// add layer as a child to scene
 	[scene addChild: layer];
@@ -66,7 +68,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 168+17;
+    return 168+10;
 }
 
 
@@ -78,13 +80,13 @@
 - (NSInteger) currentRows
 {
     
-    int row = _recentEpisodes / 4;
-    int col = _recentEpisodes % 4;
+    int row = _recentEpisodes / 2;
+    int col = _recentEpisodes % 2;
     if(col > 0){
         row ++;
     }
     return row;
-
+    
 }
 
 
@@ -133,42 +135,45 @@
         EZDEBUG(@"Reuse old cell");
         [self cleanCell:cell];
     }
-    int startPos = indexPath.row * 4;
-    int endPos = startPos + 4;
+    int startPos = indexPath.row * 2;
+    int endPos = startPos + 2;
     if(endPos > _recentEpisodes){
         endPos = _recentEpisodes;
     }
     
     //int col = (indexPath.ro-1) % 4;
     
-    CGFloat widthGap = 45;
+    CGFloat widthGap = 25;
     CGFloat panelWidth = 142;
     
-   
-                         
+    
+    
     EZDEBUG(@"current row %i, will add item:%i",indexPath.row, (endPos - startPos));
     for(int i = startPos; i < endPos; i++){
         CGFloat xPos = (widthGap + panelWidth) * (i - startPos);
         
         EZEpisodeVO* epv = [self getEpisode:i];
         
-        if(epv.thumbNail == nil){
-            epv.thumbNail = [EZImageView generateSmallBoard:epv.basicPattern];
-        }
+        //if(epv.thumbNail == nil){
+        //    epv.thumbNail = [EZImageView generateSmallBoard:epv.basicPattern];
+        //}
+        UIImage* smallboard = [EZFileUtil imageFromDocument:epv.thumbNailFile scale:[[UIScreen mainScreen] scale]];
+        //smallboard.scale = [[UIScreen mainScreen] scale];
+        epv.thumbNail = smallboard;
         
         EZBoardPanel* panel = [[EZBoardPanel alloc] initWithEpisode:epv];
         panel.userInteractionEnabled = true;
-        EZDEBUG(@"The completeBoard size:%@, isMainThread:%@", NSStringFromCGSize(epv.thumbNail.size), [NSThread isMainThread]?@"YES":@"NO");
+        EZDEBUG(@"row:%i ,The completeBoard size:%@, isMainThread:%@, epv.name:%@", indexPath.row, NSStringFromCGSize(smallboard.size), [NSThread isMainThread]?@"YES":@"NO", epv.name);
         
         [panel setPosition:ccp(xPos, 0)];
         panel.tappedBlock = ^(){
-                EZDEBUG(@"The episode %@ get tapped", epv.name);
-                [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
-                EZPlayPage* playPage = [[EZPlayPage alloc] initWithEpisode:epv];
-                [_tableView removeFromSuperview];
-                [[CCDirector sharedDirector] pushScene:[playPage createScene]];
-               
-            };
+            EZDEBUG(@"The episode %@ get tapped", epv.name);
+            [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
+            EZPlayPagePod* playPage = [[EZPlayPagePod alloc] initWithEpisode:epv];
+            [_tableView removeFromSuperview];
+            [[CCDirector sharedDirector] replaceScene:[playPage createScene]];
+            
+        };
         [cell addSubview:panel];
         EZDEBUG(@"Added panel to cell subView");
     }
@@ -181,7 +186,7 @@
 
 - (void) addTableView
 {
-    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(35, 150, 703, 826) style:UITableViewStylePlain];
+    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(8, 69, 309, 383) style:UITableViewStylePlain];
     _tableView.backgroundColor = [UIColor clearColor];
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     _tableView.delegate = self;
@@ -189,6 +194,62 @@
     
 }
 
+//When this will get called?
+//I will only load batch size records then update the tableView accordingly
+//I have some issue, normally, it will query the full size of the database.
+//Now I only load what I need.
+//I assume this will be called, whenever I get loaded.
+- (void) preload
+{
+    NSArray* addedEpisodes = [[EZCoreAccessor getClientAccessor] fetchObject:[EZEpisode class] begin:_recentEpisodes limit:PodBatchFetchSize];
+    EZDEBUG("preloaded:%i", addedEpisodes.count);
+    if(addedEpisodes.count > 0){
+        NSInteger count = 0;
+        int prevRow = [self currentRows];
+        for(EZEpisode* ep in addedEpisodes){
+            EZEpisodeVO* epv = [[EZEpisodeVO alloc] initWithPO:ep];
+            [_episodeMap setObject:epv forKey:@(_recentEpisodes + count)];
+            count ++;
+        }
+        _recentEpisodes += addedEpisodes.count;
+        int curRow = [self currentRows];
+        EZDEBUG(@"previousRows:%i, totalEpisodes:%i, curRow:%i", prevRow, _recentEpisodes, curRow);
+        if(curRow > prevRow){
+            NSMutableArray* insertedPath = [[NSMutableArray alloc] initWithCapacity:curRow - prevRow];
+            for(int i = prevRow; i < curRow; i++){
+                [insertedPath addObject:[NSIndexPath indexPathForRow:i inSection:0]];
+            }
+            EZDEBUG(@"Inserted Rows:%i", insertedPath.count);
+            [_tableView insertRowsAtIndexPaths:insertedPath withRowAnimation:UITableViewRowAnimationFade];
+            EZDEBUG(@"Inserted Rows completed");
+        }
+        if(prevRow > 0){
+            [_tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:prevRow - 1 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+        }
+    }
+}
+
+//I will test
+//All the method will call this.
+//To check if we need to load more rows or not.
+- (void)scrollViewDidScroll:(UIScrollView *)aScrollView {
+    CGPoint offset = aScrollView.contentOffset;
+    CGRect bounds = aScrollView.bounds;
+    CGSize size = aScrollView.contentSize;
+    UIEdgeInsets inset = aScrollView.contentInset;
+    
+    //What's the purpose of this?
+    //Check if user scroll more than
+    float y = offset.y + bounds.size.height;
+    float h = size.height;
+    
+    EZDEBUG(@"offset.y:%f, bounds.size.height:%f, insect:%f, total height:%f",y, bounds.size.height, inset.bottom,h);
+    float preload_distance = 50;
+    if((y + preload_distance) > h) {
+        NSLog(@"load more rows");
+        [self preload];
+    }
+}
 
 //What's the responsbility of this method
 //First I will check what's the lastest accessed position?
@@ -233,8 +294,8 @@
         _dirtyFlags = [[NSMutableDictionary alloc] init];
         CCSprite* background = [CCSprite spriteWithFile:@"list-page.png"];
         
-        EZDEBUG(@"Loaded background");
-        [[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFrame:background.displayFrame name:@"list-page.png"];
+        //EZDEBUG(@"Loaded background");
+        //[[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFrame:background.displayFrame name:@"list-page.png"];
         
         background.position = ccp(winsize.width/2, winsize.height/2);
         [self addChild:background];
@@ -242,14 +303,14 @@
         
         
         /** refresh is not necessary
-        CCMenu* refreshButton = [CCMenu menuWithItems:[CCMenuItemImage itemWithNormalImage:@"refresh-button-pad.png" selectedImage:@"refresh-button-pressed-pad.png" block:^(id sender){
-            EZDEBUG(@"Refresh clicked");
-            [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
-            [self reloadEpisode];
-            
-        }], nil];
-        refreshButton.position = ccp(678, 949);
-        **/
+         CCMenu* refreshButton = [CCMenu menuWithItems:[CCMenuItemImage itemWithNormalImage:@"refresh-button-pad.png" selectedImage:@"refresh-button-pressed-pad.png" block:^(id sender){
+         EZDEBUG(@"Refresh clicked");
+         [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
+         [self reloadEpisode];
+         
+         }], nil];
+         refreshButton.position = ccp(678, 949);
+         **/
         //[self addChild:refreshButton];
         //CCSprite* smallBoard = [CCSprite spriteWithFile:@"small-board.png"];
         //[[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFrame:smallBoard.displayFrame name:@"small-board.png"];
@@ -258,16 +319,22 @@
         EZDEBUG(@"Added tableView");
         _recentEpisodes = [[EZCoreAccessor getClientAccessor] count:[EZEpisode class]];
         EZDEBUG(@"recentEpisodes:%i", _recentEpisodes);
-        _episodeMap = [[EZLRUMap alloc] initWithLimit:30];
+        _episodeMap = [[EZLRUMap alloc] initWithLimit:PodBatchFetchSize];
         EZDEBUG(@"map initalized");
         //Download the source from the server
         //[self startDownload];
-        [self loadFromDB:0 limit:30];
+        [self loadFromDB:0 limit:PodBatchFetchSize];
         EZDEBUG(@"loadedFromDB, map count %i", _episodeMap.count);
         [self scheduleBlock:^(){
             [EZBubble generatedBubble:self z:10];
         } interval:1.0 repeat:kCCRepeatForever delay:0.5];
         isFirstTime = true;
+        CGFloat scale = [UIScreen mainScreen].scale;
+        NSArray* coords = @[[[EZCoord alloc] init:2 y:2], [[EZCoord alloc] init:3 y:3]];
+        UIImage* board = [EZChess2Image generateOrgBoard:coords];//[EZChess2Image generateAdjustedBoard:coords size:CGSizeMake(130*scale, 130*scale)];
+        [_tableView addSubview:[[UIImageView alloc] initWithImage:board]];
+         EZDEBUG(@"Added generated table:%@, scale:%f", NSStringFromCGSize(board.size), board.scale);
+        
         //[self loadEpisode];
         //[self startDownload];
     }
@@ -286,7 +353,8 @@
     }
     [[CCDirector sharedDirector].view addSubview:_tableView];
     //if(!isFirstTime){
-    [self reloadEpisode];
+    //[self reloadEpisode];
+    [self scrollViewDidScroll:_tableView];
     //}
     isFirstTime = false;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadedEpisode:) name:EpisodeDownloadDone object:nil];
@@ -310,7 +378,7 @@
     [downloader downloadAccordingToList:listURL];
 }
 
-//Actually, I can cover the functionality of the old one. 
+//Actually, I can cover the functionality of the old one.
 - (void) reloadEpisode
 {
     int previousRow = [self currentRows];
@@ -327,7 +395,10 @@
     if(curRow > previousRow){
         NSMutableArray* arr = [[NSMutableArray alloc] initWithCapacity:curRow - previousRow];
         for(int i = previousRow; i < curRow; i++){
-            [arr addObject:[NSIndexPath indexPathForRow:i inSection:0]];
+            NSIndexPath* ipath = [NSIndexPath indexPathForRow:i inSection:0];
+            CGRect irect = [_tableView rectForRowAtIndexPath:ipath];
+            EZDEBUG(@"added-row:%i, %@",i, NSStringFromCGRect(irect));
+            [arr addObject:ipath];
         }
         
         [_tableView insertRowsAtIndexPaths:arr withRowAnimation:UITableViewRowAnimationFade];
@@ -340,27 +411,9 @@
 
 - (void) showEpisode:(EZEpisodeVO*)epv
 {
-    //[self reloadEpisode];
-    
+    [self scrollViewDidScroll:_tableView];
 }
 
-- (void) showEpisodeOld:(EZEpisodeVO*)epv
-{
-    int previousRow = [self currentRows];
-    //[_episodes addObject:epv];
-    //EZDEBUG(@"Before Query for data:%i, main thread:%@", _recentEpisodes, [NSThread isMainThread]?@"YES":@"NO");
-    _recentEpisodes = [[EZCoreAccessor getClientAccessor] count:[EZEpisode class]];
-    //EZDEBUG(@"After Query for data:%i", _recentEpisodes);
-    int curRow = [self currentRows];
-
-    if(curRow > previousRow){
-            //EZDEBUG(@"Add new row");
-            [_tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:(curRow - 1) inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
-    }else{
-            //EZDEBUG(@"Reuse old rows");
-            [_tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:(curRow - 1) inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
-    }
-}
 
 
 //Make sure the episode was which send by the notification

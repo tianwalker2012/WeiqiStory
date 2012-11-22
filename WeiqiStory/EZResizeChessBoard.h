@@ -15,7 +15,7 @@
 //I will in charge of sync among the 2 boards.
 //So it will show the same things.
 //Since all the event controlled by me, so I can do whatever I want.
-#define LargerZorder 10
+#define LargerZorder 8
 #define OrginalZorder 9
 
 @interface EZResizeChessBoard : CCNode<CCTargetedTouchDelegate>;

@@ -9,6 +9,7 @@
 #import "EZFileUtil.h"
 #import "EZConstants.h"
 #import "cocos2d.h"
+#import "EZLRUMap.h"
 
 @implementation EZFileUtil
 
@@ -74,7 +75,6 @@
     dirPaths = NSSearchPathForDirectoriesInDomains(
                         type, NSUserDomainMask, YES);
     docsDir = [dirPaths objectAtIndex:0];
-    
     EZDEBUG(@"dirPath count:%i, first one:%@",dirPaths.count, docsDir);
     NSString *soundFilePath = [docsDir stringByAppendingPathComponent:fileName];
     //recordedFile = fileName;
@@ -99,15 +99,76 @@
     return res;
 }
 
++ (void) storeImageFile:(UIImage*)image file:(NSString*)file
+{
+    NSData *pngData = UIImagePNGRepresentation(image);
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsPath = [paths objectAtIndex:0]; //Get the docs directory
+    NSString *filePath = [documentsPath stringByAppendingPathComponent:file]; //Add the file name
+    EZDEBUG(@"Full path will be stored:%@", filePath);
+    [pngData writeToFile:filePath atomically:YES]; //Write the file
+}
+
++ (UIImage*) imageFromDocument:(NSString *)file scale:(CGFloat)scale
+{
+    if(imageCaches == nil){
+        imageCaches = [[EZLRUMap alloc] initWithLimit:ImageCacheSize];
+    }
+    
+    UIImage* image = [imageCaches getObjectForKey:file];
+    if(image){
+        EZDEBUG("Return from image caches:%@", file);
+        return image;
+    }
+    
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsPath = [paths objectAtIndex:0]; //Get the docs directory
+    NSString *filePath = [documentsPath stringByAppendingPathComponent:file]; //Add the file name
+    EZDEBUG(@"The full path will read from:%@", filePath);
+    NSData *pngData = [NSData dataWithContentsOfFile:filePath];
+    UIImage* tmpImg = [UIImage imageWithData:pngData];
+    image = [UIImage imageWithCGImage:tmpImg.CGImage scale:[UIScreen mainScreen].scale orientation:UIImageOrientationUp];
+    [imageCaches setObject:image forKey:file];
+    return image;
+
+}
+
++ (UIImage*) imageFromDocument:(NSString *)file
+{
+    //Default don't set the scale
+    return [EZFileUtil imageFromDocument:file scale:1];
+}
+
++ (NSString*) generateFileName:(NSString*) prefix
+{
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    NSInteger countID = [userDefaults integerForKey:@"StoredFileCount"];
+    ++ countID;
+    [userDefaults setInteger:countID forKey:@"StoredFileCount"];
+    NSString* timestamp = [[NSDate date] stringWithFormat:@"yyyyMMdd"];
+    NSString* fileName = [NSString stringWithFormat:@"%@%@%i.png",prefix, timestamp, countID];
+    return fileName;
+}
 //Will pick the proper file with my own name conventions.
-//Great, I love this. 
+//Great, I love this.
 + (UIImage*) imageFromFile:(NSString *)file
 {
+    if(imageCaches == nil){
+        imageCaches = [[EZLRUMap alloc] initWithLimit:ImageCacheSize];
+    }
+    
+    UIImage* image = [imageCaches getObjectForKey:file];
+    if(image){
+        //EZDEBUG("Return from image caches:%@", file);
+        return image;
+    }
     ccResolutionType resolution;
     NSString *fullpath = [[CCFileUtils sharedFileUtils] fullPathFromRelativePath:file resolutionType:&resolution];
     
     NSLog(@"Full path:%@, resolution type:%i", fullpath, resolution);
-    UIImage *image = [[UIImage alloc] initWithContentsOfFile:fullpath];
+    image = [[UIImage alloc] initWithContentsOfFile:fullpath];
+    [imageCaches setObject:image forKey:file];
     return image;
 }
 

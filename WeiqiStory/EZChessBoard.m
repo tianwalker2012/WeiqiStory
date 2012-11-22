@@ -393,6 +393,10 @@
 //Keep it simple and stupid, assume the addTargetedDelegate are the power equal method call
 - (void) setTouchEnabled:(BOOL)touchEd
 {
+    if(touchEnabled == touchEd){
+        EZDEBUG(@"Don't repeat doing the same thing");
+        return;
+    }
     if(touchEd){
         [[[CCDirector sharedDirector]  touchDispatcher] addTargetedDelegate:self priority:10 swallowsTouches:YES];
     }else{

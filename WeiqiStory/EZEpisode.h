@@ -37,6 +37,11 @@
 //Seems the purpose of the basicPattern is used to generate the thumbnail.
 @property (strong, nonatomic) UIImage* thumbNail;
 
+//This property will be used to store the thumbNailFile name.
+//Why? Becuase thumbNail eat too much memory,
+//I have no way to control how the Core data release memory.
+@property (strong, nonatomic) NSString* thumbNailFile;
+
 //All the audioFiles included in this episode.
 @property (strong, nonatomic) NSArray* audioFiles;
 

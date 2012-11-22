@@ -35,6 +35,7 @@
 + (UIImage*) flipImage:(UIImage*) image;
 
 
++ (UIImage*) generatePartialImage:(UIImage*)image rect:(CGRect)rect finalSize:(CGSize)finalSize;
 //Calculate what's the maximum size for the selected coord
 //The output is a CGRect.
 //x:0 mean left, x:1 mean right
@@ -56,6 +57,8 @@
 + (void) drawCtx:(CGContextRef)ctx image:(UIImage*)image pos:(CGPoint)pos;
 
 + (CGRect) rectPixToPoint:(CGRect)rect;
+
++ (CGRect) rectPointToPix:(CGRect)rect;
 
 + (CGSize) sizePixToPoint:(CGSize)size;
 

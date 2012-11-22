@@ -10,6 +10,11 @@
 
 //Why do we need this class?
 //To provide the @2x kind of facility to the image file.
+@class EZLRUMap;
+//Why do we need maps?
+//So that we could pervent to read the file again and again.
+static EZLRUMap* imageCaches;
+
 @interface EZFileUtil : NSObject
 
 + (NSURL*) fileToURL:(NSString*)fileName dirType:(NSSearchPathDirectory)type;
@@ -35,6 +40,13 @@
 
 + (void) setDataCopyDone:(BOOL)done;
 
++ (UIImage*) imageFromDocument:(NSString *)file scale:(CGFloat)scale;
+
++ (UIImage*) imageFromDocument:(NSString *)file;
+
++ (void) storeImageFile:(UIImage*)image file:(NSString*)file;
+
++ (NSString*) generateFileName:(NSString*) prefix;
 
 
 @end

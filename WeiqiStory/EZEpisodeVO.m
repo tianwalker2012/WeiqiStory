@@ -29,6 +29,10 @@
     self.thumbNail = [EZChess2Image generateChessBoard:self.basicPattern size:thumbSize];
 }
 
+- (void) dealloc
+{
+    EZDEBUG(@"episode deallocated:%@", self.name);
+}
 
 - (id) initWithPO:(EZEpisode*)po
 {
@@ -41,6 +45,7 @@
     _audioFiles = po.audioFiles;
     _completed = po.completed.boolValue;
     _inMainBundle = po.inMainBundle.boolValue;
+    _thumbNailFile = po.thumbNailFile;
     _PO = po;
     return self;
 }
@@ -60,6 +65,7 @@
     _PO.audioFiles = _audioFiles;
     _PO.completed = @(_completed);
     _PO.inMainBundle = @(_inMainBundle);
+    _PO.thumbNailFile = _thumbNailFile;
     [[EZCoreAccessor getClientAccessor] saveContext];
 }
 

@@ -16,6 +16,8 @@
 #import "EZSoundManager.h"
 #import "EZBubble.h"
 #import "EZBubble2.h"
+#import "EZResizeChessBoard.h"
+#import "EZListTablePagePod.h"
 
 
 //Only 2 status.
@@ -31,6 +33,11 @@ typedef enum {
     EZChessBoard* chessBoard;
     
     EZChessBoard* chessBoard2;
+    
+    //Why do we need this?
+    //Why need this board to make our ChessBoard could getting larger when user touch the screen.
+    EZResizeChessBoard* resizeBoard;
+    
     
     EZActionPlayer* player;
     
@@ -104,10 +111,16 @@ typedef enum {
     studyBoardHolder.position = ccp(320/2, 0);
     
     
-    chessBoard2 = [[EZChessBoard alloc] initWithFile:@"chess-board.png" touchRect:CGRectMake(13, 13, 271, 271) rows:19 cols:19];
-    chessBoard2.position = ccp(320/2, 244);
+    //chessBoard2 = [[EZChessBoard alloc] initWithFile:@"chess-board.png" touchRect:CGRectMake(13, 13, 271, 271) rows:19 cols:19];
+    resizeBoard = [[EZResizeChessBoard alloc] initWithOrgBoard:@"chess-board.png" orgRect:CGRectMake(13, 13, 271, 271) largeBoard:@"chess-board-large.png" largeRect:CGRectMake(27, 27, 632, 632)];
+    
+    chessBoard2 = resizeBoard.orgBoard;
+    
+    resizeBoard.contentSize = resizeBoard.orgBoard.contentSize;
+    resizeBoard.anchorPoint = ccp(0.5, 0.5);
+    resizeBoard.position = ccp(320/2, 244);
     //chessBoard2.anchorPoint = ccp(0.5, 0.5);
-    [studyBoardHolder addChild:chessBoard2 z:9];
+    [studyBoardHolder addChild:resizeBoard z:9];
     
     CCSprite* boardFrame = [[CCSprite alloc] initWithFile:@"board-frame.png"];
     boardFrame.position = ccp(320/2, 244);
@@ -118,7 +131,11 @@ typedef enum {
     
     
     //[self addChild:studyBoardHolder];
-    player2 = [[EZActionPlayer alloc] initWithActions:epv.actions chessBoard:chessBoard2 inMainBundle:epv.inMainBundle];
+    player2 = [[EZActionPlayer alloc] initWithActions:epv.actions chessBoard:resizeBoard.orgBoard inMainBundle:epv.inMainBundle];
+    
+    //EZActionPlayer* playerTmp = [[EZActionPlayer alloc] initWithActions:epv.actions chessBoard:resizeBoard.enlargedBoard inMainBundle:epv.inMainBundle];
+    
+    
     CCMenuItemImage* quitButton = [CCMenuItemImage itemWithNormalImage:@"study-over-button.png" selectedImage:@"study-over-button.png"
                                                                  block:^(id sender){
                                                                      [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
@@ -142,7 +159,7 @@ typedef enum {
                                                                          [studyBoardHolder removeFromParentAndCleanup:NO];
                                                                      }];
                                                                      id sequence = [CCSequence actions:animation, completed, nil];
-                                                                     chessBoard2.touchEnabled = false;
+                                                                     resizeBoard.touchEnabled = false;
                                                                      [studyBoardHolder runAction:sequence];
                                                                  }
                                    ];
@@ -180,9 +197,12 @@ typedef enum {
 
 - (void) onExit
 {
-    if(chessBoard2.touchEnabled){
+    //if(chessBoard2.touchEnabled){
         //Make sure, it get removed from the event chains
-        chessBoard2.touchEnabled = false;
+        //chessBoard2.touchEnabled = false;
+    //}
+    if(resizeBoard.touchEnabled){
+        resizeBoard.touchEnabled = false;
     }
 }
 
@@ -272,7 +292,7 @@ typedef enum {
         CCMenuItemImage* backButton = [CCMenuItemImage itemWithNormalImage:@"back-button.png" selectedImage:@"back-button-pressed.png" block:^(id sender){
             [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
             [player stop];
-            [[CCDirector sharedDirector] popScene];
+            [[CCDirector sharedDirector] replaceScene:[EZListTablePagePod node]];
         }];
         
         CCMenu* backMenu = [CCMenu menuWithItems:backButton, nil];
@@ -351,7 +371,7 @@ typedef enum {
                                                                           if(!studyBoardHolder){
                                                                               [self initStudyBoard2:epv];
                                                                           }else{
-                                                                              chessBoard2.touchEnabled = YES;
+                                                                              resizeBoard.touchEnabled = YES;
                                                                           }
                                                                           //[self addChild:chessBoard2];
                                                                           //[studyBoardHolder setScale:0.2];
@@ -385,6 +405,15 @@ typedef enum {
                                                                               }
                                                                           }else{
                                                                               [chessBoard2 syncChessColorWithLastMove];
+                                                                          }
+                                                                          
+                                                                          //Make sure the inner board and outboard color is consistent.
+                                                                          //It is all because initially, I didn't get all the
+                                                                          //BoardFront interface well define.
+                                                                          //Otherwise it could be much simpler to add functionality like this.
+                                                                          
+                                                                          if(resizeBoard.enlargedBoard.isCurrentBlack != chessBoard2.isCurrentBlack){
+                                                                              [resizeBoard.enlargedBoard toggleColor];
                                                                           }
                                                                           
                                                                           EZDEBUG(@"successfully completed raising board");

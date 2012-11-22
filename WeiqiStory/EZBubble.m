@@ -84,7 +84,7 @@ static CCSprite* broken;
         bubble = [CCSprite spriteWithFile:@"bubble-pad.png"];
         broken = [CCSprite spriteWithFile:@"bubble-broken-pad.png"];
     }
-    EZDEBUG(@"Generate bubble, size:%@", NSStringFromCGSize(bubble.boundingBox.size));
+    //EZDEBUG(@"Generate bubble, size:%@", NSStringFromCGSize(bubble.boundingBox.size));
     CGFloat xStartPos = arc4random()%768;
     CGFloat xEndPos = arc4random()%768;
     CGFloat yEndPos = 1048;

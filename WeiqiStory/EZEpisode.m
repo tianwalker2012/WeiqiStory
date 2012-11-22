@@ -11,7 +11,11 @@
 #import "EZChess2Image.h"
 
 @implementation EZEpisode
-@dynamic basicPattern, name, introduction, audioFiles, actions, thumbNail, completed;
+@dynamic basicPattern, name, introduction, audioFiles, actions, thumbNail, completed, thumbNailFile;
 
+- (void) dealloc
+{
+    EZDEBUG(@"Release episode:%@, memory:%i", self.name, (int)self);
+}
 
 @end

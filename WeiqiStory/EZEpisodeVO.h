@@ -50,6 +50,8 @@
 
 @property (assign, nonatomic) BOOL inMainBundle;
 
+@property (strong, nonatomic) NSString* thumbNailFile;
+
 @property (strong, nonatomic) EZEpisode* PO;
 
 

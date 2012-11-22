@@ -27,6 +27,7 @@
 #import "EZCoord.h"
 #import "EZPlayPagePod.h"
 #import "EZEnlargeTester.h"
+#import "EZListTablePagePod.h"
 
 //#import "EZPlayerStatus.h"
 
@@ -64,13 +65,14 @@
 	[sharedFileUtils setiPadSuffix:@"-pad"];					// Default on iPad is "ipad"
 	[sharedFileUtils setiPadRetinaDisplaySuffix:@"-pad-hd"];	// Default on iPad RetinaDisplay is "-ipadhd"
 
+    [self returnToVirgin];
     [EZTestSuites runAllTests];
-    //[self returnToVirgin];
-
+    
     if(![[NSUserDefaults standardUserDefaults] boolForKey:@"Executed"]){
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"Executed"];
-        //[self loadAllFromBundle];
+        [self loadAllFromBundle];
     }
+ 
 	// Create the main window
 	window_ = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 
@@ -126,7 +128,9 @@
     //[director_ pushScene:[EZHomePage scene]];
     //[director_ pushScene:[EZListEditPage scene]];
     //[director_ pushScene:[[[EZPlayPagePod alloc] initWithEpisode:[self generateEpisodeVO]] createScene]];
-    [director_ pushScene:[EZEnlargeTester node]];
+    //[director_ pushScene:[EZEnlargeTester node]];
+    
+    [director_ pushScene:[EZListTablePagePod node]];
 	// Create a Navigation Controller with the Director
 	navController_ = [[UINavigationController alloc] initWithRootViewController:director_];
 	navController_.navigationBarHidden = YES;
@@ -137,7 +141,7 @@
 	
 	// make main window visible
 	[window_ makeKeyAndVisible];
-	
+    
 	return YES;
 }
 
@@ -198,6 +202,7 @@
 // purge memory
 - (void)applicationDidReceiveMemoryWarning:(UIApplication *)application
 {
+    EZDEBUG(@"Recieved memory warning");
 	[[CCDirector sharedDirector] purgeCachedData];
 }
 

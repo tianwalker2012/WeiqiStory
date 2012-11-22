@@ -150,6 +150,12 @@
 		1838D899165C7253005447E1 /* white-button-large-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 1838D898165C7253005447E1 /* white-button-large-hd.png */; };
 		1838D89B165C7279005447E1 /* chess-board-large-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 1838D89A165C7279005447E1 /* chess-board-large-hd.png */; };
 		1838D89E165C81C5005447E1 /* EZChessBoardWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1838D89D165C81C5005447E1 /* EZChessBoardWrapper.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		1838D8A4165CCF40005447E1 /* EZListTablePagePod.m in Sources */ = {isa = PBXBuildFile; fileRef = 1838D8A3165CCF40005447E1 /* EZListTablePagePod.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		1838D8A6165CD711005447E1 /* small-board-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 1838D8A5165CD70F005447E1 /* small-board-hd.png */; };
+		1838D8A8165CD72A005447E1 /* small-chessboard-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 1838D8A7165CD72A005447E1 /* small-chessboard-hd.png */; };
+		1838D8AA165CD73C005447E1 /* small-chessboard-frame-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 1838D8A9165CD73B005447E1 /* small-chessboard-frame-hd.png */; };
+		1838D8AC165CD8F9005447E1 /* list-page-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 1838D8AB165CD8F8005447E1 /* list-page-hd.png */; };
+		1838D8AE165CFDE7005447E1 /* pause-button-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 1838D8AD165CFDE6005447E1 /* pause-button-hd.png */; };
 		18451DBF1609C68300BF530C /* NSObject+SBJson.m in Sources */ = {isa = PBXBuildFile; fileRef = 18451DA71609C68300BF530C /* NSObject+SBJson.m */; };
 		18451DC01609C68300BF530C /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 18451DAA1609C68300BF530C /* SBJsonParser.m */; };
 		18451DC11609C68300BF530C /* SBJsonStreamParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 18451DAC1609C68300BF530C /* SBJsonStreamParser.m */; };
@@ -1012,6 +1018,7 @@
 		18E0FEE3162E664F004BF632 /* EZEpisodeCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E0FEE2162E664E004BF632 /* EZEpisodeCell.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		18E0FEEA162EBE66004BF632 /* EZDummyObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E0FEE9162EBE66004BF632 /* EZDummyObject.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		18E3F490163E4E5400E0CFA6 /* EZHomePage.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E3F48F163E4E5400E0CFA6 /* EZHomePage.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		18F14F83165E1C7900E3FDE8 /* small-chessboard.png in Resources */ = {isa = PBXBuildFile; fileRef = 18F14F82165E1C7900E3FDE8 /* small-chessboard.png */; };
 		18F37CB616115919004B18A0 /* EZChessMark.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F37CB516115919004B18A0 /* EZChessMark.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		18F37CBA161191D5004B18A0 /* EZCleanAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F37CB9161191D5004B18A0 /* EZCleanAction.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		18F873FF163FA33500FB617D /* EZImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F873FE163FA33500FB617D /* EZImageView.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
@@ -1310,6 +1317,13 @@
 		1838D89A165C7279005447E1 /* chess-board-large-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "chess-board-large-hd.png"; path = "../../../icons/weiqi/chess-board-large-hd.png"; sourceTree = "<group>"; };
 		1838D89C165C81C5005447E1 /* EZChessBoardWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZChessBoardWrapper.h; sourceTree = "<group>"; };
 		1838D89D165C81C5005447E1 /* EZChessBoardWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZChessBoardWrapper.m; sourceTree = "<group>"; };
+		1838D8A2165CCF3F005447E1 /* EZListTablePagePod.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZListTablePagePod.h; sourceTree = "<group>"; };
+		1838D8A3165CCF40005447E1 /* EZListTablePagePod.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZListTablePagePod.m; sourceTree = "<group>"; };
+		1838D8A5165CD70F005447E1 /* small-board-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "small-board-hd.png"; path = "../../../icons/weiqi/small-board-hd.png"; sourceTree = "<group>"; };
+		1838D8A7165CD72A005447E1 /* small-chessboard-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "small-chessboard-hd.png"; path = "../../../icons/weiqi/small-chessboard-hd.png"; sourceTree = "<group>"; };
+		1838D8A9165CD73B005447E1 /* small-chessboard-frame-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "small-chessboard-frame-hd.png"; path = "../../../icons/weiqi/small-chessboard-frame-hd.png"; sourceTree = "<group>"; };
+		1838D8AB165CD8F8005447E1 /* list-page-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "list-page-hd.png"; path = "../../../icons/weiqi/list-page-hd.png"; sourceTree = "<group>"; };
+		1838D8AD165CFDE6005447E1 /* pause-button-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "pause-button-hd.png"; path = "../../../icons/weiqi/pause-button-hd.png"; sourceTree = "<group>"; };
 		18451DA61609C68300BF530C /* NSObject+SBJson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+SBJson.h"; sourceTree = "<group>"; };
 		18451DA71609C68300BF530C /* NSObject+SBJson.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+SBJson.m"; sourceTree = "<group>"; };
 		18451DA81609C68300BF530C /* SBJson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJson.h; sourceTree = "<group>"; };
@@ -2250,6 +2264,7 @@
 		18E0FEE9162EBE66004BF632 /* EZDummyObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZDummyObject.m; sourceTree = "<group>"; };
 		18E3F48E163E4E5400E0CFA6 /* EZHomePage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZHomePage.h; sourceTree = "<group>"; };
 		18E3F48F163E4E5400E0CFA6 /* EZHomePage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZHomePage.m; sourceTree = "<group>"; };
+		18F14F82165E1C7900E3FDE8 /* small-chessboard.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "small-chessboard.png"; path = "../../../icons/weiqi/small-chessboard.png"; sourceTree = "<group>"; };
 		18F37CB416115919004B18A0 /* EZChessMark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZChessMark.h; sourceTree = "<group>"; };
 		18F37CB516115919004B18A0 /* EZChessMark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZChessMark.m; sourceTree = "<group>"; };
 		18F37CB8161191D5004B18A0 /* EZCleanAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZCleanAction.h; sourceTree = "<group>"; };
@@ -2825,7 +2840,13 @@
 		18451DE41609CBA800BF530C /* images */ = {
 			isa = PBXGroup;
 			children = (
+				18F14F82165E1C7900E3FDE8 /* small-chessboard.png */,
+				1838D8AB165CD8F8005447E1 /* list-page-hd.png */,
+				1838D8A9165CD73B005447E1 /* small-chessboard-frame-hd.png */,
+				1838D8A7165CD72A005447E1 /* small-chessboard-hd.png */,
+				1838D8A5165CD70F005447E1 /* small-board-hd.png */,
 				1838D89A165C7279005447E1 /* chess-board-large-hd.png */,
+				1838D8AD165CFDE6005447E1 /* pause-button-hd.png */,
 				1838D896165C723E005447E1 /* black-button-large-hd.png */,
 				1838D898165C7253005447E1 /* white-button-large-hd.png */,
 				1838D88E165BB334005447E1 /* white-button-hd.png */,
@@ -3804,6 +3825,8 @@
 				1838D894165C6F81005447E1 /* EZEnlargeTester.m */,
 				1838D89C165C81C5005447E1 /* EZChessBoardWrapper.h */,
 				1838D89D165C81C5005447E1 /* EZChessBoardWrapper.m */,
+				1838D8A2165CCF3F005447E1 /* EZListTablePagePod.h */,
+				1838D8A3165CCF40005447E1 /* EZListTablePagePod.m */,
 			);
 			name = Layers;
 			sourceTree = "<group>";
@@ -4690,6 +4713,12 @@
 				1838D897165C723F005447E1 /* black-button-large-hd.png in Resources */,
 				1838D899165C7253005447E1 /* white-button-large-hd.png in Resources */,
 				1838D89B165C7279005447E1 /* chess-board-large-hd.png in Resources */,
+				1838D8A6165CD711005447E1 /* small-board-hd.png in Resources */,
+				1838D8A8165CD72A005447E1 /* small-chessboard-hd.png in Resources */,
+				1838D8AA165CD73C005447E1 /* small-chessboard-frame-hd.png in Resources */,
+				1838D8AC165CD8F9005447E1 /* list-page-hd.png in Resources */,
+				1838D8AE165CFDE7005447E1 /* pause-button-hd.png in Resources */,
+				18F14F83165E1C7900E3FDE8 /* small-chessboard.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4892,6 +4921,7 @@
 				1838D892165BBF0E005447E1 /* EZResizeChessBoard.m in Sources */,
 				1838D895165C6F82005447E1 /* EZEnlargeTester.m in Sources */,
 				1838D89E165C81C5005447E1 /* EZChessBoardWrapper.m in Sources */,
+				1838D8A4165CCF40005447E1 /* EZListTablePagePod.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

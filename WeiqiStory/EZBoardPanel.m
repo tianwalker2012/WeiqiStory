@@ -49,24 +49,23 @@
 }
 
 
-- (id) initWithEpisodePO:(EZEpisode*)po
+//Will remove this later.
+- (id) initWithEpisode:(EZEpisodeVO*) epv
 {
-    //self = [super initWithImage:[EZFileUtil imageFromFile:@"small-board.png"]];
-    //CGFloat scale = [UIScreen mainScreen].scale;
-    self = [super initWithImage:po.thumbNail];
+    self = [super initWithImage:epv.thumbNail];
     self.userInteractionEnabled = true;
     _name = [[UILabel alloc] initWithFrame:CGRectMake(10, 142, 100, 25)];
     _name.backgroundColor = [UIColor clearColor];
     _name.font = [UIFont fontWithName:@"Adobe Kaiti Std" size:14];
     _name.textColor = [UIColor whiteColor];
-    _name.text = po.name;
+    _name.text = epv.name;
     [self addSubview:_name];
     
     _intro = [[UILabel alloc] initWithFrame:CGRectMake(100, 142, 50, 25)];
     _intro.backgroundColor = [UIColor clearColor];
     _intro.font = [UIFont fontWithName:@"Adobe Kaiti Std" size:14];
     _intro.textColor = [UIColor whiteColor];
-    _intro.text = po.introduction;
+    _intro.text = epv.introduction;
     [self addSubview:_intro];
     
     //EZImage* chessImage = nil;
@@ -75,12 +74,6 @@
     [self addGestureRecognizer:guesture];
     return self;
 
-}
-
-//Will remove this later.
-- (id) initWithEpisode:(EZEpisodeVO*) epv
-{
-    return [self initWithEpisodePO:epv.PO];
 }
 
 //Get touched
