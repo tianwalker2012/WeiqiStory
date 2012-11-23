@@ -125,12 +125,12 @@
     //[director_ pushScene:[EZChessPlay scene]];
 	//[director_ pushScene:[EZListTablePage scene]];
     //[director_ pushScene:[EZEffectTester scene]];
-    //[director_ pushScene:[EZHomePage scene]];
+    [director_ pushScene:[EZHomePage scene]];
     //[director_ pushScene:[EZListEditPage scene]];
     //[director_ pushScene:[[[EZPlayPagePod alloc] initWithEpisode:[self generateEpisodeVO]] createScene]];
     //[director_ pushScene:[EZEnlargeTester node]];
     
-    [director_ pushScene:[EZListTablePagePod node]];
+    //[director_ pushScene:[EZListTablePagePod node]];
 	// Create a Navigation Controller with the Director
 	navController_ = [[UINavigationController alloc] initWithRootViewController:director_];
 	navController_.navigationBarHidden = YES;

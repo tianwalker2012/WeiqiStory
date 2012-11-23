@@ -64,7 +64,7 @@
     
     nob.position = ccp(boxNob.size.width/2, height/2);
     bar.position = ccp(boxBar.size.width/2, height/2);
-    
+    _acceptTouch = true;
     [self addChild:bar z:1];
     //Make sure the nob is above the bar
     [self addChild:nob z:2];
@@ -151,15 +151,23 @@
     CGPoint locPt = [self locationInSelf:touch];
     //Make the touch box larger than it suppose to be.
     CGRect nobBox = CGRectInset(_nob.boundingBox, -10, -10);
+    _prevPlayedValue = _currentValue;
     //EZDEBUG(@"LocalPoint:%@, rect is:%@", NSStringFromCGPoint(locPt), NSStringFromCGRect(nobBox));
     
     if(!CGRectContainsPoint(nobBox, locPt)){
         EZDEBUG(@"Deny touch event. nobBox:%@, locationPoint:%@", NSStringFromCGRect(nobBox), NSStringFromCGPoint(locPt));
         return false;
     }
+    if(!_acceptTouch){
+        EZDEBUG(@"processing, quit");
+        return true;
+    }
+    
+    _nob.scale = 1.3;
     EZDEBUG(@"Accept the touch event");
     prevTouch = locPt;
     nobMovePrev = locPt;
+    
     return true;
 }
 
@@ -202,9 +210,9 @@
     
     if(newValue != _currentValue){
         //EZDEBUG(@"change value");
-        if(_changedCallback){
-            _changedCallback(_currentValue, newValue);
-        }
+        //if(_changedCallback){
+        //    _changedCallback(_currentValue, newValue);
+        //}
         //will change the nob position accordingly
         self.currentValue = newValue;
         prevTouch = curPt;
@@ -216,7 +224,13 @@
     //[self ccTouchMoved:touch withEvent:event];
     //self.currentValue = _currentValue;
     //Position to proper position
+    _acceptTouch = false;
     _nob.position = [self positionForValue:_currentValue];
+    if(_prevPlayedValue != _currentValue && _changedCallback){
+        _changedCallback(_prevPlayedValue, _currentValue);
+    }
+    _nob.scale = 1;
+    _acceptTouch = true;
     EZDEBUG(@"Touch ended");
 }
 //When this will be get called?

@@ -1019,6 +1019,13 @@
 		18E0FEEA162EBE66004BF632 /* EZDummyObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E0FEE9162EBE66004BF632 /* EZDummyObject.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		18E3F490163E4E5400E0CFA6 /* EZHomePage.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E3F48F163E4E5400E0CFA6 /* EZHomePage.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		18F14F83165E1C7900E3FDE8 /* small-chessboard.png in Resources */ = {isa = PBXBuildFile; fileRef = 18F14F82165E1C7900E3FDE8 /* small-chessboard.png */; };
+		18F14F89165F489F00E3FDE8 /* point-finger-black-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 18F14F85165F489F00E3FDE8 /* point-finger-black-hd.png */; };
+		18F14F8A165F489F00E3FDE8 /* point-finger-black-pad-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 18F14F86165F489F00E3FDE8 /* point-finger-black-pad-hd.png */; };
+		18F14F8B165F489F00E3FDE8 /* point-finger-white-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 18F14F87165F489F00E3FDE8 /* point-finger-white-hd.png */; };
+		18F14F8C165F489F00E3FDE8 /* point-finger-white-pad-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 18F14F88165F489F00E3FDE8 /* point-finger-white-pad-hd.png */; };
+		18F14F8E165F683800E3FDE8 /* home-page-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 18F14F8D165F683700E3FDE8 /* home-page-hd.png */; };
+		18F14F90165F732C00E3FDE8 /* start-button-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 18F14F8F165F732B00E3FDE8 /* start-button-hd.png */; };
+		18F14F92165F733F00E3FDE8 /* start-button-pressed-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 18F14F91165F733F00E3FDE8 /* start-button-pressed-hd.png */; };
 		18F37CB616115919004B18A0 /* EZChessMark.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F37CB516115919004B18A0 /* EZChessMark.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		18F37CBA161191D5004B18A0 /* EZCleanAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F37CB9161191D5004B18A0 /* EZCleanAction.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		18F873FF163FA33500FB617D /* EZImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F873FE163FA33500FB617D /* EZImageView.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
@@ -2265,6 +2272,13 @@
 		18E3F48E163E4E5400E0CFA6 /* EZHomePage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZHomePage.h; sourceTree = "<group>"; };
 		18E3F48F163E4E5400E0CFA6 /* EZHomePage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZHomePage.m; sourceTree = "<group>"; };
 		18F14F82165E1C7900E3FDE8 /* small-chessboard.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "small-chessboard.png"; path = "../../../icons/weiqi/small-chessboard.png"; sourceTree = "<group>"; };
+		18F14F85165F489F00E3FDE8 /* point-finger-black-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "point-finger-black-hd.png"; path = "../../../icons/weiqi/point-finger-black-hd.png"; sourceTree = "<group>"; };
+		18F14F86165F489F00E3FDE8 /* point-finger-black-pad-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "point-finger-black-pad-hd.png"; path = "../../../icons/weiqi/point-finger-black-pad-hd.png"; sourceTree = "<group>"; };
+		18F14F87165F489F00E3FDE8 /* point-finger-white-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "point-finger-white-hd.png"; path = "../../../icons/weiqi/point-finger-white-hd.png"; sourceTree = "<group>"; };
+		18F14F88165F489F00E3FDE8 /* point-finger-white-pad-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "point-finger-white-pad-hd.png"; path = "../../../icons/weiqi/point-finger-white-pad-hd.png"; sourceTree = "<group>"; };
+		18F14F8D165F683700E3FDE8 /* home-page-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "home-page-hd.png"; path = "../../../icons/weiqi/home-page-hd.png"; sourceTree = "<group>"; };
+		18F14F8F165F732B00E3FDE8 /* start-button-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "start-button-hd.png"; path = "../../../icons/weiqi/start-button-hd.png"; sourceTree = "<group>"; };
+		18F14F91165F733F00E3FDE8 /* start-button-pressed-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "start-button-pressed-hd.png"; path = "../../../icons/weiqi/start-button-pressed-hd.png"; sourceTree = "<group>"; };
 		18F37CB416115919004B18A0 /* EZChessMark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZChessMark.h; sourceTree = "<group>"; };
 		18F37CB516115919004B18A0 /* EZChessMark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZChessMark.m; sourceTree = "<group>"; };
 		18F37CB8161191D5004B18A0 /* EZCleanAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZCleanAction.h; sourceTree = "<group>"; };
@@ -2840,6 +2854,12 @@
 		18451DE41609CBA800BF530C /* images */ = {
 			isa = PBXGroup;
 			children = (
+				18F14F91165F733F00E3FDE8 /* start-button-pressed-hd.png */,
+				18F14F8F165F732B00E3FDE8 /* start-button-hd.png */,
+				18F14F85165F489F00E3FDE8 /* point-finger-black-hd.png */,
+				18F14F86165F489F00E3FDE8 /* point-finger-black-pad-hd.png */,
+				18F14F87165F489F00E3FDE8 /* point-finger-white-hd.png */,
+				18F14F88165F489F00E3FDE8 /* point-finger-white-pad-hd.png */,
 				18F14F82165E1C7900E3FDE8 /* small-chessboard.png */,
 				1838D8AB165CD8F8005447E1 /* list-page-hd.png */,
 				1838D8A9165CD73B005447E1 /* small-chessboard-frame-hd.png */,
@@ -2909,6 +2929,7 @@
 				185BFC79164CE2AA0044214A /* volume-bar-pad-hd.png */,
 				185BFC7A164CE2AB0044214A /* volume-button-pad-hd.png */,
 				185BFC7B164CE2AD0044214A /* volume-frame-pad-hd.png */,
+				18F14F8D165F683700E3FDE8 /* home-page-hd.png */,
 				185BFA51164BE1280044214A /* bubble-pad.png */,
 				185BFA47164BB0470044214A /* small-chessboard-pad.png */,
 				185BFA45164BB03C0044214A /* small-chessboard-frame-pad.png */,
@@ -4719,6 +4740,13 @@
 				1838D8AC165CD8F9005447E1 /* list-page-hd.png in Resources */,
 				1838D8AE165CFDE7005447E1 /* pause-button-hd.png in Resources */,
 				18F14F83165E1C7900E3FDE8 /* small-chessboard.png in Resources */,
+				18F14F89165F489F00E3FDE8 /* point-finger-black-hd.png in Resources */,
+				18F14F8A165F489F00E3FDE8 /* point-finger-black-pad-hd.png in Resources */,
+				18F14F8B165F489F00E3FDE8 /* point-finger-white-hd.png in Resources */,
+				18F14F8C165F489F00E3FDE8 /* point-finger-white-pad-hd.png in Resources */,
+				18F14F8E165F683800E3FDE8 /* home-page-hd.png in Resources */,
+				18F14F90165F732C00E3FDE8 /* start-button-hd.png in Resources */,
+				18F14F92165F733F00E3FDE8 /* start-button-pressed-hd.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

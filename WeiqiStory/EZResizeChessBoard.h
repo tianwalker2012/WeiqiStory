@@ -7,6 +7,7 @@
 //
 
 #import "EZChessBoard.h"
+#import "EZConstants.h"
 
 //What I will do in this class?
 //Add 2 board.
@@ -26,11 +27,21 @@
 @property (nonatomic, strong) EZChessBoard* orgBoard;
 @property (nonatomic, strong) EZChessBoard* enlargedBoard;
 
+//touched block
+//Why do we need this property?
+//Because, we need to have some animation once the board get touched, it will be cancealled.
+@property (nonatomic, strong) EZOperationBlock touchedBlock;
+
 
 @property (nonatomic, assign) BOOL isLargeBoard;
 @property (nonatomic, assign) BOOL touchEnabled;
 @property (nonatomic, assign) CGRect touchZone;
 @property (nonatomic, assign) CGSize largeSize;
 @property (nonatomic, assign) CGSize orgSize;
+
+//Why do I have all this?
+//Because, touchEnd always get called whether I accepted the touch or not,
+//So I should record that I have accepted the touch. 
+@property (nonatomic, assign) BOOL touchAccepted;
 
 @end

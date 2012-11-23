@@ -38,4 +38,13 @@ typedef void (^ EZBarChangedBlock)(NSInteger prv, NSInteger cur);
 
 @property (nonatomic, strong) EZBarChangedBlock changedCallback;
 
+//I will record the value which beginning of the touch event.
+@property (nonatomic, assign) CGFloat prevPlayedValue;
+
+//Will not accept touch if this value is false,
+//Why?
+//The processing will take a long time, if interruptted in the middle of the process the board will be inconsistent.
+//So, I will not accept the touch event in the middle of the processing. 
+@property (nonatomic, assign) BOOL acceptTouch;
+
 @end

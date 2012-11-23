@@ -143,7 +143,7 @@
     
     //int col = (indexPath.ro-1) % 4;
     
-    CGFloat widthGap = 25;
+    CGFloat widthGap = 16;
     CGFloat panelWidth = 142;
     
     
@@ -186,7 +186,7 @@
 
 - (void) addTableView
 {
-    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(8, 69, 309, 383) style:UITableViewStylePlain];
+    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(10, 69, 300, 383) style:UITableViewStylePlain];
     _tableView.backgroundColor = [UIColor clearColor];
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     _tableView.delegate = self;
@@ -245,7 +245,7 @@
     
     EZDEBUG(@"offset.y:%f, bounds.size.height:%f, insect:%f, total height:%f",y, bounds.size.height, inset.bottom,h);
     float preload_distance = 50;
-    if((y + preload_distance) > h) {
+    if((y + preload_distance) > h || (_recentEpisodes % 2) == 1) {
         NSLog(@"load more rows");
         [self preload];
     }
@@ -259,15 +259,16 @@
     NSInteger mostRecent = ((NSNumber*)[_episodeMap recentlyVisited]).integerValue;
     NSInteger begin = pos;
     if(mostRecent > pos){ //I need to read from, mean user scroll up.
-        begin = pos - BatchFetchSize + 1;
+        begin = pos - limit + 1;
         if(begin < 0){
             begin = 0;
         }
     }
-    NSArray* arr = [[EZCoreAccessor getClientAccessor] fetchObject:[EZEpisode class] begin:begin limit:BatchFetchSize];
+    NSArray* arr = [[EZCoreAccessor getClientAccessor] fetchObject:[EZEpisode class] begin:begin limit:limit];
     NSInteger count = 0;
     for(EZEpisode* ep in arr){
         EZEpisodeVO* epv = [[EZEpisodeVO alloc] initWithPO:ep];
+        EZDEBUG(@"Add record:%i, name:%@ to cache", begin+count, epv.name);
         [_episodeMap setObject:epv forKey:@(begin + count)];
         count ++;
     }
@@ -277,9 +278,14 @@
 {
     EZEpisodeVO* res = [_episodeMap getObjectForKey:@(pos)];
     if(res == nil){
-        EZDEBUG(@"didn't exist in map, let fetch from DB");
-        [self loadFromDB:pos limit:BatchFetchSize];
+        EZDEBUG(@"%i didn't exist in map, let fetch from DB", pos);
+        [self loadFromDB:pos limit:PodBatchFetchSize];
         res = [_episodeMap getObjectForKey:@(pos)];
+        if(!res){
+            EZDEBUG(@"Pos:%i is null", pos);
+            assert(false);
+        }
+        
     }
     return res;
 }
@@ -316,25 +322,21 @@
         //[[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFrame:smallBoard.displayFrame name:@"small-board.png"];
         [self addTableView];
         //_episodes = [[NSMutableArray alloc] init];
-        EZDEBUG(@"Added tableView");
         _recentEpisodes = [[EZCoreAccessor getClientAccessor] count:[EZEpisode class]];
-        EZDEBUG(@"recentEpisodes:%i", _recentEpisodes);
-        _episodeMap = [[EZLRUMap alloc] initWithLimit:PodBatchFetchSize];
-        EZDEBUG(@"map initalized");
-        //Download the source from the server
-        //[self startDownload];
+        _episodeMap = [[EZLRUMap alloc] initWithLimit:10];
         [self loadFromDB:0 limit:PodBatchFetchSize];
         EZDEBUG(@"loadedFromDB, map count %i", _episodeMap.count);
         [self scheduleBlock:^(){
             [EZBubble generatedBubble:self z:10];
         } interval:1.0 repeat:kCCRepeatForever delay:0.5];
         isFirstTime = true;
+        /**
         CGFloat scale = [UIScreen mainScreen].scale;
         NSArray* coords = @[[[EZCoord alloc] init:2 y:2], [[EZCoord alloc] init:3 y:3]];
         UIImage* board = [EZChess2Image generateOrgBoard:coords];//[EZChess2Image generateAdjustedBoard:coords size:CGSizeMake(130*scale, 130*scale)];
         [_tableView addSubview:[[UIImageView alloc] initWithImage:board]];
          EZDEBUG(@"Added generated table:%@, scale:%f", NSStringFromCGSize(board.size), board.scale);
-        
+        **/
         //[self loadEpisode];
         //[self startDownload];
     }

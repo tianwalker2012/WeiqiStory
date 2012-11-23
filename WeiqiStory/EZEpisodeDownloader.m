@@ -62,7 +62,9 @@
                 }
                 //Release the object.
                 ep = nil;
-                break;
+                if(count > 20){
+                    break;
+                }
             }
             
         }else{

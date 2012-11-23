@@ -179,7 +179,13 @@
 - (void) putCharMark:(NSString*)str fontSize:(NSInteger)fontSize coord:(EZCoord*)coord animAction:(CCAction*)action
 {
     //NSString* markStr = [chessMarkChar objectAtIndex:(coordToMarks.count % chessMarkChar.count)];
-    CCLabelTTF*  markText = [CCLabelTTF labelWithString:str fontName:@"Arial" fontSize:fontSize];
+    CCLabelTTF*  markText = nil;
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone){
+        markText = [CCLabelTTF labelWithString:str fontName:@"Arial" fontSize:fontSize*.05];
+    }else{
+        markText = [CCLabelTTF labelWithString:str fontName:@"Arial" fontSize:fontSize];
+    }
+    
     markText.color = ChessMarkColor;
     NSMutableArray* marks = [coordToMarks objectForKey:coord.getKey];
     if(!marks){
@@ -262,6 +268,9 @@
 {
     [self cleanAllMoves];
     [self cleanAllMarks];
+    
+    //Nothing to regret after we clean the table.
+    [_regrets removeAllObjects];
 }
 
 
@@ -349,19 +358,22 @@
 
 - (void) initializeCursor
 {
-    virtualWhite = [CCSprite spriteWithFile:_whiteChessName?_whiteChessName:WhiteBtnName];
-    virtualBlack = [CCSprite spriteWithFile:_blackChessName?_blackChessName:BlackBtnName];
+    virtualWhite = [CCSprite spriteWithFile:@"point-finger-white.png"];
+    virtualBlack = [CCSprite spriteWithFile:@"point-finger-black.png"];
     
-    [[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFrame:virtualWhite.displayFrame name:_whiteChessName?_whiteChessName:WhiteBtnName];
-    [[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFrame:virtualBlack.displayFrame name:_blackChessName?_blackChessName: BlackBtnName];
+    CCSprite* whiteButton = [CCSprite spriteWithFile:_whiteChessName?_whiteChessName:WhiteBtnName];
+    CCSprite* blackButton = [CCSprite spriteWithFile:_blackChessName?_blackChessName:BlackBtnName];
+    
+    [[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFrame:whiteButton.displayFrame name:_whiteChessName?_whiteChessName:WhiteBtnName];
+    [[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFrame:blackButton.displayFrame name:_blackChessName?_blackChessName: BlackBtnName];
     //[whiteBtn setPosition:ccp(size.width/2+36, size.height/2)];
     [virtualBlack setZOrder:OverExistingChess];
     [virtualWhite setZOrder:OverExistingChess];
     
     virtualWhite.opacity = 128;
     virtualBlack.opacity = 128;
-    virtualBlack.scale = 2.0;
-    virtualWhite.scale = 2.0;
+    //virtualBlack.scale = 2.0;
+    //virtualWhite.scale = 2.0;
 }
 
 - (void) setBlackChessName:(NSString *)blackChessName
@@ -530,7 +542,7 @@
 - (void)ccTouchEnded:(UITouch *)touch withEvent:(UIEvent *)event
 {
     CGPoint localPoint = [self locationInSelf:touch];
-    CGPoint regularizedPt = [boardStatus adjustLocation:localPoint];
+    //CGPoint regularizedPt = [boardStatus adjustLocation:localPoint];
     //EZDEBUG(@"Touch ended at:%@, adjusted: %@", NSStringFromCGPoint(localPoint), NSStringFromCGPoint(regularizedPt));
     [self removeCursorButton];
     if(_chessmanType == kChessMan){

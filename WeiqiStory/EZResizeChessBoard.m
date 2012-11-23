@@ -174,6 +174,12 @@
     }
     [self syncMarks];
     [self syncChessmans];
+    //Do the right thing at the right place, is quite important.
+    //Why do we need to be tranparent.
+    //Tell people why can keep them focused.
+    if(_enlargedBoard.isCurrentBlack != _orgBoard.isCurrentBlack){
+        [_enlargedBoard toggleColor];
+    }
 }
 //I don't like to ask for help.
 //It mean to owe people something. I have to pay it back.
@@ -181,11 +187,16 @@
 //Forgot about it.
 - (BOOL)ccTouchBegan:(UITouch *)touch withEvent:(UIEvent *)event
 {
+    EZDEBUG(@"Resize board Touch begin");
     CGPoint localPt = [self locationInSelf:touch];
     if(CGRectContainsPoint(_touchZone, localPt)){
+        if(_touchedBlock){
+            _touchedBlock();
+        }
+        _touchAccepted = true;
         EZDEBUG(@"Unschedule get called");
-        [self syncBoards];
         [self unschedule:@selector(setBoardBack:)];
+        [self syncBoards];
         if(_isLargeBoard){
            //Ya, I got the whole logic sort out.
         }else{
@@ -197,7 +208,7 @@
         [_enlargedBoard ccTouchBegan:touch withEvent:event];
         return TRUE;
     }
-    
+    _touchAccepted = false;
     return FALSE;
 }
 
@@ -208,13 +219,19 @@
     [_enlargedBoard ccTouchMoved:touch withEvent:event];
 }
 
+//Why the touch event give to me, even if I refuse it.
 - (void)ccTouchEnded:(UITouch *)touch withEvent:(UIEvent *)event
 {
-    [_enlargedBoard ccTouchEnded:touch withEvent:event];
+    if(_touchAccepted){
+        EZDEBUG(@"Accepted touch end");
+        [_enlargedBoard ccTouchEnded:touch withEvent:event];
+        [self schedule:@selector(setBoardBack:) interval:1.0 repeat:0 delay:0.5];
+    }else{
+        EZDEBUG(@"Unaccepted touch end");
+    }
+    _touchAccepted = false;
     //[self schedule:@selector(setBoardBack:) interval:1];
-    
-    EZDEBUG(@"Arranged schedule");
-    [self schedule:@selector(setBoardBack:) interval:1.0 repeat:1 delay:0.5];
+        
 }
 
 - (void)ccTouchCancelled:(UITouch *)touch withEvent:(UIEvent *)event

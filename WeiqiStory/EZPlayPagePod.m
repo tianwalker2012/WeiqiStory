@@ -63,6 +63,10 @@ typedef enum {
     CCSprite* bubble;
     CCSprite* broken;
     
+    CCSprite* blackFinger;
+    CCSprite* whiteFinger;
+    
+    CCAction* fingerAnim;
     //CCTimer* timer;
     
     BOOL volumePressed;
@@ -98,6 +102,7 @@ typedef enum {
 	return scene;
     
 }
+
 
 
 - (void) initStudyBoard2:(EZEpisodeVO*)epv
@@ -146,6 +151,11 @@ typedef enum {
                                                                       [studyBoardHolder removeFromParentAndCleanup:NO];
                                                                       }], nil];
                                                                       **/
+                                                                     if(_currentFinger.visible){
+                                                                         _currentFinger.visible = false;
+                                                                         [_currentFinger stopAllActions];
+                                                                         [_currentFinger removeFromParentAndCleanup:NO];
+                                                                     }
                                                                      id animation = [CCScaleTo actionWithDuration:0.3 scaleX:0.05 scaleY:1];
                                                                      
                                                                      id completed = [CCCallBlock actionWithBlock:^(){
@@ -193,6 +203,31 @@ typedef enum {
     nextMenu.position = ccp(165, 47);
     [studyBoardHolder addChild:nextMenu];
     
+    blackFinger = [CCSprite spriteWithFile:@"point-finger-black.png"];
+    whiteFinger = [CCSprite spriteWithFile:@"point-finger-white.png"];
+    
+    
+    blackFinger.position = ccp(320/2, 244);
+    whiteFinger.position = ccp(320/2, 244);
+    
+    
+ 
+    EZPlayPagePod* weakSelf = self;
+    resizeBoard.touchedBlock = ^(){
+        if(weakSelf.currentFinger.visible){
+            [weakSelf.currentFinger stopAllActions];
+            [weakSelf.currentFinger removeFromParentAndCleanup:NO];
+            EZDEBUG(@"After remove, what's the visible:%@", weakSelf.currentFinger.visible?@"YES":@"NO");
+            weakSelf.currentFinger.visible = false;
+        }
+    };
+    
+    fingerAnim = [CCSequence actions:[CCSpawn actions:[CCRepeat actionWithAction:[CCSequence actions:[CCScaleTo actionWithDuration:0.3 scale:0.8], [CCScaleTo actionWithDuration:0.3 scale:1], nil] times:3], [CCFadeOut actionWithDuration:2.7], nil],
+                  [CCCallBlock actionWithBlock:^(){
+        [weakSelf.currentFinger removeFromParentAndCleanup:NO];
+        EZDEBUG(@"After remove, what's the visible:%@", weakSelf.currentFinger.visible?@"YES":@"NO");
+        weakSelf.currentFinger.visible = false;
+    }] ,nil];
 }
 
 - (void) onExit
@@ -297,7 +332,7 @@ typedef enum {
         
         CCMenu* backMenu = [CCMenu menuWithItems:backButton, nil];
         //menu.anchorPoint = ccp(0, 0);
-        backMenu.position =  ccp(42, 445);
+        backMenu.position =  ccp(42, 440);
         [self addChild:backMenu];
         
         CCMenuItemImage* playButton = [CCMenuItemImage itemWithNormalImage:@"play-button.png" selectedImage:@"play-button-pressed.png"
@@ -344,7 +379,6 @@ typedef enum {
             [player pause];
             [playButton setNormalSpriteFrame:playImg.displayFrame];
             [player forwardFrom:prv to:cur];
-            
         }];
         
         [player.stepCompletionBlocks addObject:^(id sender){
@@ -354,7 +388,7 @@ typedef enum {
             myBar.currentValue = curPlayer.currentAction;
         }];
         
-        myBar.position = ccp(78, 42);
+        myBar.position = ccp(78, 37);
         [mainLayout addChild:myBar];
         
         if(epv.actions.count > 0){
@@ -392,6 +426,7 @@ typedef enum {
                                                                           [mainLayout runAction:sequence];
                                                                           
                                                                           [chessBoard2 cleanAll];
+                                                                          [resizeBoard.enlargedBoard cleanAll];
                                                                           [player2 forwardFrom:0 to:player.currentAction];
                                                                           
                                                                           //mean
@@ -407,16 +442,21 @@ typedef enum {
                                                                               [chessBoard2 syncChessColorWithLastMove];
                                                                           }
                                                                           
+                                                                          if(chessBoard2.isCurrentBlack){
+                                                                              _currentFinger = blackFinger;
+                                                                          }else{
+                                                                              _currentFinger = whiteFinger;
+                                                                          }
+                                                                          
+                                                                          _currentFinger.visible = true;
+                                                                          [studyBoardHolder addChild:_currentFinger z:FingerZOrder];
+                                                                          
+                                                                          [_currentFinger runAction:fingerAnim];
                                                                           //Make sure the inner board and outboard color is consistent.
                                                                           //It is all because initially, I didn't get all the
                                                                           //BoardFront interface well define.
                                                                           //Otherwise it could be much simpler to add functionality like this.
-                                                                          
-                                                                          if(resizeBoard.enlargedBoard.isCurrentBlack != chessBoard2.isCurrentBlack){
-                                                                              [resizeBoard.enlargedBoard toggleColor];
-                                                                          }
-                                                                          
-                                                                          EZDEBUG(@"successfully completed raising board");
+                                                                          EZDEBUG(@"Raise study panel successfully");
                                                                       }
                                         ];
         CCMenu* studyMenu = [CCMenu menuWithItems:studyButton, nil];

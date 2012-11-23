@@ -86,7 +86,7 @@ typedef enum {
 
 #define BatchFetchSize 8
 
-#define PodBatchFetchSize 6
+#define PodBatchFetchSize 4
 
 #define ImageCacheSize 15
 

@@ -473,6 +473,7 @@
         removed.eaten = NO;
         [coordToChess setValue:removed forKey:removed.coord.getKey];
         //[front putButton:removed.coord isBlack:removed.isBlack animated:NO];
+        EZDEBUG(@"Will recover eaten button");
         [front recoveredButton:removed animated:false];
     }
     return chess;

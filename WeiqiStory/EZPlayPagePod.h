@@ -9,6 +9,9 @@
 #import "cocos2d.h"
 #import "EZLayer.h"
 
+
+#define FingerZOrder 40
+
 @class EZEpisodeVO;
 @interface EZPlayPagePod : EZLayer
 
@@ -17,6 +20,8 @@
 - (CCScene*) createScene;
 
 @property (nonatomic, strong) EZEpisodeVO* episode;
+
+@property (nonatomic, strong) CCSprite* currentFinger;
 
 - (id) initWithEpisode:(EZEpisodeVO*)epv;
 
