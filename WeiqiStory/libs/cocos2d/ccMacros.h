@@ -221,7 +221,7 @@ do {															\
  On iPhone it returns 2 if RetinaDisplay is On. Otherwise it returns 1
  */
 extern float __ccContentScaleFactor;
-#define CC_CONTENT_SCALE_FACTOR() __ccContentScaleFactor
+#define CC_CONTENT_SCALE_FACTOR() [UIScreen mainScreen].scale
 
 
 /** @def CC_RECT_PIXELS_TO_POINTS

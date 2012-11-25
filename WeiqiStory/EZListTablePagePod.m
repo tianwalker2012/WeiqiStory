@@ -44,6 +44,9 @@
     NSMutableDictionary* dict;
     
     BOOL isFirstTime;
+    
+    //I will move the preloading 
+    BOOL isPreloading;
 }
 
 @end
@@ -170,7 +173,7 @@
             EZDEBUG(@"The episode %@ get tapped", epv.name);
             [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
             EZPlayPagePod* playPage = [[EZPlayPagePod alloc] initWithEpisode:epv];
-            [_tableView removeFromSuperview];
+            [tableView removeFromSuperview];
             [[CCDirector sharedDirector] replaceScene:[playPage createScene]];
             
         };
@@ -186,7 +189,13 @@
 
 - (void) addTableView
 {
-    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(10, 69, 300, 383) style:UITableViewStylePlain];
+    NSInteger runningDevice = [[CCFileUtils sharedFileUtils] runningDevice];
+    
+    if(runningDevice == kCCiPhone5){
+        _tableView = [[UITableView alloc] initWithFrame:CGRectMake(10, 69, 300, 480) style:UITableViewStylePlain];
+    }else{
+        _tableView = [[UITableView alloc] initWithFrame:CGRectMake(10, 69, 300, 383) style:UITableViewStylePlain];
+    }
     _tableView.backgroundColor = [UIColor clearColor];
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     _tableView.delegate = self;
@@ -201,8 +210,9 @@
 //I assume this will be called, whenever I get loaded.
 - (void) preload
 {
+    EZDEBUG(@"Preload begin");
     NSArray* addedEpisodes = [[EZCoreAccessor getClientAccessor] fetchObject:[EZEpisode class] begin:_recentEpisodes limit:PodBatchFetchSize];
-    EZDEBUG("preloaded:%i", addedEpisodes.count);
+    EZDEBUG("Preloaded:%i", addedEpisodes.count);
     if(addedEpisodes.count > 0){
         NSInteger count = 0;
         int prevRow = [self currentRows];
@@ -213,19 +223,21 @@
         }
         _recentEpisodes += addedEpisodes.count;
         int curRow = [self currentRows];
-        EZDEBUG(@"previousRows:%i, totalEpisodes:%i, curRow:%i", prevRow, _recentEpisodes, curRow);
+        EZDEBUG(@"Preload previousRows:%i, totalEpisodes:%i, curRow:%i", prevRow, _recentEpisodes, curRow);
         if(curRow > prevRow){
             NSMutableArray* insertedPath = [[NSMutableArray alloc] initWithCapacity:curRow - prevRow];
             for(int i = prevRow; i < curRow; i++){
                 [insertedPath addObject:[NSIndexPath indexPathForRow:i inSection:0]];
             }
-            EZDEBUG(@"Inserted Rows:%i", insertedPath.count);
+            //EZDEBUG(@"Inserted Rows:%i", insertedPath.count);
             [_tableView insertRowsAtIndexPaths:insertedPath withRowAnimation:UITableViewRowAnimationFade];
-            EZDEBUG(@"Inserted Rows completed");
+            //EZDEBUG(@"Inserted Rows completed");
         }
         if(prevRow > 0){
             [_tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:prevRow - 1 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
         }
+        //I need to identify the performance bottleneck.
+        EZDEBUG(@"Preload end");
     }
 }
 
@@ -323,7 +335,7 @@
         [self addTableView];
         //_episodes = [[NSMutableArray alloc] init];
         _recentEpisodes = [[EZCoreAccessor getClientAccessor] count:[EZEpisode class]];
-        _episodeMap = [[EZLRUMap alloc] initWithLimit:10];
+        _episodeMap = [[EZLRUMap alloc] initWithLimit:25];
         [self loadFromDB:0 limit:PodBatchFetchSize];
         EZDEBUG(@"loadedFromDB, map count %i", _episodeMap.count);
         [self scheduleBlock:^(){

@@ -28,6 +28,14 @@
 #import <Foundation/Foundation.h>
 #import "../ccTypes.h"
 
+
+enum {
+	kCCiPhone,
+	kCCiPhoneRetinaDisplay,
+	kCCiPad,
+	kCCiPadRetinaDisplay,
+    kCCiPhone5
+};
 /** Helper class to handle file operations */
 @interface CCFileUtils : NSObject
 {
@@ -43,6 +51,7 @@
 	NSString *iPhoneRetinaDisplaySuffix_;
 	NSString *iPadSuffix_;
 	NSString *iPadRetinaDisplaySuffix_;
+    NSString *iPhone5Suffix_;
 #endif // __CC_PLATFORM_IOS
 }
 
@@ -81,6 +90,8 @@
  @since v2.0
  */
 @property (nonatomic,readwrite, copy, setter = setiPadRetinaDisplaySuffix:) NSString *iPadRetinaDisplaySuffix;
+
+@property (nonatomic, retain) NSString* iPhone5Suffix;
 
 /** Whether of not the fallback sufixes is enabled.
  When enabled it will try to search for the following suffixes in the following order until one is found:
@@ -165,6 +176,9 @@
  @since v2.0
  */
 -(BOOL) iPadRetinaDisplayFileExistsAtPath:(NSString*)filename;
+
+
+- (NSInteger) runningDevice;
 
 #endif // __CC_PLATFORM_IOS
 

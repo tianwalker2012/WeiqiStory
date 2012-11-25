@@ -67,13 +67,21 @@
         CCMenu* menu = [CCMenu menuWithItems:startButton, nil];
         
         if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone){
-            menu.position = ccp(160, 250);
+            NSInteger deviceType = [[CCFileUtils sharedFileUtils] runningDevice];
+            if(deviceType == kCCiPhone5){
+                menu.position = ccp(160, 293);
+            }else{
+                menu.position = ccp(160, 250);
+            }
         }else{
             menu.position =  ccp(385, 556);
         }
         
+        EZDEBUG(@"Before add background");
+        
         [self addChild:background];
         [self addChild:menu];
+        EZDEBUG(@"Done with background"); 
         
     }
     

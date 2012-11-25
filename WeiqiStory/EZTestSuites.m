@@ -47,11 +47,22 @@
 #import "EZLRUMap.h"
 #import "EZQueue.h"
 #import "EZImageView.h"
+#import "CCFileUtils.h"
 //#import "EZ"
 
 
 static NSInteger releaseCount;
 @interface EZReleaseTest : NSObject
+{
+    //NSInteger ancientCount;
+    EZOperationBlock opsBlock;
+}
+
+
+
+- (id) init;
+
+@property (nonatomic, assign) NSInteger ancientCount;
 
 @end
 
@@ -62,6 +73,19 @@ static NSInteger releaseCount;
     EZDEBUG(@"release object");
     releaseCount ++;
 }
+
+- (id) init
+{
+    self = [super init];
+    _ancientCount = 10;
+    __weak EZReleaseTest* weakSelf = self;
+    opsBlock = ^(){
+        EZDEBUG(@"I am cool %i", weakSelf.ancientCount);
+    };
+    
+    return self;
+}
+
 
 @end
 
@@ -202,6 +226,43 @@ static NSInteger releaseCount;
     //[EZTestSuites testImageStorageAndFetch];
     
     //[EZTestSuites testMemoryConsumption];
+    //[EZTestSuites testPod5Type];
+    //[EZTestSuites testBlockRelease];
+}
+
++ (void) testBlockRelease
+{
+    
+    @autoreleasepool {
+        EZReleaseTest* test1 = [[EZReleaseTest alloc] init];
+        assert(releaseCount == 0);
+        test1 = nil;
+    }
+    //make sure the auto release get called
+    //[[NSObject new] performBlock:
+    // ^(){
+    assert(releaseCount == 1);
+    assert(false);
+     //} withDelay:0.1];
+    
+}
+
+//I need to figure out which type is the pod5.
++ (void) testPod5Type
+{
+    NSInteger mobileType =  UI_USER_INTERFACE_IDIOM();
+    CGFloat scale = [UIScreen mainScreen].scale;
+    CGRect screenSize = [UIScreen mainScreen].bounds;
+    
+    EZDEBUG(@"Mobile type is %i, scale %f, Screen Size:%@, runnDevice:%i", mobileType, scale, NSStringFromCGRect(screenSize), [[[CCFileUtils alloc]init] runningDevice]);
+    
+    
+    UIImage* smallBoard = [EZFileUtil imageFromFile:@"small-board.png"];
+    EZDEBUG(@"smallBoard size:%@", NSStringFromCGSize(smallBoard.size));
+    
+    
+    
+    assert(false);
 }
 
 + (void) imagesProcess:(UIImage*)image

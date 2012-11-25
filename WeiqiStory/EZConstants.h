@@ -86,9 +86,9 @@ typedef enum {
 
 #define BatchFetchSize 8
 
-#define PodBatchFetchSize 4
+#define PodBatchFetchSize 8
 
-#define ImageCacheSize 15
+#define ImageCacheSize 30
 
 #define ChessMarkColor ccc3(122, 190, 83)
 

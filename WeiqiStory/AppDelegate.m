@@ -64,8 +64,8 @@
 	[sharedFileUtils setiPhoneRetinaDisplaySuffix:@"-hd"];		// Default on iPhone RetinaDisplay is "-hd"
 	[sharedFileUtils setiPadSuffix:@"-pad"];					// Default on iPad is "ipad"
 	[sharedFileUtils setiPadRetinaDisplaySuffix:@"-pad-hd"];	// Default on iPad RetinaDisplay is "-ipadhd"
-
-    [self returnToVirgin];
+    [sharedFileUtils setIPhone5Suffix:@"-hd5"];
+    //[self returnToVirgin];
     [EZTestSuites runAllTests];
     
     if(![[NSUserDefaults standardUserDefaults] boolForKey:@"Executed"]){
