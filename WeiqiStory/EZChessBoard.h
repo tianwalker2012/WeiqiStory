@@ -85,6 +85,14 @@ typedef enum {
 
 @property (strong, nonatomic) NSString* blackChessName;
 
+//Why do I add this?
+//I want to make the cursor be above the frame.
+//The simplst way to do this is to make the frame a part of the board.
+//This will make my Board shink and resize very unconvinient.
+//So I take a new conception called cursorHolder, which mean my cursor will be hold by this guy.
+//Ok, let's do this.
+@property (strong, nonatomic) CCNode* cursorHolder;
+
 //The touch Rect determined what's the region for chess board.
 - (id)initWithFile:(NSString*)filename touchRect:(CGRect)rect rows:(NSInteger)rows cols:(NSInteger)cols;
 

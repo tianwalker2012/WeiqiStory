@@ -71,7 +71,12 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 168+10;
+    //NSInteger deviceType = [[CCFileUtils sharedFileUtils] runningDevice];
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad){
+        return 168+17;
+    }else{
+        return 168+10;
+    }
 }
 
 
@@ -83,8 +88,13 @@
 - (NSInteger) currentRows
 {
     
-    int row = _recentEpisodes / 2;
-    int col = _recentEpisodes % 2;
+    NSInteger base = 2;
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad){
+        base = 4;
+    }
+    
+    int row = _recentEpisodes / 4;
+    int col = _recentEpisodes % 4;
     if(col > 0){
         row ++;
     }
@@ -138,17 +148,23 @@
         EZDEBUG(@"Reuse old cell");
         [self cleanCell:cell];
     }
-    int startPos = indexPath.row * 2;
-    int endPos = startPos + 2;
+    
+    
+    CGFloat widthGap = 16;
+    CGFloat panelWidth = 142;
+    NSInteger base = 2;
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad){
+        base = 4;
+        widthGap = 45;
+        
+    }
+    int startPos = indexPath.row * base;
+    int endPos = startPos + base;
     if(endPos > _recentEpisodes){
         endPos = _recentEpisodes;
     }
     
     //int col = (indexPath.ro-1) % 4;
-    
-    CGFloat widthGap = 16;
-    CGFloat panelWidth = 142;
-    
     
     
     EZDEBUG(@"current row %i, will add item:%i",indexPath.row, (endPos - startPos));
@@ -172,9 +188,19 @@
         panel.tappedBlock = ^(){
             EZDEBUG(@"The episode %@ get tapped", epv.name);
             [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
-            EZPlayPagePod* playPage = [[EZPlayPagePod alloc] initWithEpisode:epv];
+            
+            CCScene* nextScene = nil;
+            
+            if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad){
+                EZPlayPage* playPage = [[EZPlayPage alloc] initWithEpisode:epv];
+                nextScene = [playPage createScene];
+            }else{
+                EZPlayPagePod* playPage = [[EZPlayPagePod alloc] initWithEpisode:epv];
+                nextScene = [playPage createScene];
+            }
+            
             [tableView removeFromSuperview];
-            [[CCDirector sharedDirector] replaceScene:[playPage createScene]];
+            [[CCDirector sharedDirector] replaceScene:nextScene];
             
         };
         [cell addSubview:panel];
@@ -191,10 +217,14 @@
 {
     NSInteger runningDevice = [[CCFileUtils sharedFileUtils] runningDevice];
     
-    if(runningDevice == kCCiPhone5){
-        _tableView = [[UITableView alloc] initWithFrame:CGRectMake(10, 69, 300, 480) style:UITableViewStylePlain];
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad){
+        _tableView = [[UITableView alloc] initWithFrame:CGRectMake(35, 150, 703, 826) style:UITableViewStylePlain];
     }else{
-        _tableView = [[UITableView alloc] initWithFrame:CGRectMake(10, 69, 300, 383) style:UITableViewStylePlain];
+        if(runningDevice == kCCiPhone5){
+            _tableView = [[UITableView alloc] initWithFrame:CGRectMake(10, 69, 300, 480) style:UITableViewStylePlain];
+        }else{
+            _tableView = [[UITableView alloc] initWithFrame:CGRectMake(10, 69, 300, 383) style:UITableViewStylePlain];
+        }
     }
     _tableView.backgroundColor = [UIColor clearColor];
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -291,7 +321,11 @@
     EZEpisodeVO* res = [_episodeMap getObjectForKey:@(pos)];
     if(res == nil){
         EZDEBUG(@"%i didn't exist in map, let fetch from DB", pos);
-        [self loadFromDB:pos limit:PodBatchFetchSize];
+        NSInteger loadSize = PodBatchFetchSize;
+        if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad){
+            loadSize = BatchFetchSize;
+        }
+        [self loadFromDB:pos limit:loadSize];
         res = [_episodeMap getObjectForKey:@(pos)];
         if(!res){
             EZDEBUG(@"Pos:%i is null", pos);
@@ -335,8 +369,19 @@
         [self addTableView];
         //_episodes = [[NSMutableArray alloc] init];
         _recentEpisodes = [[EZCoreAccessor getClientAccessor] count:[EZEpisode class]];
-        _episodeMap = [[EZLRUMap alloc] initWithLimit:25];
-        [self loadFromDB:0 limit:PodBatchFetchSize];
+        
+        //NSInteger loadSize = PodBatchFetchSize;
+        NSInteger initialSize = 12;
+        NSInteger cacheSize = 24;
+        if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad){
+            initialSize = 24;
+            cacheSize = 32;
+        }
+        
+        _episodeMap = [[EZLRUMap alloc] initWithLimit:cacheSize];
+        
+        
+        [self loadFromDB:0 limit:initialSize];
         EZDEBUG(@"loadedFromDB, map count %i", _episodeMap.count);
         [self scheduleBlock:^(){
             [EZBubble generatedBubble:self z:10];

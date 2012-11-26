@@ -352,8 +352,16 @@
     }else{
         cursor = virtualWhite;
     }
-    [cursor setPosition:regularizedPt];
-    [self addChild:cursor];
+    
+    if(_cursorHolder){
+        CGPoint globalPoint = [self convertToWorldSpace:regularizedPt];
+        CGPoint holderPoint = [_cursorHolder convertToNodeSpace:globalPoint];
+        [cursor setPosition:holderPoint];
+        [_cursorHolder addChild:cursor];
+    }else{
+        [cursor setPosition:regularizedPt];
+        [self addChild:cursor];
+    }
 }
 
 - (void) initializeCursor
@@ -390,7 +398,13 @@
 
 - (void) moveCursorButton:(CGPoint)point
 {
-    [cursor setPosition:point];
+    if(_cursorHolder){
+        CGPoint globalPoint = [self convertToWorldSpace:point];
+        CGPoint holderPoint = [_cursorHolder convertToNodeSpace:globalPoint];
+        [cursor setPosition:holderPoint];
+    }else{
+        [cursor setPosition:point];
+    }
 }
 
 

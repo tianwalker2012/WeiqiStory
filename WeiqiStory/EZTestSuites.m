@@ -228,6 +228,133 @@ static NSInteger releaseCount;
     //[EZTestSuites testMemoryConsumption];
     //[EZTestSuites testPod5Type];
     //[EZTestSuites testBlockRelease];
+    
+    //[EZTestSuites testAudioExistence];
+    //[EZTestSuites testFileUtilFilePath];
+    //[EZTestSuites testRemoveComma];
+}
+
++ (void) testFileUtilFilePath
+{
+    NSString* fullPath = [EZFileUtil fileToAbosolute:@"completefiles.ar"];
+    EZDEBUG(@"FullPath:%@", fullPath);
+    NSData* data = [NSData dataWithContentsOfFile:fullPath];
+    
+    assert(data.length > 0);
+    
+    
+    NSURL* fullURL = [EZFileUtil fileToURL:@"completefiles.ar"];
+    EZDEBUG(@"Full URL:%@", fullURL);
+    data = [NSData dataWithContentsOfURL:fullURL];
+    assert(data.length > 0);
+    
+    NSArray* dirPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString* docsDir = [dirPaths objectAtIndex:0];
+    EZDEBUG(@"dirPath count:%i, first one:%@",dirPaths.count, docsDir);
+    //NSString *soundFilePath = [docsDir stringByAppendingPathComponent:@"completefiles.ar"];
+    
+    NSString* fullFile = [EZFileUtil fileToAbosolute:@"completefiles_doc.ar" dirType:NSDocumentDirectory];
+    
+    [data writeToFile:fullFile atomically:YES];
+    
+    NSData* readOut = [NSData dataWithContentsOfFile:fullFile];
+    
+    assert(readOut.length > 0);
+    assert(readOut.length == data.length);
+    
+    fullURL = [EZFileUtil fileToURL:@"completefiles_doc.ar" dirType:NSDocumentDirectory];
+
+    readOut = [NSData dataWithContentsOfURL:fullURL];
+    assert(readOut.length > 0);
+    assert(readOut.length == data.length);
+    
+    assert(false);
+    
+    
+}
+
++ (void) testRemoveComma
+{
+    //NSArray* arr = [[EZCoreAccessor getClientAccessor] fetchAll:[EZEpisode class] sortField:nil];
+    
+    NSData* rawdata = [NSData dataWithContentsOfFile:[EZFileUtil fileToAbosolute:@"completefiles.ar"]];
+    NSArray* arr = [NSKeyedUnarchiver unarchiveObjectWithData:rawdata];
+    NSMutableArray* completeFiles = [[NSMutableArray alloc] init];
+    for(EZEpisodeVO* ep in arr){
+        //EZDEBUG(@"Current Episode name:%i:%@, audioCount:%i", count++, ep.name, ep.audioFiles.count);
+        EZDEBUG(@"ep.name:%@, removed:%@",ep.name, [EZTestSuites removeComma:ep.name]);
+        ep.name = [EZTestSuites removeComma:ep.name];
+        [completeFiles addObject:ep];
+    }
+        
+    NSData* data = [NSKeyedArchiver archivedDataWithRootObject:completeFiles];
+    NSString* completeFileName = @"completefiles.ar";
+    NSURL* fileURL = [EZFileUtil fileToURL:completeFileName dirType:NSDocumentDirectory];
+    [data writeToURL:fileURL atomically:YES];
+    NSData* readBack = [NSData dataWithContentsOfURL:fileURL];
+    
+    assert(readBack.length == data.length);
+    assert(false);
+
+}
+
++ (NSString*) removeComma:(NSString*)name
+{
+    NSRange pos = [name rangeOfString:@":"];
+    NSString* modified = [name substringFromIndex:pos.location+pos.length];
+    EZDEBUG(@"modified:%@", modified);
+    
+    NSRange pos2 = [modified rangeOfString:@":"];
+    
+    EZDEBUG(@"Range 2, pos:%i, length:%i", pos2.location, pos2.length);
+    return modified;
+    NSString* modifiedAgain = [modified substringFromIndex:pos2.location+pos2.length];
+    EZDEBUG(@"modifiedAgain:%@", modifiedAgain);
+    return modifiedAgain;
+}
+
+
++ (void) testAudioExistence
+{
+    NSFileManager* fileManager = [NSFileManager defaultManager];
+    
+    NSArray* arr = [[EZCoreAccessor getClientAccessor] fetchAll:[EZEpisode class] sortField:nil];
+    
+    NSInteger count = 0;
+    NSInteger totalMissing = 0;
+    NSMutableArray* completeFiles = [[NSMutableArray alloc] init];
+    for(EZEpisode* ep in arr){
+        //EZDEBUG(@"Current Episode name:%i:%@, audioCount:%i", count++, ep.name, ep.audioFiles.count);
+        NSInteger missCount = 0;
+        for(EZAudioFile* audioFile in ep.audioFiles){
+            NSString* fullAudio = [EZFileUtil fileToAbosolute:audioFile.fileName];
+            if(![fileManager fileExistsAtPath:fullAudio]){
+                
+                EZDEBUG(@"%@ not exist", audioFile.fileName);
+                missCount++;
+            }
+        }
+        if(missCount > 0){
+            totalMissing++;
+            EZDEBUG(@"Current Episode name:%i:%@, audioCount:%i, missing:%i", count++, ep.name, ep.audioFiles.count, missCount);
+        }else{
+            
+            
+            [completeFiles addObject:[[EZEpisodeVO alloc] initWithPO:ep]];
+        }
+        
+    }
+    
+    NSData* data = [NSKeyedArchiver archivedDataWithRootObject:completeFiles];
+    NSString* completeFileName = @"completefiles.ar";
+    NSURL* fileURL = [EZFileUtil fileToURL:completeFileName dirType:NSDocumentDirectory];
+    [data writeToURL:fileURL atomically:YES];
+    
+    NSData* readBack = [NSData dataWithContentsOfURL:fileURL];
+    //[NSThread sleepForTimeInterval:2];
+    EZDEBUG(@"Total missing file:%i, data.lenght:%i, readBack length:%i", totalMissing, data.length, readBack.length);
+    assert(false);
+    //[fileManager fileExistsAtPath:newName]
 }
 
 + (void) testBlockRelease

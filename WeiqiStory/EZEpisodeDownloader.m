@@ -32,11 +32,13 @@
 {
     NSError* error = nil;
     NSString* jsonStr = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:&error];
+    EZDEBUG(@"jsonStr: %@", jsonStr);
     if(!error){
         NSArray* arr = jsonStr.JSONValue;
         for(NSDictionary* dict in arr){
             NSString* fileName = [dict objectForKey:@"fileName"];
             NSURL* downloadURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@/%@", _baseURL, fileName]];
+            EZDEBUG(@"download episode files:%@", downloadURL);
             [self downloadEpisode:downloadURL completeBlock:nil];
         }
     }
@@ -46,13 +48,15 @@
 //It will not block the main thead.
 - (void) downloadEpisode:(NSURL*)url completeBlock:(EZOperationBlock)block
 {
+    EZDEBUG(@"Downloading File URL:%@", url);
     [self executeBlockInBackground:^(){
         NSData* episodeData = [NSData dataWithContentsOfURL:url];
+        EZDEBUG(@"Downloaded content:%i", episodeData.length);
         if(episodeData){
             EZDEBUG(@"Successfully download %i from %@", episodeData.length, url);
             NSMutableArray* episodes =[NSMutableArray arrayWithArray:[NSKeyedUnarchiver unarchiveObjectWithData:episodeData]];
             _episodeCounts += episodes.count;
-            NSInteger count = 0;
+            NSInteger count = 1;
             while(episodes.count > 0){
                 EZEpisodeVO* ep = [episodes objectAtIndex:0];
                 [episodes removeObjectAtIndex:0];

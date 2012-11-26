@@ -84,7 +84,7 @@ typedef enum {
 //Add them later. 
 #define EpisodeDownloadDone @"EpisodeDownloadDone"
 
-#define BatchFetchSize 8
+#define BatchFetchSize 12
 
 #define PodBatchFetchSize 8
 

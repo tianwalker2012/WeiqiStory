@@ -39,7 +39,7 @@
     return fileURLS;
 }
 
-+ (void) removeAllAudioFiles
++ (void) removeAllFileWithSuffix:(NSString*)suffix
 {
     NSArray* urls = [EZFileUtil listAllFiles:NSDocumentDirectory];
     NSFileManager* fileMgr = [NSFileManager defaultManager];
@@ -47,9 +47,9 @@
     for(NSURL* url in urls){
         NSString* file = url.description;
         error = nil;
-        if([file hasSuffix:@"caf"]){
-            EZDEBUG(@"Encounter caf, should remove:%@", file);
-        
+        if([file hasSuffix:suffix]){
+            EZDEBUG(@"Encounter %@, should remove:%@",suffix, file);
+            
             [fileMgr removeItemAtURL:url error:&error];
             if(error){
                 EZDEBUG(@"Error at deleting %@, error detail:%@", url, error);
@@ -61,27 +61,41 @@
     }
 }
 
++ (void) removeAllAudioFiles
+{
+    [EZFileUtil removeAllFileWithSuffix:@"caf"];
+}
+
 + (void) deleteFile:(NSString*)files
 {
     
 }
 
+//Turn bundle to abosolute URL
++ (NSString*) fileToAbosolute:(NSString *)file
+{
+    NSString* fullPath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:file];
+    return fullPath;
+}
 
-+ (NSURL*) fileToURL:(NSString*)fileName dirType:(NSSearchPathDirectory)type
+//I just pick the first one. 
++ (NSString*) fileToAbosolute:(NSString*)file dirType:(NSSearchPathDirectory)type
 {
     NSArray *dirPaths;
     NSString *docsDir;
-    
-    dirPaths = NSSearchPathForDirectoriesInDomains(
-                        type, NSUserDomainMask, YES);
+    dirPaths = NSSearchPathForDirectoriesInDomains(type, NSUserDomainMask, YES);
     docsDir = [dirPaths objectAtIndex:0];
     EZDEBUG(@"dirPath count:%i, first one:%@",dirPaths.count, docsDir);
-    NSString *soundFilePath = [docsDir stringByAppendingPathComponent:fileName];
-    //recordedFile = fileName;
+    NSString *soundFilePath = [docsDir stringByAppendingPathComponent:file];
+
+    return soundFilePath;
     
-    NSURL *res = [NSURL fileURLWithPath:soundFilePath];
+}
+
++ (NSURL*) fileToURL:(NSString*)fileName dirType:(NSSearchPathDirectory)type
+{
+    NSURL *res = [NSURL fileURLWithPath:[self fileToAbosolute:fileName dirType:type]];
     return res;
-    
 }
 
 //This method will use the default type, that is the
@@ -92,8 +106,7 @@
 {
     //return [EZFileUtil fileToURL:fileName dirType:NSApplicationDirectory];
     //NSString* pathStr = [NSString stringWithFormat:@"file:/%@/%@",[[NSBundle mainBundle] bundlePath],fileName];
-    NSString* fullPath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:fileName];
-    
+    NSString* fullPath = [self fileToAbosolute:fileName];
     NSURL* res = [NSURL fileURLWithPath:fullPath];
     EZDEBUG(@"Home made directory name:%@, URL is:%@", fullPath, res);
     return res;

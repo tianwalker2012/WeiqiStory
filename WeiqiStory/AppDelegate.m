@@ -43,6 +43,7 @@
     [EZCoreAccessor cleanClientDB];
     //Clean all the audio files
     [EZFileUtil removeAllAudioFiles];
+    [EZFileUtil removeAllFileWithSuffix:@"png"];
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"Executed"];
 }
 
@@ -65,7 +66,7 @@
 	[sharedFileUtils setiPadSuffix:@"-pad"];					// Default on iPad is "ipad"
 	[sharedFileUtils setiPadRetinaDisplaySuffix:@"-pad-hd"];	// Default on iPad RetinaDisplay is "-ipadhd"
     [sharedFileUtils setIPhone5Suffix:@"-hd5"];
-    //[self returnToVirgin];
+    [self returnToVirgin];
     [EZTestSuites runAllTests];
     
     if(![[NSUserDefaults standardUserDefaults] boolForKey:@"Executed"]){
@@ -162,8 +163,12 @@
     EZEpisodeDownloader* downloader = [[EZEpisodeDownloader alloc] init];
     downloader.isMainBundle = true;
     downloader.baseURL = ((NSURL*)[NSURL fileURLWithPath:[[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@""]]).absoluteString;
-    //[downloader downloadEpisode:fileURL completeBlock:nil];
-    [downloader downloadAccordingToList:[EZFileUtil fileToURL:@"episode-small.lst"]];
+    NSData* fileData = [NSData dataWithContentsOfURL:[EZFileUtil fileToURL:@"completefiles.ar"]];
+    EZDEBUG(@"pre-read length:%i", fileData.length);
+    [downloader downloadEpisode:[EZFileUtil fileToURL:@"completefiles.ar"] completeBlock:nil];
+    //[downloader downloadEpisode:[EZFileUtil fileToURL:@"episode20121113211142.ar"] completeBlock:nil];
+    //[downloader downloadAccordingToList:[EZFileUtil fileToURL:@"episode-small.lst"]];
+    
     
 }
 

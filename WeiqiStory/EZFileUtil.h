@@ -19,6 +19,10 @@ static EZLRUMap* imageCaches;
 
 + (NSURL*) fileToURL:(NSString*)fileName dirType:(NSSearchPathDirectory)type;
 
++ (NSString*) fileToAbosolute:(NSString *)file;
+
++ (NSString*) fileToAbosolute:(NSString*)file dirType:(NSSearchPathDirectory)type;
+
 //This method will use the default type, that is the
 //NSApplicationDirectory.
 + (NSURL*) fileToURL:(NSString*)fileName;
@@ -26,6 +30,8 @@ static EZLRUMap* imageCaches;
 //It is to remove all the audio file on the iPad
 //So I could use the directory space for other purpose.
 + (void) removeAllAudioFiles;
+
++ (void) removeAllFileWithSuffix:(NSString*)suffix;
 
 + (NSArray*) listAllFiles:(NSSearchPathDirectory)type;
 
