@@ -18,6 +18,8 @@
 #import "EZBubble2.h"
 #import "EZResizeChessBoard.h"
 #import "EZListTablePagePod.h"
+#import "EZEpisode.h"
+#import "EZCoreAccessor.h"
 
 
 //Only 2 status.
@@ -63,6 +65,15 @@ typedef enum {
 }
 
 
+- (EZEpisodeVO*) getEpisode:(NSInteger)curPos
+{
+    NSArray* arr = [[EZCoreAccessor getClientAccessor] fetchObject:[EZEpisode class] begin:curPos limit:1];
+    if(arr.count > 0){
+        EZEpisodeVO* res = [[EZEpisodeVO alloc] initWithPO:[arr objectAtIndex:0]];
+        return res;
+    }
+    return nil;
+}
 
 - (void) initStudyBoard2:(EZEpisodeVO*)epv
 {
@@ -89,6 +100,7 @@ typedef enum {
     CCSprite* boardFrame = [[CCSprite alloc] initWithFile:@"board-frame.png"];
     boardFrame.position = ccp(320/2, 244);
     //boardFrame.anchorPoint = ccp(0.5, 0.5);
+    _resizeBoard.enlargedBoard.cursorHolder = boardFrame;
     
     //Why Frame should cover the edge of the board.
     [_studyBoardHolder addChild:boardFrame z:10];
@@ -201,13 +213,15 @@ typedef enum {
 
 
 //We will only support potrait orientation
-- (id) initWithEpisode:(EZEpisodeVO*)epv
+- (id) initWithEpisode:(EZEpisodeVO*)epv currentPos:(NSInteger)pos
 {
     self = [super init];
     if(self){
         //timer = [[CCTimer alloc] initWithTarget:self selector:@selector(generatedBubble) interval:1 repeat:kCCRepeatForever delay:1];
+        _currentEpisodePos = pos;
+        __weak EZPlayPagePod* weakSelf = self;
         [self scheduleBlock:^(){
-            [EZBubble generatedBubble:self z:9];
+            [EZBubble generatedBubble:weakSelf z:9];
         } interval:1.0 repeat:kCCRepeatForever delay:0.5];
         
         _bubble = [CCSprite spriteWithFile:@"bubble-pad.png"];
@@ -246,14 +260,70 @@ typedef enum {
         
         [self addChild:background];
         
+        
+        CCMenuItemImage* backButton = [CCMenuItemImage itemWithNormalImage:@"back-button.png" selectedImage:@"back-button-pressed.png" block:^(id sender){
+            [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
+            [weakSelf.player stop];
+            [[CCDirector sharedDirector] replaceScene:[EZListTablePagePod node]];
+        }];
+        
+        CCMenu* backMenu = [CCMenu menuWithItems:backButton, nil];
+        //menu.anchorPoint = ccp(0, 0);
+        backMenu.position =  ccp(42, 440);
+        
+        
         NSInteger deviceType = [[CCFileUtils sharedFileUtils] runningDevice];
         if(deviceType == kCCiPhone5){
-            CCSprite* titleBar = [CCSprite spriteWithFile:@"title-bar.png"];
-            titleBar.position = ccp(320/2, 515);
-            [self addChild:titleBar];
+            backMenu.position = ccp(42, 518);
+            messageRegion.position = ccp(192, 518);
+            
+            NSInteger nextPos = _currentEpisodePos + 1;
+            NSInteger prevPos = _currentEpisodePos - 1;
+            
+            EZEpisodeVO* prevEpv = [weakSelf getEpisode:prevPos];
+            EZEpisodeVO* nextEpv = [weakSelf getEpisode:nextPos];
+            
+            
+            
+            EZDEBUG(@"Curent Position:%i, prevEpv name:%@, nextEpv name:%@, nonWeakValue:%i, self pointer:%i, prevPos:%i, nextPos:%i", weakSelf.currentEpisodePos, prevEpv.name, nextEpv.name, _currentEpisodePos, (int)self, prevPos, nextPos);
+            
+            CCMenuItemImage* playPrevItem = [CCMenuItemImage itemWithNormalImage:@"play-prev.png" selectedImage:@"play-prev-pressed.png" disabledImage:@"play-prev-pressed.png" block:^(id sender){
+                [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
+                EZPlayPagePod* nextPage = [[EZPlayPagePod alloc] initWithEpisode:prevEpv currentPos:prevPos];
+                //nextPage.currentEpisodePos = weakSelf.currentEpisodePos - 1;
+                EZDEBUG(@"Will replace current scene with:%@", prevEpv.name);
+                [[CCDirector sharedDirector] replaceScene:[nextPage createScene]];
+                
+            }];
+            
+            CCMenu* playPrev = [CCMenu menuWithItems:playPrevItem, nil];
+            if(prevEpv == nil){
+                playPrevItem.isEnabled = false;
+            }
+            
+            playPrev.position = ccp(45, 448);
+            
+            CCMenuItemImage* playNextItem = [CCMenuItemImage itemWithNormalImage:@"play-next.png" selectedImage:@"play-next-pressed.png" disabledImage:@"play-next-pressed.png" block:^(id sender){
+                [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
+                EZPlayPagePod* nextPage = [[EZPlayPagePod alloc] initWithEpisode:nextEpv currentPos:nextPos];
+                //nextPage.currentEpisodePos = weakSelf.currentEpisodePos + 1;
+                EZDEBUG(@"Will replace curent scene for:%@", nextEpv.name);
+                [[CCDirector sharedDirector] replaceScene:[nextPage createScene]];
+            }];
+            
+            
+            CCMenu* playNext = [CCMenu menuWithItems:playNextItem, nil];
+            playNext.position = ccp(279, 448);
+            if(nextEpv == nil){
+                //playNext.enabled = false;
+                playNextItem.isEnabled = false;
+            }
+            
+            [self addChild:playNext];
+            [self addChild:playPrev];
         }
         
-        
+        [self addChild:backMenu];
         [self addChild:messageRegion];
         
         
@@ -287,18 +357,9 @@ typedef enum {
         _playImg = [CCSprite spriteWithFile:@"play-button.png"];
         _pauseImg = [CCSprite spriteWithFile:@"pause-button.png"];
         
-        __weak EZPlayPagePod* weakSelf = self;
+        //__weak EZPlayPagePod* weakSelf = self;
         
-        CCMenuItemImage* backButton = [CCMenuItemImage itemWithNormalImage:@"back-button.png" selectedImage:@"back-button-pressed.png" block:^(id sender){
-            [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
-            [weakSelf.player stop];
-            [[CCDirector sharedDirector] replaceScene:[EZListTablePagePod node]];
-        }];
         
-        CCMenu* backMenu = [CCMenu menuWithItems:backButton, nil];
-        //menu.anchorPoint = ccp(0, 0);
-        backMenu.position =  ccp(42, 440);
-        [self addChild:backMenu];
         
         CCMenuItemImage* playButton = [CCMenuItemImage itemWithNormalImage:@"play-button.png" selectedImage:@"play-button-pressed.png"
                                                                      block:^(id sender) {
@@ -368,7 +429,7 @@ typedef enum {
                                                                           
                                                                           //More straightforward.
                                                                           if(!weakSelf.studyBoardHolder){
-                                                                              [self initStudyBoard2:epv];
+                                                                              [weakSelf initStudyBoard2:epv];
                                                                           }else{
                                                                               weakSelf.resizeBoard.touchEnabled = YES;
                                                                           }
@@ -413,7 +474,7 @@ typedef enum {
                                                                               weakSelf.currentFinger = weakSelf.whiteFinger;
                                                                           }
                                                                           
-                                                                          _currentFinger.visible = true;
+                                                                          weakSelf.currentFinger.visible = true;
                                                                           [weakSelf.studyBoardHolder addChild:weakSelf.currentFinger z:FingerZOrder];
                                                                           
                                                                           [weakSelf.currentFinger runAction:weakSelf.fingerAnim];

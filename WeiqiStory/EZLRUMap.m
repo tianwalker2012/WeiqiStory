@@ -48,6 +48,7 @@
 //Now I can handle the cases even the key already exist.
 - (id) setObject:(id)obj forKey:(id)aKey
 {
+    ///EZDEBUG(@"setObjectKey:%@", aKey);
     id res = nil;
     if([self getObjectForKey:aKey]){
         [keyQueue removeObject:aKey];
@@ -55,10 +56,12 @@
     [maps setObject:obj forKey:aKey];
     id removedKey = [keyQueue enqueue:aKey];
     if(removedKey){
-        EZDEBUG(@"Find removed key:%@",removedKey);
+        //EZDEBUG(@"Find removed key:%@",removedKey);
         res = [maps objectForKey:removedKey];
         [maps removeObjectForKey:removedKey];
     }
+    
+    //EZDEBUG(@"Complete set ObjectKey:%@", aKey);
     return res;
 }
 
@@ -70,10 +73,12 @@
 
 - (id) getObjectForKey:(id)aKey
 {
+    //EZDEBUG(@"Get object for Key:%@", aKey);
     if([keyQueue isContain:aKey]){
         [keyQueue removeObject:aKey];
         [keyQueue enqueue:aKey];
     }
+    //EZDEBUG(@"Complete get object:%@", aKey);
     return [maps objectForKey:aKey];
 }
 

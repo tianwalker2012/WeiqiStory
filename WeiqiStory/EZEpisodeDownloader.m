@@ -53,8 +53,9 @@
         NSData* episodeData = [NSData dataWithContentsOfURL:url];
         EZDEBUG(@"Downloaded content:%i", episodeData.length);
         if(episodeData){
-            EZDEBUG(@"Successfully download %i from %@", episodeData.length, url);
+            //EZDEBUG(@"Successfully download %i from %@", episodeData.length, url);
             NSMutableArray* episodes =[NSMutableArray arrayWithArray:[NSKeyedUnarchiver unarchiveObjectWithData:episodeData]];
+            EZDEBUG(@"Total episodes:%i", episodes.count);
             _episodeCounts += episodes.count;
             NSInteger count = 1;
             while(episodes.count > 0){
@@ -86,14 +87,19 @@
     //if(episode.thumbNail == nil){
     //    [episode regenerateThumbNail];
     //}
+    //EZDEBUG(@"start processEpisode:%@", episode.name);
     UIImage* image = [EZImageView generateSmallBoard:episode.basicPattern];
+    
+    //EZDEBUG(@"Generate images size:%@", NSStringFromCGSize(image.size));
     NSString* fileName = [EZFileUtil generateFileName:@"smallboard"];
     [EZFileUtil storeImageFile:image file:fileName];
     image = nil;
     episode.thumbNailFile = fileName;
     
+    //EZDEBUG(@"thumbNail stored");
     episode.inMainBundle = self.isMainBundle;
     [self downloadAllAudio:episode.audioFiles completeBlock:nil];
+    //EZDEBUG(@"audio file process completed");
     BOOL completed = true;
     
     for(EZAudioFile* file in episode.audioFiles){
@@ -109,6 +115,7 @@
     episode.completed = completed;
     
     NSInteger workerID = (int)[NSThread currentThread];
+    EZDEBUG(@"Audio file completed");
     [self executeBlockInMainThread:^(){
         EZDEBUG(@"worker:%i, main:%i, blockID:%i", workerID, (int)[NSThread mainThread], (int)[NSThread currentThread]);
         [episode persist];

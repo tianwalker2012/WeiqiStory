@@ -118,6 +118,8 @@
     EZImage* chessFrame = [[EZImage alloc] initWithImage:[EZFileUtil imageFromFile:@"small-chessboard-frame.png"] point:ccp(5, 5) z:3];
     [imageView addEZImage:chessFrame];
     
+    EZDEBUG(@"ImageView boundSize:%@", NSStringFromCGSize(imageView.bounds.size));
+    
     UIGraphicsBeginImageContextWithOptions(imageView.bounds.size,YES,scale);
     CGContextRef ctx = UIGraphicsGetCurrentContext();
     for(EZImage* image in imageView.images){

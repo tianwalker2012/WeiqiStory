@@ -93,8 +93,8 @@
         base = 4;
     }
     
-    int row = _recentEpisodes / 4;
-    int col = _recentEpisodes % 4;
+    int row = _recentEpisodes / base;
+    int col = _recentEpisodes % base;
     if(col > 0){
         row ++;
     }
@@ -195,7 +195,9 @@
                 EZPlayPage* playPage = [[EZPlayPage alloc] initWithEpisode:epv];
                 nextScene = [playPage createScene];
             }else{
-                EZPlayPagePod* playPage = [[EZPlayPagePod alloc] initWithEpisode:epv];
+                EZPlayPagePod* playPage = [[EZPlayPagePod alloc] initWithEpisode:epv currentPos:i];
+               
+                EZDEBUG(@"Tapped index:%i, instance pointer:%i, readback value:%i", i, (int)playPage, playPage.currentEpisodePos);
                 nextScene = [playPage createScene];
             }
             
@@ -286,8 +288,12 @@
     float h = size.height;
     
     EZDEBUG(@"offset.y:%f, bounds.size.height:%f, insect:%f, total height:%f",y, bounds.size.height, inset.bottom,h);
+    NSInteger base = 2;
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad){
+        base = 4;
+    }
     float preload_distance = 50;
-    if((y + preload_distance) > h || (_recentEpisodes % 2) == 1) {
+    if((y + preload_distance) > h || (_recentEpisodes % base) > 0) {
         NSLog(@"load more rows");
         [self preload];
     }
@@ -370,6 +376,11 @@
         //_episodes = [[NSMutableArray alloc] init];
         _recentEpisodes = [[EZCoreAccessor getClientAccessor] count:[EZEpisode class]];
         
+        
+        //What's the purpose of this code, to make sure my image generation is ok,
+        //The iPod4 is ok, only iPod5 have some issues.
+        //Did this tell me anything?
+        
         //NSInteger loadSize = PodBatchFetchSize;
         NSInteger initialSize = 12;
         NSInteger cacheSize = 24;
@@ -381,10 +392,11 @@
         _episodeMap = [[EZLRUMap alloc] initWithLimit:cacheSize];
         
         
+        __weak CCNode* weakSelf = self;
         [self loadFromDB:0 limit:initialSize];
         EZDEBUG(@"loadedFromDB, map count %i", _episodeMap.count);
         [self scheduleBlock:^(){
-            [EZBubble generatedBubble:self z:10];
+            [EZBubble generatedBubble:weakSelf z:10];
         } interval:1.0 repeat:kCCRepeatForever delay:0.5];
         isFirstTime = true;
         /**
@@ -400,7 +412,10 @@
     return self;
 }
 
-
+- (void) dealloc
+{
+    EZDEBUG(@"Dealloc ListTablePagePod");
+}
 
 //List all available Fonts on iOS.
 

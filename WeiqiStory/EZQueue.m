@@ -43,11 +43,7 @@
 //The same object. Because, Key may not already the same object.
 - (void) removeObject:(id)obj
 {
-    for(int i = 0; i< queue.count; i++){
-        if([obj isEqual:[queue objectAtIndex:i]]){
-            [queue removeObjectAtIndex:i];
-        }
-    }
+    [queue removeObject:obj];
 }
 
 //The key which visited most recently.
@@ -61,12 +57,7 @@
 
 - (BOOL) isContain:(id)obj
 {
-    for(id objIn in queue){
-        if([objIn isEqual:obj]){
-            return TRUE;
-        }
-    }
-    return false;
+    return [queue containsObject:obj];
 }
 
 - (void) removeAllObjects

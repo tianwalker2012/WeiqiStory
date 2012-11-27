@@ -89,11 +89,21 @@ typedef enum ChessPutStatus{
 
 - (CGPoint) adjustLocation:(CGPoint)point;
 
+- (CGPoint) adjustLocation:(CGPoint)point isMove:(BOOL)move;
+
 //Turn the point to the coordinate on the board
 //Useful, when you want to get transform the point to board coordinate
 - (EZCoord*) pointToBC:(CGPoint)pt;
 
 
+- (EZCoord*) pointToBC:(CGPoint)rawPt isMove:(BOOL)move;
+
+
+- (short) lengthToGap:(CGFloat)len gap:(CGFloat)gap lines:(NSInteger)lines moveRatio:(CGFloat)ratio;
+
+- (short) lengthToGap:(CGFloat)len gap:(CGFloat)gap lines:(NSInteger)lines;
+
+- (short) lengthToGap:(CGFloat)len gap:(CGFloat)gap lines:(NSInteger)lines isMove:(BOOL)move;
 //Doing the opposite with the above method.
 - (CGPoint) bcToPoint:(EZCoord*)bd;
 

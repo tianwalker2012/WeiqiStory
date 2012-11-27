@@ -77,7 +77,6 @@ static NSInteger releaseCount;
 - (id) init
 {
     self = [super init];
-    _ancientCount = 10;
     __weak EZReleaseTest* weakSelf = self;
     opsBlock = ^(){
         EZDEBUG(@"I am cool %i", weakSelf.ancientCount);
@@ -86,6 +85,12 @@ static NSInteger releaseCount;
     return self;
 }
 
+
+//We will print all count
+- (void) printCount
+{
+    opsBlock();
+}
 
 @end
 
@@ -232,6 +237,56 @@ static NSInteger releaseCount;
     //[EZTestSuites testAudioExistence];
     //[EZTestSuites testFileUtilFilePath];
     //[EZTestSuites testRemoveComma];
+    //[EZTestSuites testObjectCompare];
+    //[EZTestSuites testDispatch];
+    //[EZTestSuites testBlockCapture];
+}
+
+//Will test how the varibles get captured in the block
++ (void) testBlockCapture
+{
+    
+    EZReleaseTest* test = [[EZReleaseTest alloc] init];
+    [test printCount];
+    test.ancientCount = 10;
+    [test printCount];
+    
+    test.ancientCount = 30;
+    [test printCount];
+    
+    assert(false);
+}
+
++ (void) testDispatch
+{
+    dispatch_queue_t queue;
+    queue = dispatch_queue_create("my_queue", DISPATCH_QUEUE_SERIAL);
+    dispatch_async(queue, ^(){
+        EZDEBUG(@"I am here: threadID:%i",(int)[NSThread currentThread]);
+    
+    });
+                                           
+    dispatch_async(queue, ^(){
+        EZDEBUG(@"I am here again: threadID:%i",(int)[NSThread currentThread]);
+        dispatch_async(dispatch_get_main_queue(), ^(){
+            EZDEBUG(@"Am i in main thread:%@", [NSThread isMainThread]?@"YES":@"NO");
+        });
+        
+    });
+    EZDEBUG(@"Complete dispatch:main thread id:%i",(int)[NSThread mainThread]);
+                                           
+}
++ (void) testObjectCompare
+{
+    NSString* key1 = @"key1";
+    NSString* key2 = [NSString stringWithFormat:@"key%i", 1];
+    assert(key1 != key2);
+    
+    NSArray* arr = @[key1];
+    assert([arr containsObject:key2]);
+    //For
+    //assert(false);
+    
 }
 
 + (void) testFileUtilFilePath

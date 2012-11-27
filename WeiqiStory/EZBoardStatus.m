@@ -30,7 +30,7 @@
 
 - (CGRect) calcInnerRect;
 
-- (short) lengthToGap:(CGFloat)len gap:(CGFloat)gap lines:(NSInteger)lines;
+
 
 //Recursive method to find all the Qi for current position
 - (NSInteger) innerQiDetector:(EZCoord*)coord isBlack:(BOOL)black checked:(NSMutableDictionary*)checked;
@@ -304,18 +304,36 @@
 
 //Cool, Let's test it later.
 //Feed my rabbit now.
+//This is called the first time
 - (CGPoint) adjustLocation:(CGPoint)point
 {
     return [self bcToPoint:[self pointToBC:point]];
 }
 
 
+//This will have a hole effects
+//
+- (CGPoint) adjustLocation:(CGPoint)point isMove:(BOOL)move
+{
+    return [self bcToPoint:[self pointToBC:point isMove:move]];
+}
+
+- (short) lengthToGap:(CGFloat)len gap:(CGFloat)gap lines:(NSInteger)lines isMove:(BOOL)move
+{
+    return [self lengthToGap:len gap:gap lines:lines moveRatio:(move?0.85:0.5)];
+}
+
 - (short) lengthToGap:(CGFloat)len gap:(CGFloat)gap lines:(NSInteger)lines
+{
+    return [self lengthToGap:len gap:gap lines:lines moveRatio:1.0/2.0];
+}
+
+- (short) lengthToGap:(CGFloat)len gap:(CGFloat)gap lines:(NSInteger)lines moveRatio:(CGFloat)ratio
 {
     short wd = len/gap;
     //NSInteger xInt = len;
     short remain = (NSInteger)len % (NSInteger)gap;
-    if(remain > (gap/2)){
+    if(remain > (gap*ratio)){
         ++wd; 
     }
     if(wd < 0){
@@ -328,9 +346,14 @@
 
 - (EZCoord*) pointToBC:(CGPoint)rawPt
 {
+    return [self pointToBC:rawPt isMove:false];
+}
+
+- (EZCoord*) pointToBC:(CGPoint)rawPt isMove:(BOOL)move
+{
     CGPoint pt  = CGPointMake(rawPt.x - boardRect.origin.x, rawPt.y - boardRect.origin.y);
-    short wd = [self lengthToGap:pt.x gap:lineGap lines:totalLines];
-    short ht = [self lengthToGap:pt.y gap:lineGap lines:totalLines];
+    short wd = [self lengthToGap:pt.x gap:lineGap lines:totalLines isMove:move];
+    short ht = [self lengthToGap:pt.y gap:lineGap lines:totalLines isMove:move];
     return [[EZCoord alloc] init:wd y:ht];
 }
 

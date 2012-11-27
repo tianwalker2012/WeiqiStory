@@ -31,16 +31,23 @@
     
     _touchZone = _orgBoard.touchRect;
     self.contentSize = _touchZone.size;
+    
+    _enlargedBoard = _orgBoard;
+    /**
     _enlargedBoard = [[EZChessBoard alloc] initWithFile:largeBoardName touchRect:largeRect rows:19 cols:19];
     _enlargedBoard.touchEnabled = false;
     _enlargedBoard.anchorPoint = ccp(0, 0);
     _enlargedBoard.position = ccp(0, 0);
     _enlargedBoard.blackChessName = @"black-button-large.png";
     _enlargedBoard.whiteChessName = @"white-button-large.png";
+    **/
+    
     [self addChild:_orgBoard z:OrginalZorder];
     //[self addChild:_enlargedBoard z:LargerZorder];
     
-    _largeSize = _enlargedBoard.boundingBox.size;
+    //_largeSize = _enlargedBoard.boundingBox.size;
+    
+    _largeSize = CGSizeMake(686, 686);
     _orgSize = _orgBoard.boundingBox.size;
     
     return self;
@@ -94,25 +101,28 @@
 
 - (void) setBoardBack:(ccTime) passed
 {
-    EZDEBUG(@"setBoardBack get called");
+    EZDEBUG(@"setBoardBack get called, set orginiall board scale to 1 is enough, I guess");
     _isLargeBoard = false;
+    _orgBoard.scale = 1;
     //[self addChild:_orgBoard];
-    [_enlargedBoard removeFromParentAndCleanup:NO];
-    _enlargedBoard.visible = false;
-    _orgBoard.visible = true;
+    //[_enlargedBoard removeFromParentAndCleanup:NO];
+    //_enlargedBoard.visible = false;
+    //_orgBoard.visible = true;
     
     //Add animation later, mean shink at the initial touch point
     //sync up largeBoard and small board
     //Assume some chess are planted
     //Regret will be handled by me.
+    /**
     for(int i = _orgBoard.allSteps.count; i < _enlargedBoard.allSteps.count; i++){
         EZChessPosition* cp = [_enlargedBoard.allSteps objectAtIndex:i];
         [_orgBoard putChessman:cp.coord animated:NO];
     }
+    **/
 }
 
 //How to enlarge the board?
-- (void) locateLargeBoard:(CGPoint) pt
+- (void) locateLargeBoard:(CGPoint) pt  animCompleteBlock:(EZOperationBlock)block
 {
     CGFloat deltaX = (pt.x/_orgSize.width) * _largeSize.width - pt.x;
     
@@ -120,21 +130,26 @@
     
     _orgBoard.anchorPoint = ccp(pt.x/_orgSize.width, pt.y/_orgSize.height);
     _orgBoard.position = ccp(pt.x, pt.y);
-    _enlargedBoard.position = ccp(-deltaX, -deltaY);
-    [self addChild:_enlargedBoard z:LargerZorder];
+    //_enlargedBoard.position = ccp(-deltaX, -deltaY);
+    //[self addChild:_enlargedBoard z:LargerZorder];
     
     id action = [CCScaleTo actionWithDuration:0.15 scale:_largeSize.width/_orgSize.width];
     id completeAct = [CCCallBlock actionWithBlock:^(){
         //[_orgBoard removeFromParentAndCleanup:NO];
-        _enlargedBoard.visible = true;
-        _orgBoard.visible = false;
-        _orgBoard.scale = 1;
+        //_enlargedBoard.visible = true;
+        //_orgBoard.visible = false;
+        
+        //_orgBoard.scale = 1;
+        EZDEBUG(@"Animation completed");
+        if(block){
+            block();
+        }
     }];
     
     [_orgBoard runAction:[CCSequence actions:action, completeAct, nil]];
 }
 
-
+/**
 - (void) syncMarks
 {
     if(_orgBoard.allMarks.count > _enlargedBoard.allMarks.count){
@@ -151,8 +166,10 @@
     }
     
 }
+**/
 
-// Sync all the chessmans. 
+// Sync all the chessmans.
+/**
 - (void) syncChessmans
 {
     if(_orgBoard.allSteps.count > _enlargedBoard.allSteps.count){
@@ -165,8 +182,10 @@
         [_enlargedBoard regretSteps:regretSteps animated:NO];
     }
 }
+ **/
 
 //Sync the orgBoard to the large board.
+/**
 - (void) syncBoards
 {
     if(_orgBoard.allMarks.count == _enlargedBoard.allMarks.count && _orgBoard.allSteps.count == _enlargedBoard.allSteps.count){
@@ -181,6 +200,7 @@
         [_enlargedBoard toggleColor];
     }
 }
+ **/
 //I don't like to ask for help.
 //It mean to owe people something. I have to pay it back.
 //How to pay it back?
@@ -196,16 +216,20 @@
         _touchAccepted = true;
         EZDEBUG(@"Unschedule get called");
         [self unschedule:@selector(setBoardBack:)];
-        [self syncBoards];
+        //[self syncBoards];
         if(_isLargeBoard){
            //Ya, I got the whole logic sort out.
+            //[_orgBoard ccTouchBegan:touch withEvent:event];
         }else{
             //Add animation later
-            [self locateLargeBoard:localPt];
+            [self locateLargeBoard:localPt animCompleteBlock:^(){
+                //[_orgBoard ccTouchBegan:touch withEvent:event];
+                [_orgBoard ccTouchMoved:touch withEvent:event];
+            }];
             _isLargeBoard = TRUE;
         }
         
-        [_enlargedBoard ccTouchBegan:touch withEvent:event];
+        [_orgBoard ccTouchBegan:touch withEvent:event];
         return TRUE;
     }
     _touchAccepted = false;
@@ -216,15 +240,17 @@
 {
     //Forward the touch event to the large board
     EZDEBUG(@"Move recieved. touch.Point:%@", NSStringFromCGPoint(touch.locationInGL));
-    [_enlargedBoard ccTouchMoved:touch withEvent:event];
+    //[_enlargedBoard ccTouchMoved:touch withEvent:event];
+    [_orgBoard ccTouchMoved:touch withEvent:event];
 }
 
 //Why the touch event give to me, even if I refuse it.
 - (void)ccTouchEnded:(UITouch *)touch withEvent:(UIEvent *)event
 {
     if(_touchAccepted){
-        EZDEBUG(@"Accepted touch end");
-        [_enlargedBoard ccTouchEnded:touch withEvent:event];
+        //EZDEBUG(@"Accepted touch end, position:%@", touch);
+        //[_enlargedBoard ccTouchEnded:touch withEvent:event];
+        [_orgBoard ccTouchEnded:touch withEvent:event];
         [self schedule:@selector(setBoardBack:) interval:1.0 repeat:0 delay:0.5];
     }else{
         EZDEBUG(@"Unaccepted touch end");

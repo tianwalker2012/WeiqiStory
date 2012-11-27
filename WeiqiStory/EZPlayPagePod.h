@@ -27,7 +27,7 @@
 
 @property (nonatomic, strong) CCSprite* currentFinger;
 
-- (id) initWithEpisode:(EZEpisodeVO*)epv;
+- (id) initWithEpisode:(EZEpisodeVO*)epv currentPos:(NSInteger)pos;
 
 
 @property(nonatomic, strong) EZChessBoard* chessBoard;
@@ -73,5 +73,10 @@
 @property(nonatomic, assign) BOOL volumePressed;
 
 @property(nonatomic, assign) NSInteger playButtonStatus;
+
+//So that user could go back and forth.
+//How to disable the button?
+//This about it.
+@property(nonatomic, assign) NSInteger currentEpisodePos;
 
 @end

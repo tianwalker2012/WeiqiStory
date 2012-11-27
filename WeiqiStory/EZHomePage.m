@@ -58,8 +58,9 @@
             }
         }];
         
+        __weak CCNode* weakSelf = self;
         [self scheduleBlock:^(){
-            [EZBubble generatedBubble:self z:10];
+            [EZBubble generatedBubble:weakSelf z:10];
         } interval:1.0 repeat:kCCRepeatForever delay:0.5];
 
         background.position = ccp(winsize.width/2, winsize.height/2);

@@ -380,8 +380,8 @@
     
     virtualWhite.opacity = 128;
     virtualBlack.opacity = 128;
-    //virtualBlack.scale = 2.0;
-    //virtualWhite.scale = 2.0;
+    virtualBlack.scale = 1.4;
+    virtualWhite.scale = 1.4;
 }
 
 - (void) setBlackChessName:(NSString *)blackChessName
@@ -548,7 +548,7 @@
 - (void)ccTouchMoved:(UITouch *)touch withEvent:(UIEvent *)event
 {
     CGPoint localPoint = [self locationInSelf:touch];
-    CGPoint regularizedPt = [boardStatus adjustLocation:localPoint];
+    CGPoint regularizedPt = [boardStatus adjustLocation:localPoint isMove:true];
     EZDEBUG(@"Move local GL:%@, ajusted: %@", NSStringFromCGPoint(localPoint), NSStringFromCGPoint(regularizedPt));
     [self moveCursorButton:regularizedPt];
 }
@@ -557,7 +557,7 @@
 {
     CGPoint localPoint = [self locationInSelf:touch];
     //CGPoint regularizedPt = [boardStatus adjustLocation:localPoint];
-    //EZDEBUG(@"Touch ended at:%@, adjusted: %@", NSStringFromCGPoint(localPoint), NSStringFromCGPoint(regularizedPt));
+    EZDEBUG(@"Touch ended at:%@", NSStringFromCGPoint(localPoint));
     [self removeCursorButton];
     if(_chessmanType == kChessMan){
         EZCoord* coord = [boardStatus pointToBC:localPoint];
