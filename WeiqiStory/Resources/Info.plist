@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
-	<string>English</string>
+	<string>zh_CN</string>
 	<key>CFBundleDisplayName</key>
 	<string>围棋死活精解</string>
 	<key>CFBundleExecutable</key>
@@ -13,10 +13,9 @@
 	<key>CFBundleIconFiles</key>
 	<array>
 		<string>weiqi-icon-pad-hd.png</string>
+		<string>weiqi-icon.png</string>
 		<string>weiqi-icon-pad.png</string>
-		<string>Icon-Small-50.png</string>
-		<string>Icon-Small.png</string>
-		<string>Icon-Small@2x.png</string>
+		<string>weiqi-icon-hd.png</string>
 	</array>
 	<key>CFBundleIcons</key>
 	<dict>
@@ -24,12 +23,10 @@
 		<dict>
 			<key>CFBundleIconFiles</key>
 			<array>
-				<string>Icon.png</string>
 				<string>weiqi-icon-pad-hd.png</string>
 				<string>weiqi-icon-pad.png</string>
-				<string>Icon-Small-50.png</string>
-				<string>Icon-Small.png</string>
-				<string>Icon-Small@2x.png</string>
+				<string>weiqi-icon.png</string>
+				<string>weiqi-icon-hd.png</string>
 			</array>
 			<key>UIPrerenderedIcon</key>
 			<true/>

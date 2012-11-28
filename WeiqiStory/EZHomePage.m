@@ -51,11 +51,11 @@
         CCMenuItemImage* startButton = [CCMenuItemImage itemWithNormalImage:@"start-button.png" selectedImage:@"start-button-pressed.png" block:^(id sender){
             EZDEBUG(@"Button get clicked");
             [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
-            if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone){
+            //if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone){
                 [[CCDirector sharedDirector] replaceScene:[EZListTablePagePod node]];
-            }else{
-                [[CCDirector sharedDirector] replaceScene:[EZListTablePage node]];
-            }
+            //}else{
+                //[[CCDirector sharedDirector] replaceScene:[EZListTablePage node]];
+            //}
         }];
         
         __weak CCNode* weakSelf = self;
@@ -89,11 +89,22 @@
     return self;
 }
 
+- (void) dealloc
+{
+    EZDEBUG(@"HomePage Released");
+}
+
 - (void) onEnter{
     [super onEnter];
     [[EZSoundManager sharedSoundManager] playBackgroundTrack:@"background.mp3"];
 }
 
+
+- (void) onExit
+{
+    [super onExit];
+    [[EZSoundManager sharedSoundManager] stopBackground];
+}
 
 
 @end

@@ -15,6 +15,7 @@
 //Move them to the same background thread, It have no chance to deadlock.
 
 
+static EZThreadPool* sharedPool;
 
 @implementation EZThreadPool
 
@@ -50,6 +51,41 @@
     res = [[NSThread alloc] initWithTarget:self selector:@selector(createWorker:) object:nil];
     [res start];
     return res;
+}
+
+- (id) init
+{
+    self = [super init];
+    _serialQueue = dispatch_queue_create("my_queue_serial", DISPATCH_QUEUE_SERIAL);
+    _concurQueue = dispatch_queue_create("my_queue_concur", DISPATCH_QUEUE_CONCURRENT);
+    return self;
+}
+
++ (EZThreadPool*) getInstance
+{
+    if(sharedPool == nil){
+        sharedPool = [[EZThreadPool alloc] init];
+    }
+    
+    return sharedPool;
+}
+//This is for the task not blocking.
+//Concurrent mean I hope nothing block in my way.
+//System will fork a new thread to process your request if something block in your way.
+- (void) executeBlockInQueue:(EZOperationBlock)block  isConcurrent:(BOOL)concurrent
+{
+    if(concurrent){
+        dispatch_async(_concurQueue, block);
+    }else{
+        dispatch_async(_serialQueue, block);
+    }    
+}
+
+
+//
+- (void) executeBlockInQueue:(EZOperationBlock)block
+{
+    [self executeBlockInQueue:block isConcurrent:NO];
 }
 
 @end

@@ -29,6 +29,7 @@
 #import "EZEnlargeTester.h"
 #import "EZListTablePagePod.h"
 #import "EZLeakageMain.h"
+#import "EZThreadPool.h"
 
 //#import "EZPlayerStatus.h"
 
@@ -67,9 +68,10 @@
 	[sharedFileUtils setiPadSuffix:@"-pad"];					// Default on iPad is "ipad"
 	[sharedFileUtils setiPadRetinaDisplaySuffix:@"-pad-hd"];	// Default on iPad RetinaDisplay is "-ipadhd"
     [sharedFileUtils setIPhone5Suffix:@"-hd5"];
-    //[self returnToVirgin];
+    [self returnToVirgin];
     [EZTestSuites runAllTests];
     
+    //Load the large image files, so next time the speed will be faster.
     if(![[NSUserDefaults standardUserDefaults] boolForKey:@"Executed"]){
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"Executed"];
         [self loadAllFromBundle];
@@ -96,6 +98,7 @@
 	//[director_ setDisplayStats:YES];
 
 	// set FPS at 60
+    
 	[director_ setAnimationInterval:1.0/60];
 
 	// attach the openglView to the director
@@ -120,6 +123,8 @@
 	// Assume that PVR images have premultiplied alpha
 	[CCTexture2D PVRImagesHavePremultipliedAlpha:YES];
 
+    [CCSprite spriteWithFile:@"chess-board-large.png"];
+    
     //This is a block function call. Why not make it blocking call?
     [[EZSoundManager sharedSoundManager] loadSoundEffects:@[sndButtonPress, sndPlantChessman, sndRefuseChessman, sndBubbleBroken]];
 	// and add the scene to the stack. The director will run it when it automatically when the view is displayed.

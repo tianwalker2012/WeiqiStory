@@ -30,6 +30,8 @@
     
     //What's the purpose of this count. Make the marks can function well
     NSInteger charCount;
+    
+    CGPoint lastMovePoint;
 }
 
 - (void) initializeCursor;
@@ -536,6 +538,7 @@
 {
     CGPoint localPt = [self locationInSelf:touch];
     CGPoint regularizedPt = [boardStatus adjustLocation:localPt];
+    lastMovePoint = regularizedPt;
     EZDEBUG(@"TouchRect:%@, touchPoint:%@",NSStringFromCGRect(touchRect), NSStringFromCGPoint(localPt));
     if(CGRectContainsPoint(touchRect, localPt)){
         //EZDEBUG(@"Will plant chessman");
@@ -551,27 +554,25 @@
     CGPoint regularizedPt = [boardStatus adjustLocation:localPoint isMove:true];
     EZDEBUG(@"Move local GL:%@, ajusted: %@", NSStringFromCGPoint(localPoint), NSStringFromCGPoint(regularizedPt));
     [self moveCursorButton:regularizedPt];
+    lastMovePoint = regularizedPt;
 }
 
 - (void)ccTouchEnded:(UITouch *)touch withEvent:(UIEvent *)event
 {
     CGPoint localPoint = [self locationInSelf:touch];
-    //CGPoint regularizedPt = [boardStatus adjustLocation:localPoint];
-    EZDEBUG(@"Touch ended at:%@", NSStringFromCGPoint(localPoint));
+    //CGPoint regularizedPt = [boardStatus adjustLocation:localPoint isMove:true];
+    EZCoord* coord = [boardStatus pointToBC:lastMovePoint];
+    //I assume every touch will have move, otherwise I will be failed.
+    //Let's check this out.
+    EZDEBUG(@"Touch ended at:%@, last move Point:%@", NSStringFromCGPoint(localPoint), NSStringFromCGPoint(lastMovePoint));
     [self removeCursorButton];
     if(_chessmanType == kChessMan){
-        EZCoord* coord = [boardStatus pointToBC:localPoint];
+        
         //Basically, the color are determined by the
         coord.chessType = _chessmanSetType;
         [boardStatus putButtonByCoord:coord animated:YES];
     }else{
-
         NSString* markStr = [chessMarkChar objectAtIndex:(_allMarks .count % chessMarkChar.count)];
-        //EZDEBUG(@"Current marks:%i, chessMarChar.cout:%i, markStr:%@", coordToMarks.count, chessMarkChar.count, markStr);
-        //CCLabelTTF*  markText = [CCLabelTTF labelWithString:markStr fontName:@"Arial" fontSize:40];
-        EZCoord* coord = [boardStatus pointToBC:localPoint];
-        //[chessBoard putMark:markText coord:[[EZCoord alloc] init:10 y:10] animAction:nil];
-        //[self putCharMark:markText coord:coord animAction:nil];
         [self putCharMark:markStr fontSize:30 coord:coord animAction:nil];
     }
     

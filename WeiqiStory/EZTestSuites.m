@@ -48,6 +48,7 @@
 #import "EZQueue.h"
 #import "EZImageView.h"
 #import "CCFileUtils.h"
+#import "EZThreadPool.h"
 //#import "EZ"
 
 
@@ -240,6 +241,40 @@ static NSInteger releaseCount;
     //[EZTestSuites testObjectCompare];
     //[EZTestSuites testDispatch];
     //[EZTestSuites testBlockCapture];
+    //[EZTestSuites testDisptachFunction];
+}
+
++ (void) testDisptachFunction
+{
+    [[EZThreadPool getInstance] executeBlockInQueue:^(){
+        EZDEBUG(@"In serial queue, thread id:%i",(int)[NSThread currentThread]);
+        [NSThread sleepForTimeInterval:2];
+        EZDEBUG(@"Wake up in serial queue");
+        
+    } isConcurrent:false];
+    
+    [[EZThreadPool getInstance] executeBlockInQueue:^(){
+        EZDEBUG(@"In serial queue2, thread id:%i",(int)[NSThread currentThread]);
+        [NSThread sleepForTimeInterval:2];
+        EZDEBUG(@"Wake up in serial queue2");
+    } isConcurrent:false];
+    
+    [[EZThreadPool getInstance] executeBlockInQueue:^(){
+        EZDEBUG(@"In concur queue1, thread id:%i",(int)[NSThread currentThread]);
+        [NSThread sleepForTimeInterval:2];
+        EZDEBUG(@"Wake up in con queue1");
+    } isConcurrent:true];
+    
+    [[EZThreadPool getInstance] executeBlockInQueue:^(){
+        EZDEBUG(@"In concur queue2, thread id:%i",(int)[NSThread currentThread]);
+        [NSThread sleepForTimeInterval:2];
+        EZDEBUG(@"Wake up in con queue2");
+    } isConcurrent:true];
+    
+    [NSThread sleepForTimeInterval:4];
+    assert(false);
+    
+    
 }
 
 //Will test how the varibles get captured in the block

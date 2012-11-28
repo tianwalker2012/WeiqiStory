@@ -132,6 +132,11 @@
 }
 
 
+- (void) dealloc
+{
+    EZDEBUG(@"EZListTablePagePod Released");
+}
+
 //When could I reuse the cells?
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -197,7 +202,7 @@
             }else{
                 EZPlayPagePod* playPage = [[EZPlayPagePod alloc] initWithEpisode:epv currentPos:i];
                
-                EZDEBUG(@"Tapped index:%i, instance pointer:%i, readback value:%i", i, (int)playPage, playPage.currentEpisodePos);
+    EZDEBUG(@"Tapped index:%i, instance pointer:%i, readback value:%i", i, (int)playPage, playPage.currentEpisodePos);
                 nextScene = [playPage createScene];
             }
             
@@ -412,19 +417,14 @@
     return self;
 }
 
-- (void) dealloc
-{
-    EZDEBUG(@"Dealloc ListTablePagePod");
-}
-
 //List all available Fonts on iOS.
 
 - (void) onEnter
 {
     [super onEnter];
-    if(![[EZSoundManager sharedSoundManager] isBackgrondPlaying]){
-        [[EZSoundManager sharedSoundManager] playBackgroundTrack:@"background.mp3"];
-    }
+    //if(![[EZSoundManager sharedSoundManager] isBackgrondPlaying]){
+    //    [[EZSoundManager sharedSoundManager] playBackgroundTrack:@"background.mp3"];
+    //}
     [[CCDirector sharedDirector].view addSubview:_tableView];
     //if(!isFirstTime){
     //[self reloadEpisode];
@@ -437,7 +437,7 @@
 - (void) onExit
 {
     [super onExit];
-    [[EZSoundManager sharedSoundManager]stopBackground];
+    //[[EZSoundManager sharedSoundManager]stopBackground];
     [_tableView removeFromSuperview];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }

@@ -7,6 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "EZConstants.h"
+
 
 @interface EZThreadPool : NSObject
 
@@ -15,9 +17,20 @@
 + (NSThread *) getWorkerGlobalThread;
 
 
++ (EZThreadPool*) getInstance;
+
 //I need my own worker thread,
 //It will generate a new thread for you.
 //This is the right method to call. 
 + (NSThread *) createWorkerThread;
+
+//The first step to adopt to GCD
+- (void) executeBlockInQueue:(EZOperationBlock)block;
+
+- (void) executeBlockInQueue:(EZOperationBlock)block isConcurrent:(BOOL)concurrent;
+
+@property (nonatomic, assign) dispatch_queue_t serialQueue;
+@property (nonatomic, assign) dispatch_queue_t concurQueue;
+
 
 @end

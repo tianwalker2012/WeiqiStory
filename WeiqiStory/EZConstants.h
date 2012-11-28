@@ -102,6 +102,7 @@ typedef enum {
 
 #define InitialVolume 0.8
 
+#define FingerZOrder 40
 
 #define ezrect(x, y, w, h) \
     CGRectMake(x, y, w, h)

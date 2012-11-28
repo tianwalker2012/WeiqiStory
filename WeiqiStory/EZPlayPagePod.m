@@ -153,8 +153,8 @@ typedef enum {
     
     CCMenuItemImage* prevButton = [CCMenuItemImage itemWithNormalImage:@"prev-button.png" selectedImage:@"prev-button-pressed.png" block:^(id sender) {
         [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
-        [_chessBoard2 regretSteps:1 animated:NO];
-        EZDEBUG(@"Regret queue:%i", _chessBoard2.regrets.count);
+        [weakSelf.chessBoard2 regretSteps:1 animated:NO];
+        EZDEBUG(@"Regret queue:%i", weakSelf.chessBoard2.regrets.count);
     }];
     
     CCMenu* prevMenu = [CCMenu menuWithItems:prevButton, nil];
@@ -289,6 +289,7 @@ typedef enum {
             
             CCMenuItemImage* playPrevItem = [CCMenuItemImage itemWithNormalImage:@"play-prev.png" selectedImage:@"play-prev-pressed.png" disabledImage:@"play-prev-pressed.png" block:^(id sender){
                 [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
+                [weakSelf.player pause];
                 EZPlayPagePod* nextPage = [[EZPlayPagePod alloc] initWithEpisode:prevEpv currentPos:prevPos];
                 //nextPage.currentEpisodePos = weakSelf.currentEpisodePos - 1;
                 EZDEBUG(@"Will replace current scene with:%@", prevEpv.name);
@@ -305,6 +306,7 @@ typedef enum {
             
             CCMenuItemImage* playNextItem = [CCMenuItemImage itemWithNormalImage:@"play-next.png" selectedImage:@"play-next-pressed.png" disabledImage:@"play-next-pressed.png" block:^(id sender){
                 [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
+                [weakSelf.player pause];
                 EZPlayPagePod* nextPage = [[EZPlayPagePod alloc] initWithEpisode:nextEpv currentPos:nextPos];
                 //nextPage.currentEpisodePos = weakSelf.currentEpisodePos + 1;
                 EZDEBUG(@"Will replace curent scene for:%@", nextEpv.name);
@@ -500,6 +502,11 @@ typedef enum {
     }
     
     return self;
+}
+
+- (void) dealloc
+{
+    EZDEBUG(@"EZPlayPageNode Released");
 }
 
 

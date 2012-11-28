@@ -145,6 +145,20 @@ typedef enum {
     nextMenu.position = ccp(429, 75);
     [_studyBoardHolder addChild:nextMenu];
     
+    _blackFinger = [CCSprite spriteWithFile:@"point-finger-black.png"];
+    _whiteFinger = [CCSprite spriteWithFile:@"point-finger-white.png"];
+    
+    
+    _blackFinger.position = ccp(384, 512);
+    _whiteFinger.position = ccp(384, 512);
+    
+    _fingerAnim = [CCSequence actions:[CCSpawn actions:[CCRepeat actionWithAction:[CCSequence actions:[CCScaleTo actionWithDuration:0.3 scale:0.8], [CCScaleTo actionWithDuration:0.3 scale:1.3], nil] times:3], [CCFadeOut actionWithDuration:2.7], nil],
+                   [CCCallBlock actionWithBlock:^(){
+        [weakSelf.currentFinger removeFromParentAndCleanup:NO];
+        EZDEBUG(@"After remove, what's the visible:%@", weakSelf.currentFinger.visible?@"YES":@"NO");
+        weakSelf.currentFinger.visible = false;
+    }] ,nil];
+
 }
 
 - (void) onExit
@@ -157,16 +171,15 @@ typedef enum {
 
 
 
-
-
 //We will only support potrait orientation
 - (id) initWithEpisode:(EZEpisodeVO*)epv
 {
     self = [super init];
     if(self){
         //timer = [[CCTimer alloc] initWithTarget:self selector:@selector(generatedBubble) interval:1 repeat:kCCRepeatForever delay:1];
+        __weak EZPlayPage* weakSelf = self;
         [self scheduleBlock:^(){
-            [EZBubble generatedBubble:self z:9];
+            [EZBubble generatedBubble:weakSelf z:9];
         } interval:1.0 repeat:kCCRepeatForever delay:0.5];
         
         _bubble = [CCSprite spriteWithFile:@"bubble-pad.png"];
@@ -237,8 +250,6 @@ typedef enum {
         _playImg = [CCSprite spriteWithFile:@"play-button.png"];
         _pauseImg = [CCSprite spriteWithFile:@"pause-button.png"];
         
-        __weak EZPlayPage* weakSelf = self;
-        
         CCMenuItemImage* backButton = [CCMenuItemImage itemWithNormalImage:@"back-button.png" selectedImage:@"back-button-pressed.png" block:^(id sender){
             [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
             [weakSelf.player stop];
@@ -287,12 +298,14 @@ typedef enum {
         //progressBar.position = ccp(294, 59);
         
         CCSprite* progressNob = [[CCSprite alloc] initWithFile:@"progress-nob.png"];
+        
+        __weak CCMenuItemImage* weakPlay = playButton;
         //progressNob.position = ccp(294, 59);
         EZProgressBar* myBar = [[EZProgressBar alloc] initWithNob:progressNob bar:progressBar maxValue:epv.actions.count changedBlock:^(NSInteger prv, NSInteger cur) {
             EZDEBUG(@"Player2 Nob position changed from:%i to %i", prv, cur);
             //pause the player, no harm will be done
             [weakSelf.player pause];
-            [playButton setNormalSpriteFrame:weakSelf.playImg.displayFrame];
+            [weakPlay setNormalSpriteFrame:weakSelf.playImg.displayFrame];
             [weakSelf.player forwardFrom:prv to:cur];
             
         }];
@@ -319,7 +332,7 @@ typedef enum {
                                             
                                             //More straightforward.
                                             if(!weakSelf.studyBoardHolder){
-                                                [self initStudyBoard2:epv];
+                                                [weakSelf initStudyBoard2:epv];
                                             }else{
                                                 weakSelf.chessBoard2.touchEnabled = YES;
                                             }
@@ -335,7 +348,7 @@ typedef enum {
                                                 [weakSelf addChild:weakSelf.studyBoardHolder z:10];
                                                 id scaleDown = [CCScaleTo actionWithDuration:0.3f scaleX:1 scaleY:1];
                                                 //id moveTo = [CCMoveTo actionWithDuration:0.3f position:ccp(0, 0)];
-                                                [_studyBoardHolder runAction:scaleDown];
+                                                [weakSelf.studyBoardHolder runAction:scaleDown];
                                             }];
                                             id sequence = [CCSequence actions:animation, completed, nil];
                                             [weakSelf.mainLayout runAction:sequence];
@@ -356,6 +369,18 @@ typedef enum {
                                                 [weakSelf.chessBoard2 syncChessColorWithLastMove];
                                             }
                                             
+                                            
+                                            
+                                            if(weakSelf.chessBoard2.isCurrentBlack){
+                                                weakSelf.currentFinger = weakSelf.blackFinger;
+                                            }else{
+                                                weakSelf.currentFinger = weakSelf.whiteFinger;
+                                            }
+                                            
+                                            weakSelf.currentFinger.visible = true;
+                                            [weakSelf.studyBoardHolder addChild:weakSelf.currentFinger z:FingerZOrder];
+                                            
+                                            [weakSelf.currentFinger runAction:weakSelf.fingerAnim];
                                             EZDEBUG(@"successfully completed raising board");
                                         }
                                         ];
@@ -379,7 +404,7 @@ typedef enum {
 
 - (void) dealloc
 {
-    EZDEBUG(@"EZPlayPage released");
+    EZDEBUG(@"EZPlayPage Released");
 }
 
 @end

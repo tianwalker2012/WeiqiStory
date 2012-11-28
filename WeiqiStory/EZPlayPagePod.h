@@ -10,7 +10,7 @@
 #import "EZLayer.h"
 
 
-#define FingerZOrder 40
+
 
 @class EZChessBoard;
 @class EZEpisodeVO;

@@ -117,6 +117,11 @@
 }
 
 
+- (void) dealloc
+{
+    EZDEBUG(@"EZListTablePage released");
+}
+
 //When could I reuse the cells?
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -161,11 +166,12 @@
         EZDEBUG(@"The completeBoard size:%@, isMainThread:%@", NSStringFromCGSize(epv.thumbNail.size), [NSThread isMainThread]?@"YES":@"NO");
         
         [panel setPosition:ccp(xPos, 0)];
+        __weak UITableView* weakTable =  _tableView;
         panel.tappedBlock = ^(){
                 EZDEBUG(@"The episode %@ get tapped", epv.name);
                 [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
                 EZPlayPage* playPage = [[EZPlayPage alloc] initWithEpisode:epv];
-                [_tableView removeFromSuperview];
+                [weakTable removeFromSuperview];
                 [[CCDirector sharedDirector] pushScene:[playPage createScene]];
                
             };
@@ -264,8 +270,10 @@
         //[self startDownload];
         [self loadFromDB:0 limit:30];
         EZDEBUG(@"loadedFromDB, map count %i", _episodeMap.count);
+        
+        __weak CCNode* weakNode = self;
         [self scheduleBlock:^(){
-            [EZBubble generatedBubble:self z:10];
+            [EZBubble generatedBubble:weakNode z:10];
         } interval:1.0 repeat:kCCRepeatForever delay:0.5];
         isFirstTime = true;
         //[self loadEpisode];
@@ -281,9 +289,9 @@
 - (void) onEnter
 {
     [super onEnter];
-    if(![[EZSoundManager sharedSoundManager] isBackgrondPlaying]){
-        [[EZSoundManager sharedSoundManager] playBackgroundTrack:@"background.mp3"];
-    }
+    //if(![[EZSoundManager sharedSoundManager] isBackgrondPlaying]){
+    //    [[EZSoundManager sharedSoundManager] playBackgroundTrack:@"background.mp3"];
+    //}
     [[CCDirector sharedDirector].view addSubview:_tableView];
     //if(!isFirstTime){
     [self reloadEpisode];
@@ -295,7 +303,7 @@
 - (void) onExit
 {
     [super onExit];
-    [[EZSoundManager sharedSoundManager]stopBackground];
+    //[[EZSoundManager sharedSoundManager]stopBackground];
     [_tableView removeFromSuperview];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
