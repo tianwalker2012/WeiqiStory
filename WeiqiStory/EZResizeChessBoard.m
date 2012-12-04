@@ -22,12 +22,13 @@
 
 - (id) initWithOrgBoard:(NSString*)orgBoardName orgRect:(CGRect)orgRect largeBoard:(NSString*)largeBoardName largeRect:(CGRect)largeRect
 {
-    self = [super init];
+    self  = [super init];
     _orgBoard = [[EZChessBoard alloc] initWithFile:orgBoardName touchRect:orgRect rows:19 cols:19];
     _orgBoard.touchEnabled = false;
     _orgBoard.anchorPoint = ccp(0, 0);
     _orgBoard.position = ccp(0, 0);
     
+    //self.clippingRegion = _orgBoard.boundingBox;
     
     _touchZone = _orgBoard.touchRect;
     self.contentSize = _touchZone.size;
@@ -42,7 +43,10 @@
     
     _largeSize = _enlargedBoard.boundingBox.size;
     _orgSize = _orgBoard.boundingBox.size;
-    
+    //Why the boundingBox didn't reflect the real rectangular?
+    //What's going on?
+    //self.clippingRegion = self.boundingBox;
+    //EZDEBUG(@"Initial region:%@", NSStringFromCGRect(self.boundingBox));
     return self;
 }
 
@@ -61,35 +65,6 @@
         [[[CCDirector sharedDirector] touchDispatcher] removeDelegate:self];
     }
     _touchEnabled = touchEnabled;
-}
-
-
-- (void) visit
-{
-    //EZDEBUG(@"Visit get called:%@", [NSThread callStackSymbols]);
-    glEnable(GL_SCISSOR_TEST);
-    CGRect pixRect = [EZChess2Image rectPointToPix:self.boundingBox];
-    
-    glScissor(pixRect.origin.x, pixRect.origin.y,  pixRect.size.width, pixRect.size.height);
-    
-    [super visit];
-    glDisable(GL_SCISSOR_TEST);
-}
-
-//The possible problem could be that the GL coordinator didn't match the point in the screen.
-//Let's test them carefully.
-//Let's check the CCSprite code see what's the case with the sprite.
-//Why call 2 times, what's the tricks behind it?
-//This is very interesting.
-- (void) draw
-{
-    glEnable(GL_SCISSOR_TEST);
-    
-    CGRect pixRect = [EZChess2Image rectPointToPix:self.boundingBox];
-    
-    glScissor(pixRect.origin.x, pixRect.origin.y,  pixRect.size.width, pixRect.size.height);    //if (stop)
-    
-    [super draw];
 }
 
 - (void) setBoardBack:(ccTime) passed
@@ -245,7 +220,10 @@
 
 - (void) onEnter
 {
+    //Only here the boundingBox, the original are determined
+    //Because it already added into the display layer.
     [super onEnter];
+    self.clippingRegion = self.boundingBox;
     [self setTouchEnabled:YES];
 }
 

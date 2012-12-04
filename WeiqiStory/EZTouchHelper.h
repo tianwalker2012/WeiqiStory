@@ -30,4 +30,10 @@
 
 @interface EZTouchHelper : NSObject
 
+//Convert GL rectangular to UI rectangular
++ (CGRect) convertGL2UI:(CGRect)glRect;
+
+//Convert UI rectangular to GL rectangular
++ (CGRect) convertUI2GL:(CGRect)uiRect;
+
 @end

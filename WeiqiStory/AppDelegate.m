@@ -68,7 +68,7 @@
 	[sharedFileUtils setiPadSuffix:@"-pad"];					// Default on iPad is "ipad"
 	[sharedFileUtils setiPadRetinaDisplaySuffix:@"-pad-hd"];	// Default on iPad RetinaDisplay is "-ipadhd"
     [sharedFileUtils setIPhone5Suffix:@"-hd5"];
-    [self returnToVirgin];
+    //[self returnToVirgin];
     [EZTestSuites runAllTests];
     
     //Load the large image files, so next time the speed will be faster.
@@ -132,11 +132,13 @@
     //[director_ pushScene:[EZChessPlay scene]];
 	//[director_ pushScene:[EZListTablePage scene]];
     //[director_ pushScene:[EZEffectTester scene]];
-    [director_ pushScene:[EZHomePage scene]];
+    //[director_ pushScene:[EZHomePage scene]];
     //[director_ pushScene:[EZLeakageMain node]];
     //[director_ pushScene:[EZListEditPage scene]];
-    //[director_ pushScene:[[[EZPlayPagePod alloc] initWithEpisode:[self generateEpisodeVO]] createScene]];
-    //[director_ pushScene:[EZEnlargeTester node]];
+    //[director_ pushScene:[[[EZPlayPagePod alloc] initWithEpisode:[self generateEpisodeVO] currentPos:2] createScene]];
+    [[CCDirector sharedDirector].view setMultipleTouchEnabled:YES];
+    //EZDEBUG(@"view class:%@, multiple Touch enabled:%i", [[CCDirector sharedDirector].view class], [CCDirector sharedDirector].view.multipleTouchEnabled);
+    [director_ pushScene:[EZEnlargeTester node]];
     
     //[director_ pushScene:[EZListTablePagePod node]];
 	// Create a Navigation Controller with the Director

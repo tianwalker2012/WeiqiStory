@@ -54,7 +54,7 @@
 //What's the relationship between visit and draw.
 - (void) visit
 {
-    EZDEBUG(@"Visit get called:%@", [NSThread callStackSymbols]);
+    //EZDEBUG(@"Visit get called:%@", [NSThread callStackSymbols]);
     glEnable(GL_SCISSOR_TEST);
     CGRect pixRect = [EZChess2Image rectPointToPix:self.boundingBox];
     

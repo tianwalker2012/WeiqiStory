@@ -242,6 +242,36 @@ static NSInteger releaseCount;
     //[EZTestSuites testDispatch];
     //[EZTestSuites testBlockCapture];
     //[EZTestSuites testDisptachFunction];
+    
+    
+    //[EZTestSuites testCreateSingleton];
+}
+
++ (id) createObject
+{
+    static dispatch_once_t  onceToken;
+    static NSObject * sSharedInstance;
+    
+    dispatch_once(&onceToken, ^{
+        EZDEBUG(@"One thread enter");
+        [NSThread sleepForTimeInterval:1];
+        sSharedInstance = [[NSObject alloc] init];
+        EZDEBUG(@"Quit thread");
+    });
+    return sSharedInstance;
+
+}
+
++ (void) testCreateSingleton
+{
+    dispatch_queue_t queue = dispatch_queue_create("myqueue", DISPATCH_QUEUE_CONCURRENT);
+    
+    dispatch_async(queue, ^(){[EZTestSuites createObject];});
+    EZDEBUG(@"Create the second one");
+    dispatch_async(queue, ^(){[EZTestSuites createObject];});
+
+    [NSThread sleepForTimeInterval:2];
+    assert(false);
 }
 
 + (void) testDisptachFunction

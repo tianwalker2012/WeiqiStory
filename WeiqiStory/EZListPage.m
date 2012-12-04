@@ -155,8 +155,8 @@
     //panel.intro.text = epv.introduction;
     panel.tappedBlock = ^(){
         EZDEBUG(@"The episode %@ get tapped", epv.name);
-        EZPlayPage* playPage = [[EZPlayPage alloc] initWithEpisode:epv];
-        [[CCDirector sharedDirector] pushScene:[playPage createScene]];
+        //EZPlayPage* playPage = [[EZPlayPage alloc] initWithEpisode:epv];
+        //[[CCDirector sharedDirector] pushScene:[playPage createScene]];
     };
     [scroll addSubview:panel];
     

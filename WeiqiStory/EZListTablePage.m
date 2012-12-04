@@ -170,9 +170,9 @@
         panel.tappedBlock = ^(){
                 EZDEBUG(@"The episode %@ get tapped", epv.name);
                 [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
-                EZPlayPage* playPage = [[EZPlayPage alloc] initWithEpisode:epv];
+                //EZPlayPage* playPage = [[EZPlayPage alloc] initWithEpisode:epv];
                 [weakTable removeFromSuperview];
-                [[CCDirector sharedDirector] pushScene:[playPage createScene]];
+                //[[CCDirector sharedDirector] pushScene:[playPage createScene]];
                
             };
         [cell addSubview:panel];

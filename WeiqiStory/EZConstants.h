@@ -70,6 +70,7 @@ typedef enum {
 
 #define CoreDBModel @"ChessLecture"
 
+#define StandardTouchPriority 10
 
 #define sndRefuseChessman @"refuse.wav"
 #define sndPlantChessman @"plant-chess.wav"

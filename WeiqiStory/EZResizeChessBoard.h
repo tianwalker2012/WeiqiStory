@@ -8,6 +8,7 @@
 
 #import "EZChessBoard.h"
 #import "EZConstants.h"
+#import "EZClippingNode.h"
 
 //What I will do in this class?
 //Add 2 board.
@@ -19,7 +20,7 @@
 #define LargerZorder 8
 #define OrginalZorder 9
 
-@interface EZResizeChessBoard : CCNode<CCTargetedTouchDelegate>;
+@interface EZResizeChessBoard : EZClippingNode<CCTargetedTouchDelegate>;
 
 
 - (id) initWithOrgBoard:(NSString*)orgBoardName orgRect:(CGRect)orgRect largeBoard:(NSString*)largeBoardName largeRect:(CGRect)largeRect;

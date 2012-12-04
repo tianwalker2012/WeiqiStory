@@ -31,6 +31,7 @@
 
 #import "CCTouchDispatcher.h"
 #import "CCTouchHandler.h"
+#import "EZConstants.h"
 
 @implementation CCTouchDispatcher
 
@@ -316,6 +317,7 @@ NSComparisonResult sortByPriority(id first, id second, void *context)
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
+    EZDEBUG(@"TouchBegin, touches.count:%i", touches.count);
 	if( dispatchEvents )
 		[self touches:touches withEvent:event withTouchType:kCCTouchBegan];
 }

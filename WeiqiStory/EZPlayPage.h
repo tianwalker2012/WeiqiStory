@@ -8,9 +8,10 @@
 
 #import "cocos2d.h"
 #import "EZLayer.h"
+#import "EZCommonPlayPage.h"
 
 @class EZEpisodeVO, EZChessBoard, EZActionPlayer;
-@interface EZPlayPage : EZLayer
+@interface EZPlayPage : EZCommonPlayPage
 
 + (CCScene*) scene;
 
@@ -20,7 +21,7 @@
 
 @property (nonatomic, strong) CCSprite* currentFinger;
 
-- (id) initWithEpisode:(EZEpisodeVO*)epv;
+- (id) initWithEpisode:(EZEpisodeVO*)epv currentPos:(NSInteger)pos;
 
 
 @property(nonatomic, strong) EZChessBoard* chessBoard;
@@ -29,7 +30,7 @@
 
 
 
-@property(nonatomic, strong) EZActionPlayer* player;
+
 
 @property(nonatomic, strong) EZActionPlayer* player2;
 

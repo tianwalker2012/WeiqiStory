@@ -17,8 +17,9 @@
 #import "EZBubble.h"
 #import "EZBubble2.h"
 #import "EZListTablePagePod.h"
-
-
+#import "EZViewGesturer.h"
+#import "EZCoreAccessor.h"
+#import "EZEpisode.h"
 //Only 2 status.
 //Let's visualize what's was going on for a while.
 //Should I disable the progress.
@@ -161,18 +162,38 @@ typedef enum {
 
 }
 
+- (void) onEnter
+{
+    [super onEnter];
+    //[[CCDirector sharedDirector].view addSubview:_gesturerView];
+}
+
 - (void) onExit
 {
+    [super onExit];
     if(_chessBoard2.touchEnabled){
         //Make sure, it get removed from the event chains
         _chessBoard2.touchEnabled = false;
     }
+    //[_gesturerView removeFromSuperview];
 }
 
 
+//Will be called by the commonPage when swipe get called
+//I am make sure the epv is a valid one
+- (void) swipeTo:(EZEpisodeVO*)epv currentPos:(NSInteger)currentPos isNext:(BOOL)isNext
+{
+    EZPlayPage* nextPage = [[EZPlayPage alloc] initWithEpisode:epv currentPos:currentPos];
+    if(isNext){
+        [[CCDirector sharedDirector] replaceScene:[CCTransitionSlideInR transitionWithDuration:0.5 scene:[nextPage createScene]]];
+    }else {
+        [[CCDirector sharedDirector] replaceScene:[CCTransitionSlideInL transitionWithDuration:0.5 scene:[nextPage createScene]]];
+    }
+}
+
 
 //We will only support potrait orientation
-- (id) initWithEpisode:(EZEpisodeVO*)epv
+- (id) initWithEpisode:(EZEpisodeVO*)epv currentPos:(NSInteger)pos;
 {
     self = [super init];
     if(self){
@@ -182,6 +203,7 @@ typedef enum {
             [EZBubble generatedBubble:weakSelf z:9];
         } interval:1.0 repeat:kCCRepeatForever delay:0.5];
         
+        self.currentEpisodePos = pos;
         _bubble = [CCSprite spriteWithFile:@"bubble-pad.png"];
         _broken = [CCSprite spriteWithFile:@"bubble-broken.png"];
         _playButtonStatus = kPlayerPause;
@@ -242,7 +264,7 @@ typedef enum {
         
                 
         //[self addChild:chessBoard2];
-        _player = [[EZActionPlayer alloc] initWithActions:epv.actions chessBoard:_chessBoard inMainBundle:epv.inMainBundle];
+        self.player = [[EZActionPlayer alloc] initWithActions:epv.actions chessBoard:_chessBoard inMainBundle:epv.inMainBundle];
         
         
         //[player2 forwardFrom:0 to:epv.actions.count];
@@ -321,7 +343,7 @@ typedef enum {
         [_mainLayout addChild:myBar];
         
         if(epv.actions.count > 0){
-            [_player playOneStep:0 completeBlock:nil];
+            [self.player playOneStep:0 completeBlock:nil];
         }
         
         CCMenuItemImage* studyButton = [CCMenuItemImage itemWithNormalImage:@"study-button.png" selectedImage:@"study-button-pad.png"
@@ -378,6 +400,12 @@ typedef enum {
                                             }
                                             
                                             weakSelf.currentFinger.visible = true;
+                                            EZDEBUG(@"About to add to weakSelf");
+                                            //Remove it before add,
+                                            //Hope it harmless to remove twice.
+                                            [weakSelf.currentFinger stopAllActions];
+                                            [weakSelf.currentFinger removeFromParentAndCleanup:NO];
+                                            
                                             [weakSelf.studyBoardHolder addChild:weakSelf.currentFinger z:FingerZOrder];
                                             
                                             [weakSelf.currentFinger runAction:weakSelf.fingerAnim];
@@ -394,6 +422,9 @@ typedef enum {
         //[self addChild:progressBar];
         //[self addChild:progressNob];
         [_mainLayout addChild:studyMenu];
+        
+        //EZViewGesturer* viewGesturer = [[EZViewGesturer alloc] init];
+        
         
         
     }

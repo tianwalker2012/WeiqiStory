@@ -78,7 +78,7 @@ Copyright (C) 2008 Apple Inc. All Rights Reserved.
 #import "../../ccMacros.h"
 #import "../../CCConfiguration.h"
 #import "../../Support/OpenGL_Internal.h"
-
+#import "EZConstants.h"
 
 //CLASS IMPLEMENTATIONS:
 
@@ -325,6 +325,7 @@ Copyright (C) 2008 Apple Inc. All Rights Reserved.
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
+    EZDEBUG(@"touchBegan count:%i", touches.count);
 	if(touchDelegate_)
 	{
 		[touchDelegate_ touchesBegan:touches withEvent:event];
@@ -333,6 +334,7 @@ Copyright (C) 2008 Apple Inc. All Rights Reserved.
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
+    EZDEBUG(@"touchMoved count:%i", touches.count);
 	if(touchDelegate_)
 	{
 		[touchDelegate_ touchesMoved:touches withEvent:event];
@@ -341,6 +343,7 @@ Copyright (C) 2008 Apple Inc. All Rights Reserved.
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
+    EZDEBUG(@"touchEnded count:%i", touches.count);
 	if(touchDelegate_)
 	{
 		[touchDelegate_ touchesEnded:touches withEvent:event];

@@ -10,6 +10,25 @@
 #import "EZConstants.h"
 @implementation EZTouchHelper
 
++ (CGRect) convertGL2UI:(CGRect)glRect
+{
+    CGPoint pos = [[CCDirector sharedDirector] convertToUI:glRect.origin];
+    
+    pos.y = pos.y - glRect.size.height;
+    
+    return CGRectMake(pos.x, pos.y, glRect.size.width, glRect.size.height);
+}
+
+//Convert UI rectangular to GL rectangular
++ (CGRect) convertUI2GL:(CGRect)uiRect
+{
+    CGPoint pos = [[CCDirector sharedDirector] convertToGL:uiRect.origin];
+    
+    pos.y = pos.y - uiRect.size.height;
+    
+    return CGRectMake(pos.x, pos.y, uiRect.size.width, uiRect.size.height);
+}
+
 @end
 
 @implementation UITouch(EZWeiqi)
@@ -18,7 +37,7 @@
 //Return the point in GL
 - (CGPoint) locationInGL
 {
-    return [[CCDirector sharedDirector] convertToGL:[self locationInView:self.view]];
+    return [[CCDirector sharedDirector] convertToGL:[self locationInView:[CCDirector sharedDirector].view]];
 }
 
 - (CGPoint) locationInCool

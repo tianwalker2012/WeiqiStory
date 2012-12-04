@@ -358,6 +358,8 @@
     if(_cursorHolder){
         CGPoint globalPoint = [self convertToWorldSpace:regularizedPt];
         CGPoint holderPoint = [_cursorHolder convertToNodeSpace:globalPoint];
+        //Make the entrance is possible.
+        [cursor removeFromParentAndCleanup:NO];
         [cursor setPosition:holderPoint];
         [_cursorHolder addChild:cursor];
     }else{

@@ -8,7 +8,7 @@
 
 #import "cocos2d.h"
 #import "EZLayer.h"
-
+#import "EZCommonPlayPage.h"
 
 
 
@@ -17,7 +17,8 @@
 @class EZResizeChessBoard;
 @class EZActionPlayer;
 
-@interface EZPlayPagePod : EZLayer
+
+@interface EZPlayPagePod : EZCommonPlayPage
 
 + (CCScene*) scene;
 
@@ -37,9 +38,6 @@
 //Why do we need this?
 //Why need this board to make our ChessBoard could getting larger when user touch the screen.
 @property(nonatomic, strong) EZResizeChessBoard* resizeBoard;
-
-
-@property(nonatomic, strong) EZActionPlayer* player;
 
 @property(nonatomic, strong) EZActionPlayer* player2;
 
@@ -74,9 +72,5 @@
 
 @property(nonatomic, assign) NSInteger playButtonStatus;
 
-//So that user could go back and forth.
-//How to disable the button?
-//This about it.
-@property(nonatomic, assign) NSInteger currentEpisodePos;
 
 @end

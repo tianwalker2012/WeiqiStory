@@ -204,6 +204,7 @@ typedef enum {
         //Make sure, it get removed from the event chains
         //chessBoard2.touchEnabled = false;
     //}
+    [super onExit];
     if(_resizeBoard.touchEnabled){
         _resizeBoard.touchEnabled = false;
     }
@@ -218,7 +219,7 @@ typedef enum {
     self = [super init];
     if(self){
         //timer = [[CCTimer alloc] initWithTarget:self selector:@selector(generatedBubble) interval:1 repeat:kCCRepeatForever delay:1];
-        _currentEpisodePos = pos;
+        self.currentEpisodePos = pos;
         __weak EZPlayPagePod* weakSelf = self;
         [self scheduleBlock:^(){
             [EZBubble generatedBubble:weakSelf z:9];
@@ -277,15 +278,15 @@ typedef enum {
             backMenu.position = ccp(42, 518);
             messageRegion.position = ccp(192, 518);
             
-            NSInteger nextPos = _currentEpisodePos + 1;
-            NSInteger prevPos = _currentEpisodePos - 1;
+            NSInteger nextPos = self.currentEpisodePos + 1;
+            NSInteger prevPos = self.currentEpisodePos - 1;
             
             EZEpisodeVO* prevEpv = [weakSelf getEpisode:prevPos];
             EZEpisodeVO* nextEpv = [weakSelf getEpisode:nextPos];
             
             
             
-            EZDEBUG(@"Curent Position:%i, prevEpv name:%@, nextEpv name:%@, nonWeakValue:%i, self pointer:%i, prevPos:%i, nextPos:%i", weakSelf.currentEpisodePos, prevEpv.name, nextEpv.name, _currentEpisodePos, (int)self, prevPos, nextPos);
+            EZDEBUG(@"Curent Position:%i, prevEpv name:%@, nextEpv name:%@, nonWeakValue:%i, self pointer:%i, prevPos:%i, nextPos:%i", weakSelf.currentEpisodePos, prevEpv.name, nextEpv.name, self.currentEpisodePos, (int)self, prevPos, nextPos);
             
             CCMenuItemImage* playPrevItem = [CCMenuItemImage itemWithNormalImage:@"play-prev.png" selectedImage:@"play-prev-pressed.png" disabledImage:@"play-prev-pressed.png" block:^(id sender){
                 [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
@@ -293,7 +294,7 @@ typedef enum {
                 EZPlayPagePod* nextPage = [[EZPlayPagePod alloc] initWithEpisode:prevEpv currentPos:prevPos];
                 //nextPage.currentEpisodePos = weakSelf.currentEpisodePos - 1;
                 EZDEBUG(@"Will replace current scene with:%@", prevEpv.name);
-                [[CCDirector sharedDirector] replaceScene:[nextPage createScene]];
+                [[CCDirector sharedDirector] replaceScene:[CCTransitionSlideInL transitionWithDuration:0.5 scene:[nextPage createScene]]];
                 
             }];
             
@@ -310,7 +311,7 @@ typedef enum {
                 EZPlayPagePod* nextPage = [[EZPlayPagePod alloc] initWithEpisode:nextEpv currentPos:nextPos];
                 //nextPage.currentEpisodePos = weakSelf.currentEpisodePos + 1;
                 EZDEBUG(@"Will replace curent scene for:%@", nextEpv.name);
-                [[CCDirector sharedDirector] replaceScene:[nextPage createScene]];
+                [[CCDirector sharedDirector] replaceScene:[CCTransitionSlideInR transitionWithDuration:0.5 scene:[nextPage createScene]]];
             }];
             
             
@@ -351,7 +352,7 @@ typedef enum {
         
         
         //[self addChild:chessBoard2];
-        _player = [[EZActionPlayer alloc] initWithActions:epv.actions chessBoard:_chessBoard inMainBundle:epv.inMainBundle];
+        self.player = [[EZActionPlayer alloc] initWithActions:epv.actions chessBoard:_chessBoard inMainBundle:epv.inMainBundle];
         
         
         //[player2 forwardFrom:0 to:epv.actions.count];
@@ -409,7 +410,7 @@ typedef enum {
             [weakSelf.player forwardFrom:prv to:cur];
         }];
         
-        [_player.stepCompletionBlocks addObject:^(id sender){
+        [self.player.stepCompletionBlocks addObject:^(id sender){
             //Update the progressBar accordingly.
             EZDEBUG(@"One step Completed");
             EZActionPlayer* curPlayer = sender;
@@ -420,7 +421,7 @@ typedef enum {
         [_mainLayout addChild:myBar];
         
         if(epv.actions.count > 0){
-            [_player playOneStep:0 completeBlock:nil];
+            [self.player playOneStep:0 completeBlock:nil];
         }
         
         CCMenuItemImage* studyButton = [CCMenuItemImage itemWithNormalImage:@"study-button.png" selectedImage:@"study-button.png"
@@ -476,6 +477,10 @@ typedef enum {
                                                                               weakSelf.currentFinger = weakSelf.whiteFinger;
                                                                           }
                                                                           
+                                                                          
+                                                                          //Hope it harmless to remove twice.
+                                                                          [weakSelf.currentFinger stopAllActions];
+                                                                          [weakSelf.currentFinger removeFromParentAndCleanup:NO];
                                                                           weakSelf.currentFinger.visible = true;
                                                                           [weakSelf.studyBoardHolder addChild:weakSelf.currentFinger z:FingerZOrder];
                                                                           
@@ -487,6 +492,7 @@ typedef enum {
                                                                           EZDEBUG(@"Raise study panel successfully");
                                                                       }
                                         ];
+
         CCMenu* studyMenu = [CCMenu menuWithItems:studyButton, nil];
         studyMenu.position = ccp(262, 47);
         
@@ -498,10 +504,21 @@ typedef enum {
         //[self addChild:progressNob];
         [_mainLayout addChild:studyMenu];
         
-        
     }
     
     return self;
+}
+
+//Will be called by the commonPage when swipe get called
+//I am make sure the epv is a valid one
+- (void) swipeTo:(EZEpisodeVO*)epv currentPos:(NSInteger)currentPos isNext:(BOOL)isNext
+{
+    EZPlayPagePod* nextPage = [[EZPlayPagePod alloc] initWithEpisode:epv currentPos:currentPos];
+    if(isNext){
+        [[CCDirector sharedDirector] replaceScene:[CCTransitionSlideInR transitionWithDuration:0.5 scene:[nextPage createScene]]];
+    }else {
+        [[CCDirector sharedDirector] replaceScene:[CCTransitionSlideInL transitionWithDuration:0.5 scene:[nextPage createScene]]];
+    }
 }
 
 - (void) dealloc

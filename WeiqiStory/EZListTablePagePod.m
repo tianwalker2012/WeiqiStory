@@ -182,6 +182,8 @@
         //    epv.thumbNail = [EZImageView generateSmallBoard:epv.basicPattern];
         //}
         UIImage* smallboard = [EZFileUtil imageFromDocument:epv.thumbNailFile scale:[[UIScreen mainScreen] scale]];
+        
+        EZDEBUG(@"The smallboard size is:%@", NSStringFromCGSize(smallboard.size));
         //smallboard.scale = [[UIScreen mainScreen] scale];
         epv.thumbNail = smallboard;
         
@@ -197,7 +199,7 @@
             CCScene* nextScene = nil;
             
             if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad){
-                EZPlayPage* playPage = [[EZPlayPage alloc] initWithEpisode:epv];
+                EZPlayPage* playPage = [[EZPlayPage alloc] initWithEpisode:epv currentPos:i];
                 nextScene = [playPage createScene];
             }else{
                 EZPlayPagePod* playPage = [[EZPlayPagePod alloc] initWithEpisode:epv currentPos:i];

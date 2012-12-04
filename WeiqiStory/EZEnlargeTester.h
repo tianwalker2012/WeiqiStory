@@ -7,9 +7,9 @@
 //
 
 #import "cocos2d.h"
+#import "EZClippingNode.h"
 
 @interface EZEnlargeTester : CCLayer
-
 + (CCScene*) scene;
 
 @end
