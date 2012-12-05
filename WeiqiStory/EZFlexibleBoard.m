@@ -29,7 +29,11 @@
     //I assume the width and height is the same,
     //Use an animation to indicate what user can do on this board.
     _orgScale = _visableSize.width/_chessBoard.boundingBox.size.width;
+    _movingCursor = [CCSprite spriteWithFile:@"board-move-sign.png"];
+    _movingCursor.position = ccp(_visableSize.width/2, _visableSize.height/2);
+    _movingCursor.visible = false;
     [self addChild:_chessBoard];
+    [self addChild:_movingCursor];
     return self;
 }
 
@@ -42,6 +46,11 @@
 - (void) adjustPosition:(CGPoint)delta
 {
     EZDEBUG(@"Before change:%@", NSStringFromCGPoint(_chessBoard.position));
+    //What's the purpose of this factor?
+    //make the move faster.
+    
+    CGFloat scaleFactor = _chessBoard.boundingBox.size.width/_visableSize.width;
+    delta = ccp(delta.x*scaleFactor, delta.y*scaleFactor);
     CGPoint newPos = ccp(_chessBoard.position.x + delta.x, _chessBoard.position.y + delta.y);
     if(newPos.x > 0){
         newPos.x = 0;
@@ -229,6 +238,22 @@
     return true;
 }
 
+
+- (void) setMoveBoard:(ccTime)timeCount
+{
+    
+    if(_allTouches.count == 1 && [_allTouches containsObject:_movingTouch]){
+        [_chessBoard ccTouchCancelled:_movingTouch withEvent:nil];
+        _movingState = true;
+        _isFirstPan = true;
+        [self showMovingCursor];
+    }
+}
+
+- (void) showMovingCursor
+{
+    _movingCursor.visible = true;
+}
 //Standard touch event
 - (void)ccTouchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
@@ -236,6 +261,8 @@
     [_allTouches addObjectsFromArray:touches.allObjects];
     _touchAccepted = false;
     _multiTouchAccepted = false;
+    _movingCursor.visible = false;
+    _movingState = false;
     UITouch* touch = [_allTouches anyObject];
     if(_allTouches.count > 1){
         //Cancel the _chessBoard cursor first.
@@ -248,12 +275,14 @@
         }
     }else{
         EZDEBUG(@"Original Resize board Touch begin");
-        
         CGPoint localPt = [self locationInSelf:touch];
+        _movingTouch = touch;
+        
         if(CGRectContainsPoint(_touchRegion, localPt)){
             _touchAccepted = true;
             EZDEBUG(@"Unschedule get called");
             [_chessBoard ccTouchBegan:touch withEvent:event];
+            [self schedule:@selector(setMoveBoard:) interval:2];
         }
         return;
     }
@@ -269,7 +298,12 @@
         [self handlePan:[touch locationInView:[CCDirector sharedDirector].view]];
     }else{
         if(_touchAccepted){
-            [_chessBoard ccTouchMoved:touch withEvent:event];
+            if(_movingState){
+                EZDEBUG(@"will handle as pan");
+                [self handlePan:[touch locationInView:[CCDirector sharedDirector].view]];
+            }else{
+                [_chessBoard ccTouchMoved:touch withEvent:event];
+            }
         }
     }
 
@@ -278,18 +312,27 @@
 - (void)ccTouchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
     EZDEBUG(@"Touch ended:%i", touches.count);
+    _movingCursor.visible = false;
+    //May add animation later.
     for(UITouch* touch in touches){
         [_allTouches removeObject:touch];
     }
     
     if(_touchAccepted){
         UITouch* touch = [touches anyObject];
-        EZDEBUG(@"Accepted touch end");
-        [_chessBoard ccTouchEnded:touch withEvent:event];
+        if(_movingState){
+            EZDEBUG(@"Handle as pan");
+            [self handlePan:[touch locationInView:[CCDirector sharedDirector].view]];
+        }else{
+            
+            EZDEBUG(@"Accepted touch end");
+            [_chessBoard ccTouchEnded:touch withEvent:event];
+        }
     }else{
         EZDEBUG(@"Unaccepted touch end");
     }
     _touchAccepted = false;
+    _movingState = false;
     //[self schedule:@selector(setBoardBack:) interval:1];
 }
 
@@ -297,6 +340,8 @@
 - (void)ccTouchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
 {
     EZDEBUG(@"Cancel get called");
+    _movingCursor.visible = false;
+    _movingState = false;
     for(UITouch* touch in touches){
         [_allTouches removeObject:touch];
     }

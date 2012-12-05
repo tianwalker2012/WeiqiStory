@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		180D6687166DE6FC0075AF15 /* board-move-sign-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 180D6686166DE6FC0075AF15 /* board-move-sign-hd.png */; };
 		1810EC3A1606DA1B0061FF70 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1810EC391606DA1B0061FF70 /* QuartzCore.framework */; };
 		1810EC3C1606DA1B0061FF70 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1810EC3B1606DA1B0061FF70 /* OpenGLES.framework */; };
 		1810EC3E1606DA1B0061FF70 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1810EC3D1606DA1B0061FF70 /* OpenAL.framework */; };
@@ -1078,6 +1079,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		180D6686166DE6FC0075AF15 /* board-move-sign-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "board-move-sign-hd.png"; sourceTree = "<group>"; };
 		1810EC351606DA1B0061FF70 /* WeiqiStory.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeiqiStory.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1810EC391606DA1B0061FF70 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		1810EC3B1606DA1B0061FF70 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -2951,6 +2953,7 @@
 		18451DE41609CBA800BF530C /* images */ = {
 			isa = PBXGroup;
 			children = (
+				180D6686166DE6FC0075AF15 /* board-move-sign-hd.png */,
 				18888D4916664877006CDEB4 /* weiqi-icon-pad.png */,
 				1816485F1664B4D800E627F8 /* weiqi-icon.png */,
 				1816485D1664AFC600E627F8 /* point-finger-white-pad.png */,
@@ -4934,6 +4937,7 @@
 				18888CF61665A9F3006CDEB4 /* QueryInfo.strings in Resources */,
 				18888CFC1665AA51006CDEB4 /* InfoPlist.strings in Resources */,
 				18888D4A16664877006CDEB4 /* weiqi-icon-pad.png in Resources */,
+				180D6687166DE6FC0075AF15 /* board-move-sign-hd.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

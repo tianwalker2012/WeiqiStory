@@ -6,8 +6,9 @@
 //
 //
 
-#import "CCLayer.h"
+#import "cocos2d.h"
 #import "EZClippingNode.h"
+
 
 #define  MaximumZoomOut 2.5;
 
@@ -52,5 +53,13 @@
 @property (nonatomic, assign) BOOL multiTouchAccepted;
 
 @property (nonatomic, strong) NSMutableSet* allTouches;
+
+@property (nonatomic, assign) BOOL movingState;
+
+//What's the purpose of this?
+//It is for the moving, right?
+@property (nonatomic, strong) UITouch* movingTouch;
+
+@property (nonatomic, strong) CCSprite* movingCursor;
 
 @end
