@@ -207,12 +207,12 @@
 }
 
 //Calculate what's the maximum size for the selected coord
-+ (CGRect) shrinkBoard:(NSArray*)coords
++ (CGRect) shrinkBoard:(NSArray*)coords minimum:(NSInteger)minimum
 {
     //How many colomn will add
     int padding = 1;
-    int minXGap = 9;
-    int minYGap = 9;
+    int minXGap = minimum;
+    int minYGap = minimum;
     
     int minX = 18;
     int maxX = 0;
@@ -244,7 +244,7 @@
             minY = coord.y;
         }
     }
-
+    
     int leftDelta = minX - 0;
     int rightDelta = 18 - maxX;
     
@@ -284,6 +284,12 @@
         sizeY = minYGap;
     }
     return CGRectMake(orgX, orgY, sizeX, sizeY);
+}
+
+//Calculate what's the maximum size for the selected coord
++ (CGRect) shrinkBoard:(NSArray*)coords
+{
+    return [self shrinkBoard:coords minimum:9];
 }
 
 

@@ -1,16 +1,22 @@
 //
-//  EZFlexibleBoard.h
+//  EZFlexibleTester.h
 //  WeiqiStory
 //
-//  Created by xietian on 12-12-3.
+//  Created by xietian on 12-12-6.
 //
 //
+
+#import "EZClippingNode.h"
+
+
+
 
 #import "cocos2d.h"
 #import "EZClippingNode.h"
 
 
 #define  MaximumScale 2.5
+
 
 @class EZChessBoard;
 //What do I mean by flexible board.
@@ -24,7 +30,8 @@ typedef enum{
 } TouchState;
 
 
-@interface EZFlexibleBoard : EZClippingNode<CCStandardTouchDelegate, UIGestureRecognizerDelegate>
+@interface EZFlexibleTester : EZClippingNode<CCStandardTouchDelegate, UIGestureRecognizerDelegate>
+
 //What's the purpose of the rectangular?
 //Is this only touch region or what?
 //Or it is touch region
@@ -41,10 +48,7 @@ typedef enum{
 
 @property (nonatomic, strong) NSArray* basicPatterns;
 
-@property (nonatomic, strong) EZChessBoard* chessBoard;
-
-//Simplify the cases to illustrate the issue.
-@property (nonatomic, strong) CCSprite* simpleBoard;
+@property (nonatomic, strong) CCSprite* chessBoard;
 
 @property (nonatomic, assign) CGFloat zoomScale;
 
@@ -88,6 +92,7 @@ typedef enum{
 
 //This is a state machine, I will use state machine to manage things
 @property (nonatomic, assign) NSInteger touchState;
+
 
 
 @end

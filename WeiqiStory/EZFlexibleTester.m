@@ -1,36 +1,29 @@
 //
-//  EZFlexibleBoard.m
+//  EZFlexibleTester.m
 //  WeiqiStory
 //
-//  Created by xietian on 12-12-3.
+//  Created by xietian on 12-12-6.
 //
 //
 
-#import "EZFlexibleBoard.h"
-#import "EZChessBoard.h"
-#import "EZTouchHelper.h"
-#import "EZTouchHelper.h"
+#import "EZFlexibleTester.h"
 #import "EZChess2Image.h"
-#import "EZCCExtender.h"
+#import "EZTouchHelper.h"
+#import "EZConstants.h"
 
-@implementation EZFlexibleBoard
+@implementation EZFlexibleTester
+
 
 - (id) initWithBoard:(NSString*)orgBoardName boardTouchRect:(CGRect)boardTouchRegion visibleSize:(CGSize)size
 {
     self = [super init];
-    _chessBoard = [[EZChessBoard alloc] initWithFile:orgBoardName touchRect:boardTouchRegion rows:19 cols:19];
-    _chessBoard.touchEnabled = NO;
+    _chessBoard = [CCSprite spriteWithFile:orgBoardName];
+    //_chessBoard.touchEnabled = NO;
     _chessBoard.anchorPoint = ccp(0, 0);
     _chessBoard.position = ccp(0, 0);
-    _chessBoard.whiteChessName = @"white-button-large.png";
-    _chessBoard.blackChessName = @"black-button-large.png";
+    //_chessBoard.whiteChessName = @"white-button-large.png";
+    //_chessBoard.blackChessName = @"black-button-large.png";
     _visableSize = size;
-    
-    _simpleBoard = [CCSprite spriteWithFile:orgBoardName];
-    _simpleBoard.anchorPoint = ccp(0, 0);
-    _simpleBoard.position = ccp(-150, -150);
-    
-    self.contentSize = _visableSize;
     _allTouches = [[NSMutableSet alloc] init];
     _touchState = kTouchStart;
     //Zoom in limit. You can't make the board smaller than the boardFrame
@@ -42,10 +35,10 @@
     _movingCursor.visible = false;
     CCLayerColor* colorLayer = [CCLayerColor layerWithColor:ccc4(128, 0, 128, 255)];
     [self addChild:colorLayer z:0];
-    [self addChild:_simpleBoard];
-    //[self addChild:_chessBoard];
+    
+    [self addChild:_chessBoard];
     [self addChild:_movingCursor];
-
+    
     return self;
 }
 
@@ -65,53 +58,22 @@
     EZDEBUG(@"After normalize:%f", scale);
     
     //CGPoint center = [EZTouchHelper center:self.boundingBox];
-    //CGPoint orgAnchor = _chessBoard.anchorPoint;
-    //CGPoint orgPosition = _chessBoard.position;
+    //What's meaning of the center?
+    //it is the center of the self?
+    CGPoint center = ccp(self.position.x + _visableSize.width*0.5, self.position.y + _visableSize.height*0.5);
     
-   // EZDEBUG(@"BoundingBox before scale:%@, the contentSize:%@, position:%@", NSStringFromCGRect(_chessBoard.boundingBox), NSStringFromCGSize(_chessBoard.contentSize), NSStringFromCGPoint(_chessBoard.position));
-    _simpleBoard.anchorPoint = ccp(0.6, 0.6);
-    _simpleBoard.position = ccp(136.5, 136.5);
+    EZDEBUG(@"Center is:%@", NSStringFromCGPoint(center));
     
-    EZDEBUG(@"BoundingBox before scale:%@, the contentSize:%@, position:%@, anchor:%@", NSStringFromCGRect(_simpleBoard.boundingBox), NSStringFromCGSize(_simpleBoard.contentSize), NSStringFromCGPoint(_simpleBoard.position), NSStringFromCGPoint(_simpleBoard.anchorPoint));
-    
-    _simpleBoard.scale = scale;
-    
-    EZDEBUG(@"BoundingBox after scale:%@, position:%@, contentSize:%@", NSStringFromCGRect(_simpleBoard.boundingBox), NSStringFromCGPoint(_simpleBoard.position), NSStringFromCGSize(_simpleBoard.contentSize));
-    
-    //_simpleBoard.anchorPoint = ccp(0.9, 0.9);
-    CGRect myBound = _simpleBoard.boundingBox;
-    _simpleBoard.anchorPoint = ccp(0, 0);
-    _simpleBoard.position = ccp(myBound.origin.x, myBound.origin.y);
-    
-    EZDEBUG(@"BoundingBox after change set the position again:%@, position:%@, contentSize:%@", NSStringFromCGRect(_simpleBoard.boundingBox), NSStringFromCGPoint(_simpleBoard.position), NSStringFromCGSize(_simpleBoard.contentSize));
-
-    
-    
-    
-    //How about I manually update the position?
-    //Any side effects?
-    //_simpleBoard.position = _simpleBoard.boundingBox.origin;
-    
-    /**
-    CGPoint center = ccp(_visableSize.width/2, _visableSize.height/2);
-    CGPoint globalCenter = [self convertToWorldSpace:center];
-    CGPoint localCenter = [_simpleBoard convertToNodeSpace:globalCenter];
-    CGPoint changedAnchor = ccp(localCenter.x/_simpleBoard.contentSize.width, localCenter.y/_simpleBoard.contentSize.height);
-    //EZDEBUG(@"Changed anchor:%@, center:%@, globalCenter:%@, localCenter:%@", NSStringFromCGPoint(changedAnchor), NSStringFromCGPoint(center), NSStringFromCGPoint(globalCenter), NSStringFromCGPoint(localCenter));
-     
-    [_simpleBoard changeAnchor:changedAnchor];
-    EZDEBUG(@"Position before scale:%@, boundingBox:%@", NSStringFromCGPoint(_simpleBoard.position), NSStringFromCGRect(_simpleBoard.boundingBox));
-    //_simpleBoard.scale = scale;
-    EZDEBUG(@"Position after scale:%@, boundingBox:%@", NSStringFromCGPoint(_simpleBoard.position), NSStringFromCGRect(_simpleBoard.boundingBox));
-    [_simpleBoard changeAnchor:ccp(0, 0)];
-    EZDEBUG(@"Position after anchor change:%@", NSStringFromCGPoint(_simpleBoard.position));
-
-    CGPoint newPos = [EZTouchHelper adjustRect:_simpleBoard.boundingBox coveredRect:CGRectMake(0, 0, _visableSize.width, _visableSize.height)];
-    //_simpleBoard.position = newPos;
-    //Make sure the boundingBox accurately reflect the reality.
-    
-    EZDEBUG(@"BoundingBox after scale:%@, the updatd position:%@", NSStringFromCGRect(_simpleBoard.boundingBox), NSStringFromCGPoint(newPos));
-     **/
+    CGPoint orgAnchor = _chessBoard.anchorPoint;
+    //CGPoint o = _chessBoard.position;
+    CGPoint deltaAnchor =  ccp(center.x - _chessBoard.position.x,center.y - _chessBoard.position.y);
+    EZDEBUG(@"Changed anchor:%@", NSStringFromCGPoint(deltaAnchor));
+    CGPoint changedAnchor = ccp(orgAnchor.x + deltaAnchor.x/_chessBoard.contentSize.width, orgAnchor.y + deltaAnchor.y/_chessBoard.contentSize.height);
+    EZDEBUG(@"real anchor:%@", NSStringFromCGPoint(changedAnchor));
+    _chessBoard.anchorPoint = changedAnchor;
+    //CGRect changedRect = [EZTouchHelper changeAnchor:CGRectMake(_chessBoard.position.x, _chessBoard.position.y, _chessBoard.contentSize.width, _chessBoard.contentSize.height) orgAnchor:orgAnchor changedAnchor:changedAnchor];
+    //EZDEBUG(@"changedRect:%@, orgPosition:%@", NSStringFromCGRect(changedRect), NSStringFromCGPoint(_chessBoard.position));
+    _chessBoard.position = center;
 }
 
 - (void) zoomIn
@@ -172,16 +134,16 @@
     CGRect clippedRect = CGRectMake(orgX, orgY, fWidth, fWidth);
     EZDEBUG(@"Final clippedRect is:%@", NSStringFromCGRect(clippedRect));
     _chessBoard.anchorPoint = ccp(0, 0);
-        
+    
     EZDEBUG(@"Before scale:%@", NSStringFromCGRect(_chessBoard.boundingBox));
     CGFloat scaleFactor = _visableSize.width/fWidth;
     EZDEBUG(@"Before scale:%@, scalaFactor:%f", NSStringFromCGRect(_chessBoard.boundingBox), scaleFactor);
     _chessBoard.scale = scaleFactor;
     _chessBoard.position = ccp(orgX*scaleFactor, orgY*scaleFactor);
-
+    
     
     EZDEBUG(@"After scale:%@", NSStringFromCGRect(_chessBoard.boundingBox));
-    [_chessBoard putChessmans:pattern animated:NO];
+    //[_chessBoard putChessmans:pattern animated:NO];
 }
 
 - (void) adjustPosition:(CGPoint)delta
@@ -233,7 +195,7 @@
 {
     
     [self handlePan:[_panRecognizer translationInView:[CCDirector sharedDirector].view]];
- 
+    
 }
 
 - (void) onEnter
@@ -244,14 +206,14 @@
     _touchRegion = CGRectMake(0, 0, _visableSize.width, _visableSize.height);
     
     //[_gestureView addGestureRecognizer:_panRecognizer];
-
+    
     //[_gestureView addGestureRecognizer:_pinchRecognizer];
     //[[CCDirector sharedDirector].view addSubview:_gestureView];
     [[CCDirector sharedDirector].view setMultipleTouchEnabled:YES];
     //Some magic number
     //What's the meaning of the priority
     //When would I use it?
-    [[CCDirector sharedDirector].touchDispatcher addStandardDelegate:self priority:StandardTouchPriority];
+    [[CCDirector sharedDirector].touchDispatcher addStandardDelegate:self priority:10];
     //_pinchRecognizer.delegate = self;
     //_panRecognizer.delegate = self;
     
@@ -266,48 +228,48 @@
 
 
 /**
-- (BOOL)ccTouchBegan:(UITouch *)touch withEvent:(UIEvent *)event
-{
-    EZDEBUG(@"Original Resize board Touch begin");
-    CGPoint localPt = [self locationInSelf:touch];
-    if(CGRectContainsPoint(_touchRegion, localPt)){
-        
-        _touchAccepted = true;
-        EZDEBUG(@"Unschedule get called");
-        
-        [_chessBoard ccTouchBegan:touch withEvent:event];
-        return TRUE;
-    }
-    _touchAccepted = false;
-    return FALSE;
-}
-
-- (void)ccTouchMoved:(UITouch *)touch withEvent:(UIEvent *)event
-{
-    [_chessBoard ccTouchMoved:touch withEvent:event];
-}
-
-//Why the touch event give to me, even if I refuse it.
-- (void)ccTouchEnded:(UITouch *)touch withEvent:(UIEvent *)event
-{
-    if(_touchAccepted){
-        EZDEBUG(@"Accepted touch end");
-        [_chessBoard ccTouchEnded:touch withEvent:event];
-    }else{
-        EZDEBUG(@"Unaccepted touch end");
-    }
-    _touchAccepted = false;
-    //[self schedule:@selector(setBoardBack:) interval:1];
-    
-}
-
-
-- (void)ccTouchCancelled:(UITouch *)touch withEvent:(UIEvent *)event
-{
-    EZDEBUG(@"Cancel get called");
-    [_chessBoard ccTouchCancelled:touch withEvent:event];
-}
-**/
+ - (BOOL)ccTouchBegan:(UITouch *)touch withEvent:(UIEvent *)event
+ {
+ EZDEBUG(@"Original Resize board Touch begin");
+ CGPoint localPt = [self locationInSelf:touch];
+ if(CGRectContainsPoint(_touchRegion, localPt)){
+ 
+ _touchAccepted = true;
+ EZDEBUG(@"Unschedule get called");
+ 
+ [_chessBoard ccTouchBegan:touch withEvent:event];
+ return TRUE;
+ }
+ _touchAccepted = false;
+ return FALSE;
+ }
+ 
+ - (void)ccTouchMoved:(UITouch *)touch withEvent:(UIEvent *)event
+ {
+ [_chessBoard ccTouchMoved:touch withEvent:event];
+ }
+ 
+ //Why the touch event give to me, even if I refuse it.
+ - (void)ccTouchEnded:(UITouch *)touch withEvent:(UIEvent *)event
+ {
+ if(_touchAccepted){
+ EZDEBUG(@"Accepted touch end");
+ [_chessBoard ccTouchEnded:touch withEvent:event];
+ }else{
+ EZDEBUG(@"Unaccepted touch end");
+ }
+ _touchAccepted = false;
+ //[self schedule:@selector(setBoardBack:) interval:1];
+ 
+ }
+ 
+ 
+ - (void)ccTouchCancelled:(UITouch *)touch withEvent:(UIEvent *)event
+ {
+ EZDEBUG(@"Cancel get called");
+ [_chessBoard ccTouchCancelled:touch withEvent:event];
+ }
+ **/
 
 //Make sure all in the same plage
 - (BOOL) checkAllWithinRegion:(NSSet*)touches
@@ -362,8 +324,8 @@
         //[self schedule:@selector(setMoveBoard:) interval:2];
         return;
     }else if(_allTouches.count >= 2){
-    //2 cases will get into this block
-    //Already accepted the first touch or 2 touch come at the same time
+        //2 cases will get into this block
+        //Already accepted the first touch or 2 touch come at the same time
         if(_touchState == kSingleTouch){
             [_chessBoard ccTouchCancelled:touch withEvent:event];
         }
@@ -373,7 +335,7 @@
         _isFirstPan = TRUE;
         _movingCursor.visible = true;
         [self handlePan:[_currMovingTouch locationInView:[CCDirector sharedDirector].view]];
-    }     
+    }
 }
 
 - (void)ccTouchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
@@ -387,7 +349,7 @@
     }else if(_touchState == kSingleTouch){
         [_chessBoard ccTouchMoved:touch withEvent:event];
     }
-
+    
 }
 
 - (void)ccTouchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
@@ -411,7 +373,7 @@
     //[self schedule:@selector(setBoardBack:) interval:1];
 }
 
-//Sometimes if the condication is more flexible, make the things easier 
+//Sometimes if the condication is more flexible, make the things easier
 - (void)ccTouchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
 {
     EZDEBUG(@"Cancel get called");
@@ -424,5 +386,6 @@
     }
     _touchAccepted = false;
 }
+
 
 @end

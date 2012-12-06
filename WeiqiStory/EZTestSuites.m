@@ -49,6 +49,7 @@
 #import "EZImageView.h"
 #import "CCFileUtils.h"
 #import "EZThreadPool.h"
+#import "EZTouchHelper.h"
 //#import "EZ"
 
 
@@ -245,6 +246,21 @@ static NSInteger releaseCount;
     
     
     //[EZTestSuites testCreateSingleton];
+    //[EZTestSuites testRectangularCover];
+}
+
+
++ (void) testRectangularCover
+{
+    CGPoint pos = [EZTouchHelper adjustRect:CGRectMake(10, 10, 5, 5) coveredRect:CGRectMake(5, 5, 5, 5)];
+
+    assert(pos.x == 5 && pos.y == 5);
+    pos = [EZTouchHelper adjustRect:CGRectMake(3, 3, 6, 6) coveredRect:CGRectMake(5, 5, 5, 5)];
+    assert(pos.x == 4 && pos.y == 4);
+    
+    pos = [EZTouchHelper adjustRect:CGRectMake(3, 6, 6, 6) coveredRect:CGRectMake(5, 5, 5, 5)];
+    assert(pos.x == 4 && pos.y == 5);
+    assert(false);
 }
 
 + (id) createObject

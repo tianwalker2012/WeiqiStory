@@ -46,6 +46,8 @@
 //You can just pick the maximum size
 + (CGRect) shrinkBoard:(NSArray*)coords;
 
++ (CGRect) shrinkBoard:(NSArray*)coords minimum:(NSInteger)minimum;
+
 //Generate adjusted board
 + (UIImage*) generateAdjustedBoard:(NSArray*)coords size:(CGSize)size;
 

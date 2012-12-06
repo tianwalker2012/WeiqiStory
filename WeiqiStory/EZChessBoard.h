@@ -46,7 +46,11 @@ typedef enum {
 //It can be initialized by column and row.
 //And what's the rectangular for the board.
 //It will only accept the touch event on this retangular.
-@interface EZChessBoard : CCSprite<CCTargetedTouchDelegate, EZBoardFront, EZBoardDelegate>
+@interface EZChessBoard : CCNode<CCTargetedTouchDelegate, EZBoardFront, EZBoardDelegate>
+
+
+//Let's see if we can fix this.
+@property (nonatomic, strong) CCSprite* boardBackground;
 
 //Only touch fall into this region will be sensed and processed.
 @property (assign, nonatomic) CGRect touchRect;

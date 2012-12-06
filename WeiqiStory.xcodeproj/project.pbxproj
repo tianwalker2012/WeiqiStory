@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		180D6687166DE6FC0075AF15 /* board-move-sign-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 180D6686166DE6FC0075AF15 /* board-move-sign-hd.png */; };
+		180D668B167057210075AF15 /* EZFlexibleTester.m in Sources */ = {isa = PBXBuildFile; fileRef = 180D668A167057200075AF15 /* EZFlexibleTester.m */; };
+		180D668E167066F00075AF15 /* EZCCExtender.m in Sources */ = {isa = PBXBuildFile; fileRef = 180D668D167066F00075AF15 /* EZCCExtender.m */; };
 		1810EC3A1606DA1B0061FF70 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1810EC391606DA1B0061FF70 /* QuartzCore.framework */; };
 		1810EC3C1606DA1B0061FF70 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1810EC3B1606DA1B0061FF70 /* OpenGLES.framework */; };
 		1810EC3E1606DA1B0061FF70 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1810EC3D1606DA1B0061FF70 /* OpenAL.framework */; };
@@ -978,10 +980,10 @@
 		18888CF61665A9F3006CDEB4 /* QueryInfo.strings in Resources */ = {isa = PBXBuildFile; fileRef = 18888CF81665A9F3006CDEB4 /* QueryInfo.strings */; };
 		18888CFC1665AA51006CDEB4 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 18888CFE1665AA51006CDEB4 /* InfoPlist.strings */; };
 		18888D4A16664877006CDEB4 /* weiqi-icon-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 18888D4916664877006CDEB4 /* weiqi-icon-pad.png */; };
-		18888D63166C52E3006CDEB4 /* EZViewGesturer.m in Sources */ = {isa = PBXBuildFile; fileRef = 18888D62166C52E3006CDEB4 /* EZViewGesturer.m */; };
-		18888D66166C8F63006CDEB4 /* EZCommonPlayPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 18888D65166C8F61006CDEB4 /* EZCommonPlayPage.m */; };
-		18888D69166CE8E2006CDEB4 /* EZFlexibleBoard.m in Sources */ = {isa = PBXBuildFile; fileRef = 18888D68166CE8E2006CDEB4 /* EZFlexibleBoard.m */; };
-		18888D6C166CEE2D006CDEB4 /* EZClippingNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 18888D6B166CEE2C006CDEB4 /* EZClippingNode.m */; };
+		18888D63166C52E3006CDEB4 /* EZViewGesturer.m in Sources */ = {isa = PBXBuildFile; fileRef = 18888D62166C52E3006CDEB4 /* EZViewGesturer.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		18888D66166C8F63006CDEB4 /* EZCommonPlayPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 18888D65166C8F61006CDEB4 /* EZCommonPlayPage.m */; settings = {COMPILER_FLAGS = "-fobc-arc"; }; };
+		18888D69166CE8E2006CDEB4 /* EZFlexibleBoard.m in Sources */ = {isa = PBXBuildFile; fileRef = 18888D68166CE8E2006CDEB4 /* EZFlexibleBoard.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		18888D6C166CEE2D006CDEB4 /* EZClippingNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 18888D6B166CEE2C006CDEB4 /* EZClippingNode.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		189269B6162FE5B800199D76 /* EZAudioFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 189269B5162FE5B700199D76 /* EZAudioFile.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		189269BF1630006F00199D76 /* EZEpisodeVO.m in Sources */ = {isa = PBXBuildFile; fileRef = 189269BE1630006F00199D76 /* EZEpisodeVO.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		189269CA1630FBE100199D76 /* EZEpisodeDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 189269C91630FBE100199D76 /* EZEpisodeDownloader.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
@@ -1080,6 +1082,10 @@
 
 /* Begin PBXFileReference section */
 		180D6686166DE6FC0075AF15 /* board-move-sign-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "board-move-sign-hd.png"; sourceTree = "<group>"; };
+		180D6689167057200075AF15 /* EZFlexibleTester.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZFlexibleTester.h; sourceTree = "<group>"; };
+		180D668A167057200075AF15 /* EZFlexibleTester.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZFlexibleTester.m; sourceTree = "<group>"; };
+		180D668C167066F00075AF15 /* EZCCExtender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZCCExtender.h; sourceTree = "<group>"; };
+		180D668D167066F00075AF15 /* EZCCExtender.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZCCExtender.m; sourceTree = "<group>"; };
 		1810EC351606DA1B0061FF70 /* WeiqiStory.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeiqiStory.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1810EC391606DA1B0061FF70 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		1810EC3B1606DA1B0061FF70 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -2932,6 +2938,8 @@
 				18888D68166CE8E2006CDEB4 /* EZFlexibleBoard.m */,
 				18888D6A166CEE2C006CDEB4 /* EZClippingNode.h */,
 				18888D6B166CEE2C006CDEB4 /* EZClippingNode.m */,
+				180D6689167057200075AF15 /* EZFlexibleTester.h */,
+				180D668A167057200075AF15 /* EZFlexibleTester.m */,
 			);
 			name = Boards;
 			sourceTree = "<group>";
@@ -3190,6 +3198,8 @@
 				189269CF1631189F00199D76 /* EZEpisodeUploader.m */,
 				189269D116311DB200199D76 /* EZEpisodeFile.h */,
 				189269D216311DB200199D76 /* EZEpisodeFile.m */,
+				180D668C167066F00075AF15 /* EZCCExtender.h */,
+				180D668D167066F00075AF15 /* EZCCExtender.m */,
 			);
 			name = Utility;
 			sourceTree = "<group>";
@@ -5147,6 +5157,8 @@
 				18888D66166C8F63006CDEB4 /* EZCommonPlayPage.m in Sources */,
 				18888D69166CE8E2006CDEB4 /* EZFlexibleBoard.m in Sources */,
 				18888D6C166CEE2D006CDEB4 /* EZClippingNode.m in Sources */,
+				180D668B167057210075AF15 /* EZFlexibleTester.m in Sources */,
+				180D668E167066F00075AF15 /* EZCCExtender.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

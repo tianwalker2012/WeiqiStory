@@ -36,4 +36,16 @@
 //Convert UI rectangular to GL rectangular
 + (CGRect) convertUI2GL:(CGRect)uiRect;
 
+
++ (CGPoint) center:(CGRect)rect;
+
++ (CGRect) changeAnchor:(CGRect)orgRect orgAnchor:(CGPoint)orgAnchor changedAnchor:(CGPoint)changedAnchor;
+
+
+//The position I will adjust to make the mover cover the covered.
+//Naming is good, right?
+//Ya, Ok, let's move to the implementation
++ (CGPoint) adjustRect:(CGRect)mover coveredRect:(CGRect)covered;
+
+
 @end
