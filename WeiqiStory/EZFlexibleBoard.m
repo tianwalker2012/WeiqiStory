@@ -69,30 +69,11 @@
     //CGPoint orgPosition = _chessBoard.position;
     
    // EZDEBUG(@"BoundingBox before scale:%@, the contentSize:%@, position:%@", NSStringFromCGRect(_chessBoard.boundingBox), NSStringFromCGSize(_chessBoard.contentSize), NSStringFromCGPoint(_chessBoard.position));
-    _simpleBoard.anchorPoint = ccp(0.6, 0.6);
-    _simpleBoard.position = ccp(136.5, 136.5);
-    
-    EZDEBUG(@"BoundingBox before scale:%@, the contentSize:%@, position:%@, anchor:%@", NSStringFromCGRect(_simpleBoard.boundingBox), NSStringFromCGSize(_simpleBoard.contentSize), NSStringFromCGPoint(_simpleBoard.position), NSStringFromCGPoint(_simpleBoard.anchorPoint));
-    
-    _simpleBoard.scale = scale;
-    
-    EZDEBUG(@"BoundingBox after scale:%@, position:%@, contentSize:%@", NSStringFromCGRect(_simpleBoard.boundingBox), NSStringFromCGPoint(_simpleBoard.position), NSStringFromCGSize(_simpleBoard.contentSize));
-    
-    //_simpleBoard.anchorPoint = ccp(0.9, 0.9);
-    CGRect myBound = _simpleBoard.boundingBox;
-    _simpleBoard.anchorPoint = ccp(0, 0);
-    _simpleBoard.position = ccp(myBound.origin.x, myBound.origin.y);
-    
-    EZDEBUG(@"BoundingBox after change set the position again:%@, position:%@, contentSize:%@", NSStringFromCGRect(_simpleBoard.boundingBox), NSStringFromCGPoint(_simpleBoard.position), NSStringFromCGSize(_simpleBoard.contentSize));
-
-    
-    
     
     //How about I manually update the position?
     //Any side effects?
     //_simpleBoard.position = _simpleBoard.boundingBox.origin;
     
-    /**
     CGPoint center = ccp(_visableSize.width/2, _visableSize.height/2);
     CGPoint globalCenter = [self convertToWorldSpace:center];
     CGPoint localCenter = [_simpleBoard convertToNodeSpace:globalCenter];
@@ -101,17 +82,18 @@
      
     [_simpleBoard changeAnchor:changedAnchor];
     EZDEBUG(@"Position before scale:%@, boundingBox:%@", NSStringFromCGPoint(_simpleBoard.position), NSStringFromCGRect(_simpleBoard.boundingBox));
-    //_simpleBoard.scale = scale;
+    _simpleBoard.scale = scale;
     EZDEBUG(@"Position after scale:%@, boundingBox:%@", NSStringFromCGPoint(_simpleBoard.position), NSStringFromCGRect(_simpleBoard.boundingBox));
     [_simpleBoard changeAnchor:ccp(0, 0)];
     EZDEBUG(@"Position after anchor change:%@", NSStringFromCGPoint(_simpleBoard.position));
 
     CGPoint newPos = [EZTouchHelper adjustRect:_simpleBoard.boundingBox coveredRect:CGRectMake(0, 0, _visableSize.width, _visableSize.height)];
-    //_simpleBoard.position = newPos;
+    
+    _simpleBoard.position = newPos;
     //Make sure the boundingBox accurately reflect the reality.
     
     EZDEBUG(@"BoundingBox after scale:%@, the updatd position:%@", NSStringFromCGRect(_simpleBoard.boundingBox), NSStringFromCGPoint(newPos));
-     **/
+     
 }
 
 - (void) zoomIn
