@@ -16,6 +16,7 @@
 @class EZEpisodeVO;
 @class EZResizeChessBoard;
 @class EZActionPlayer;
+@class EZFlexibleBoard;
 
 
 @interface EZPlayPagePod : EZCommonPlayPage
@@ -37,7 +38,9 @@
 
 //Why do we need this?
 //Why need this board to make our ChessBoard could getting larger when user touch the screen.
-@property(nonatomic, strong) EZResizeChessBoard* resizeBoard;
+//@property(nonatomic, strong) EZResizeChessBoard* resizeBoard;
+
+@property (nonatomic, strong) EZFlexibleBoard* flexibleBoard;
 
 @property(nonatomic, strong) EZActionPlayer* player2;
 

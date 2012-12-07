@@ -32,7 +32,9 @@
 - (void) visit
 {
     //EZDEBUG(@"Visit get called:%@", [NSThread callStackSymbols]);
-    CGRect clipped = [EZChess2Image rectPointToPix:_clippingRegion];
+    
+    //CGRect clipped = [EZChess2Image rectPointToPix:_clippingRegion];
+    CGRect clipped = [EZChess2Image rectPointToPix:self.boundingBox];
     glEnable(GL_SCISSOR_TEST);
     glScissor(clipped.origin.x, clipped.origin.y,  clipped.size.width, clipped.size.height);
     
@@ -47,7 +49,8 @@
 //This is very interesting.
 - (void) draw
 {
-    CGRect clipped = [EZChess2Image rectPointToPix:_clippingRegion];
+    //CGRect clipped = [EZChess2Image rectPointToPix:_clippingRegion];
+    CGRect clipped = [EZChess2Image rectPointToPix:self.boundingBox];
     glEnable(GL_SCISSOR_TEST);
     glScissor(clipped.origin.x, clipped.origin.y,  clipped.size.width, clipped.size.height);
     [super draw];

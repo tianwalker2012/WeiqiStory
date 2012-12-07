@@ -20,6 +20,7 @@
 #import "EZListTablePagePod.h"
 #import "EZEpisode.h"
 #import "EZCoreAccessor.h"
+#import "EZFlexibleBoard.h"
 
 
 //Only 2 status.
@@ -87,27 +88,30 @@ typedef enum {
     
     
     //chessBoard2 = [[EZChessBoard alloc] initWithFile:@"chess-board.png" touchRect:CGRectMake(13, 13, 271, 271) rows:19 cols:19];
-    _resizeBoard = [[EZResizeChessBoard alloc] initWithOrgBoard:@"chess-board.png" orgRect:CGRectMake(13, 13, 271, 271) largeBoard:@"chess-board-large.png" largeRect:CGRectMake(27, 27, 632, 632)];
+    //_resizeBoard = [[EZResizeChessBoard alloc] initWithOrgBoard:@"chess-board.png" orgRect:CGRectMake(13, 13, 271, 271) largeBoard:@"chess-board-large.png" largeRect:CGRectMake(27, 27, 632, 632)];
+    _flexibleBoard = [[EZFlexibleBoard alloc] initWithBoard:@"chess-board-large.png" boardTouchRect:CGRectMake(27, 27, 632, 632) visibleSize:CGSizeMake(310, 310)];
     
-    _chessBoard2 = _resizeBoard.orgBoard;
     
-    _resizeBoard.contentSize = _resizeBoard.orgBoard.contentSize;
-    _resizeBoard.anchorPoint = ccp(0.5, 0.5);
-    _resizeBoard.position = ccp(320/2, 244);
+    _chessBoard2 = _flexibleBoard.chessBoard;
+    
+    //_resizeBoard.contentSize = _resizeBoard.orgBoard.contentSize;
+    //_flexibleBoard.basicPatterns = epv.basicPattern;
+    _flexibleBoard.anchorPoint = ccp(0.5, 0.5);
+    _flexibleBoard.position = ccp(320/2, 244);
     //chessBoard2.anchorPoint = ccp(0.5, 0.5);
-    [_studyBoardHolder addChild:_resizeBoard z:9];
+    [_studyBoardHolder addChild:_flexibleBoard z:9];
     
     CCSprite* boardFrame = [[CCSprite alloc] initWithFile:@"board-frame.png"];
     boardFrame.position = ccp(320/2, 244);
     //boardFrame.anchorPoint = ccp(0.5, 0.5);
-    _resizeBoard.enlargedBoard.cursorHolder = boardFrame;
-    
+    //_resizeBoard.enlargedBoard.cursorHolder = boardFrame;
+    _flexibleBoard.chessBoard.cursorHolder = boardFrame;
     //Why Frame should cover the edge of the board.
     [_studyBoardHolder addChild:boardFrame z:10];
     
     
     //[self addChild:studyBoardHolder];
-    _player2 = [[EZActionPlayer alloc] initWithActions:epv.actions chessBoard:_resizeBoard.orgBoard inMainBundle:epv.inMainBundle];
+    _player2 = [[EZActionPlayer alloc] initWithActions:epv.actions chessBoard:_flexibleBoard.chessBoard inMainBundle:epv.inMainBundle];
     
     //EZActionPlayer* playerTmp = [[EZActionPlayer alloc] initWithActions:epv.actions chessBoard:resizeBoard.enlargedBoard inMainBundle:epv.inMainBundle];
     __weak EZPlayPagePod* weakSelf = self;
@@ -127,6 +131,8 @@ typedef enum {
                                                                          [weakSelf.currentFinger stopAllActions];
                                                                          [weakSelf.currentFinger removeFromParentAndCleanup:NO];
                                                                      }
+                                                                     
+                                                                                                        
                                                                      id animation = [CCScaleTo actionWithDuration:0.3 scaleX:0.05 scaleY:1];
                                                                      
                                                                      id completed = [CCCallBlock actionWithBlock:^(){
@@ -140,7 +146,8 @@ typedef enum {
                                                                          [weakSelf.studyBoardHolder removeFromParentAndCleanup:NO];
                                                                      }];
                                                                      id sequence = [CCSequence actions:animation, completed, nil];
-                                                                     weakSelf.resizeBoard.touchEnabled = false;
+                                                                     weakSelf.flexibleBoard.touchEnabled = false;
+                                                                     [weakSelf.flexibleBoard backToRollStatus];
                                                                      [weakSelf.studyBoardHolder runAction:sequence];
                                                                  }
                                    ];
@@ -181,7 +188,7 @@ typedef enum {
     _blackFinger.position = ccp(320/2, 244);
     _whiteFinger.position = ccp(320/2, 244);
     
-    _resizeBoard.touchedBlock = ^(){
+    _flexibleBoard.touchBlock = ^(){
         if(weakSelf.currentFinger.visible){
             [weakSelf.currentFinger stopAllActions];
             [weakSelf.currentFinger removeFromParentAndCleanup:NO];
@@ -205,9 +212,6 @@ typedef enum {
         //chessBoard2.touchEnabled = false;
     //}
     [super onExit];
-    if(_resizeBoard.touchEnabled){
-        _resizeBoard.touchEnabled = false;
-    }
 }
 
 
@@ -434,7 +438,7 @@ typedef enum {
                                                                           if(!weakSelf.studyBoardHolder){
                                                                               [weakSelf initStudyBoard2:epv];
                                                                           }else{
-                                                                              weakSelf.resizeBoard.touchEnabled = YES;
+                                                                              weakSelf.flexibleBoard.touchEnabled = YES;
                                                                           }
                                                                           //[self addChild:chessBoard2];
                                                                           //[studyBoardHolder setScale:0.2];
@@ -448,14 +452,16 @@ typedef enum {
                                                                               //why make it 100, so typo.
                                                                               [weakSelf addChild:weakSelf.studyBoardHolder z:10];
                                                                               id scaleDown = [CCScaleTo actionWithDuration:0.3f scaleX:1 scaleY:1];
+                                                                              id scaleComplete = [CCCallBlock actionWithBlock:^(){
+                                                                                  [weakSelf.flexibleBoard recalculateBoardRegion];
+                                                                              }];
                                                                               //id moveTo = [CCMoveTo actionWithDuration:0.3f position:ccp(0, 0)];
-                                                                              [weakSelf.studyBoardHolder runAction:scaleDown];
+                                                                              [weakSelf.studyBoardHolder runAction:[CCSequence actions:scaleDown, scaleComplete, nil]];
                                                                           }];
                                                                           id sequence = [CCSequence actions:animation, completed, nil];
                                                                           [weakSelf.mainLayout runAction:sequence];
                                                                           
                                                                           [weakSelf.chessBoard2 cleanAll];
-                                                                          [weakSelf.resizeBoard.enlargedBoard cleanAll];
                                                                           [weakSelf.player2 forwardFrom:0 to:weakSelf.player.currentAction];
                                                                           
                                                                           //mean
@@ -485,6 +491,9 @@ typedef enum {
                                                                           [weakSelf.studyBoardHolder addChild:weakSelf.currentFinger z:FingerZOrder];
                                                                           
                                                                           [weakSelf.currentFinger runAction:weakSelf.fingerAnim];
+                                                                          //We will recalculate the board visible region.
+                                                                          //
+                                                                          [weakSelf.flexibleBoard backToRollStatus];
                                                                           //Make sure the inner board and outboard color is consistent.
                                                                           //It is all because initially, I didn't get all the
                                                                           //BoardFront interface well define.

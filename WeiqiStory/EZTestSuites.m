@@ -50,7 +50,6 @@
 #import "CCFileUtils.h"
 #import "EZThreadPool.h"
 #import "EZTouchHelper.h"
-//#import "EZ"
 
 
 static NSInteger releaseCount;
@@ -249,6 +248,12 @@ static NSInteger releaseCount;
     //[EZTestSuites testRectangularCover];
 }
 
+
++ (void) testAcceleration
+{
+    //EZDEBUG(@"Accelerate staff");
+    //CMAcce
+}
 
 + (void) testRectangularCover
 {

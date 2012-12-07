@@ -8,6 +8,7 @@
 
 #import "cocos2d.h"
 #import "EZClippingNode.h"
+#import "EZConstants.h"
 
 
 #define  MaximumScale 2.5
@@ -30,10 +31,22 @@ typedef enum{
 //Or it is touch region
 - (id) initWithBoard:(NSString*)orgBoardName boardTouchRect:(CGRect)boardTouchRegion visibleSize:(CGSize)size;
 
+//Will back to status of roll, so that have no trail effects. 
+- (void) backToRollStatus;
 
 //Client don't need to care about the possiblity
 //The method will figure out a feasible scale value for it.
 - (void) scaleBoardTo:(CGFloat)scale;
+
+
+//Some times, I just want to calculate the region without really plant it.
+//Like my recalculation jobs. 
+- (void) calculateRegionForPattern:(NSArray*)pattern isPlant:(BOOL)plant;
+
+//What's the purpose of this method?
+//Since the board not strictly controlled by the EZFlexibleBoard, so I need to calculate the visible part based on what already planed by
+//The player.
+- (void) recalculateBoardRegion;
 
 - (void) zoomIn;
 
@@ -88,6 +101,11 @@ typedef enum{
 
 //This is a state machine, I will use state machine to manage things
 @property (nonatomic, assign) NSInteger touchState;
+
+@property (nonatomic, strong) EZOperationBlock touchBlock;
+
+
+@property (nonatomic, assign) BOOL touchEnabled;
 
 
 @end

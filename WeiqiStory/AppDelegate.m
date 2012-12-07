@@ -128,6 +128,7 @@
     //This is a block function call. Why not make it blocking call?
     [[EZSoundManager sharedSoundManager] loadSoundEffects:@[sndButtonPress, sndPlantChessman, sndRefuseChessman, sndBubbleBroken]];
 	// and add the scene to the stack. The director will run it when it automatically when the view is displayed.
+    [[CCDirector sharedDirector].view setMultipleTouchEnabled:YES];
 	//[director_ pushScene:[EZChessEditor scene]];
     //[director_ pushScene:[EZChessPlay scene]];
 	//[director_ pushScene:[EZListTablePage scene]];
@@ -135,10 +136,10 @@
     //[director_ pushScene:[EZHomePage scene]];
     //[director_ pushScene:[EZLeakageMain node]];
     //[director_ pushScene:[EZListEditPage scene]];
-    //[director_ pushScene:[[[EZPlayPagePod alloc] initWithEpisode:[self generateEpisodeVO] currentPos:2] createScene]];
-    [[CCDirector sharedDirector].view setMultipleTouchEnabled:YES];
+    [director_ pushScene:[[[EZPlayPagePod alloc] initWithEpisode:[self generateEpisodeVO] currentPos:2] createScene]];
+    
     //EZDEBUG(@"view class:%@, multiple Touch enabled:%i", [[CCDirector sharedDirector].view class], [CCDirector sharedDirector].view.multipleTouchEnabled);
-    [director_ pushScene:[EZEnlargeTester node]];
+    //[director_ pushScene:[EZEnlargeTester node]];
     
     //[director_ pushScene:[EZListTablePagePod node]];
 	// Create a Navigation Controller with the Director

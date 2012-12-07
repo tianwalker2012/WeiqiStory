@@ -133,9 +133,10 @@
     
     CGRect clippedRect = CGRectMake(orgX, orgY, fWidth, fWidth);
     EZDEBUG(@"Final clippedRect is:%@", NSStringFromCGRect(clippedRect));
+    CGRect backBounding = _chessBoard.boundingBox;
     _chessBoard.anchorPoint = ccp(0, 0);
     
-    EZDEBUG(@"Before scale:%@", NSStringFromCGRect(_chessBoard.boundingBox));
+    EZDEBUG(@"Before scale:%@", NSStringFromCGRect(backBounding));
     CGFloat scaleFactor = _visableSize.width/fWidth;
     EZDEBUG(@"Before scale:%@, scalaFactor:%f", NSStringFromCGRect(_chessBoard.boundingBox), scaleFactor);
     _chessBoard.scale = scaleFactor;

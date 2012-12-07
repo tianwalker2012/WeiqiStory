@@ -61,7 +61,8 @@
     
     
     recognizerRight.direction = UISwipeGestureRecognizerDirectionRight;
-    _gesturerView.backgroundColor = [UIColor colorWithRed:0.2 green:0.1 blue:0.1 alpha:0.5];
+    //_gesturerView.backgroundColor = [UIColor colorWithRed:0.2 green:0.1 blue:0.1 alpha:0.5];
+    _gesturerView.backgroundColor = [UIColor clearColor];
     [_gesturerView addGestureRecognizer:recognizerRight];
     [_gesturerView addGestureRecognizer:recognizerLeft];
     //[[CCDirector sharedDirector].view addSubview:_gesturerView];

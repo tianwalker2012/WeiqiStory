@@ -1086,6 +1086,7 @@
 		180D668A167057200075AF15 /* EZFlexibleTester.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZFlexibleTester.m; sourceTree = "<group>"; };
 		180D668C167066F00075AF15 /* EZCCExtender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZCCExtender.h; sourceTree = "<group>"; };
 		180D668D167066F00075AF15 /* EZCCExtender.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZCCExtender.m; sourceTree = "<group>"; };
+		180D668F1670D90D0075AF15 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		1810EC351606DA1B0061FF70 /* WeiqiStory.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeiqiStory.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1810EC391606DA1B0061FF70 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		1810EC3B1606DA1B0061FF70 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -2450,6 +2451,7 @@
 		1810EC381606DA1B0061FF70 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				180D668F1670D90D0075AF15 /* Accelerate.framework */,
 				18E0FE6B162C0938004BF632 /* CoreData.framework */,
 				1810EC391606DA1B0061FF70 /* QuartzCore.framework */,
 				1810EC3B1606DA1B0061FF70 /* OpenGLES.framework */,

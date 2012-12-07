@@ -53,13 +53,14 @@
 //TODO, later the EZBoardStatus will be extended to be able to handle the non-cubic board.
 -(id)initWithFile:(NSString*)filename touchRect:(CGRect)rect rows:(NSInteger)rws cols:(NSInteger)cls
 {
-    self = [super init];
+    self = [super initWithFile:filename];
     if(self){
-        _boardBackground = [CCSprite spriteWithFile:filename];
-        _boardBackground.position = ccp(0, 0);
-        _boardBackground.anchorPoint = ccp(0, 0);
-        self.contentSize = _boardBackground.contentSize;
-        [self addChild:_boardBackground];
+        //self.anchorPoint = ccp(0.5, 0.5);
+        //_boardBackground = [CCSprite spriteWithFile:filename];
+        //_boardBackground.position = ccp(0, 0);
+        //_boardBackground.anchorPoint = ccp(0, 0);
+        //self.contentSize = _boardBackground.contentSize;
+        //[self addChild:_boardBackground];
         chessMarkChar = @[@"A",@"B",@"C",@"D",@"E",@"F",@"G",@"H",@"I",@"J",@"K",@"L",@"M",@"N",@"O",@"P",@"Q",@"R",@"S",@"T",@"U",@"V",@"W",@"X",@"Y",@"Z"];
         charCount = 0;
         //Why am I doing this?

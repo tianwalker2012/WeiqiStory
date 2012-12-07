@@ -75,11 +75,12 @@
         board.cursorHolder = testBoard;
         [self addChild:testBoard];
          **/
-         flexBoard = [[EZFlexibleBoard alloc] initWithBoard:@"chess-board-large.png" boardTouchRect:CGRectMake(27, 27, 632, 632) visibleSize:CGSizeMake(273, 273)];
-        flexBoard.anchorPoint = ccp(0, 0);
-        flexBoard.position = ccp(0, 0);
+        flexBoard = [[EZFlexibleBoard alloc] initWithBoard:@"chess-board-large.png" boardTouchRect:CGRectMake(27, 27, 632, 632) visibleSize:CGSizeMake(300, 300)];
+        flexBoard.anchorPoint = ccp(0.5, 0.5);
+        flexBoard.position = ccp(320/2, 300/2);
         
-        flexBoard.basicPatterns = @[[[EZCoord alloc]init:12 y:15],[[EZCoord alloc]init:14 y:14]];
+        [flexBoard.chessBoard putChessmans:@[[[EZCoord alloc] init:2 y:15],[[EZCoord alloc]init:12 y:15],[[EZCoord alloc]init:14 y:14]] animated:NO];
+        //flexBoard.basicPatterns = @[[[EZCoord alloc] init:1 y:1],[[EZCoord alloc]init:12 y:15],[[EZCoord alloc]init:14 y:14]];
         [self addChild:flexBoard];
         
         
@@ -173,8 +174,10 @@
     //chessMan.scale = 1;
     //[self changeAnchor:chessMan changedAnchor:ccp(0.9, 0.9)];
     //chessMan.scale = 1.5;
-    CGFloat orgScale = flexBoard.simpleBoard.scale;
-    [flexBoard scaleBoardTo:orgScale*1.1];
+    //CGFloat orgScale = flexBoard.chessBoard.scale;
+    //[flexBoard scaleBoardTo:orgScale*1.1];
+    EZDEBUG(@"FlexBoard boundingBox:%@, clippingRegion:%@", NSStringFromCGRect(flexBoard.boundingBox), NSStringFromCGRect(flexBoard.clippingRegion));
+     [flexBoard recalculateBoardRegion];
 }
 
 - (void) zoomOut:(id)sender
@@ -184,7 +187,7 @@
     //chessMan.scale = 1;
     //[self changeAnchor:chessMan changedAnchor:ccp(0.1, 0.1)];
     //chessMan.scale = 1.5;
-    CGFloat orgScale = flexBoard.simpleBoard.scale;
+    CGFloat orgScale = flexBoard.chessBoard.scale;
     [flexBoard scaleBoardTo:orgScale*0.9];
 }
 

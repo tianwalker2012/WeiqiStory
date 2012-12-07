@@ -12,24 +12,28 @@
 #import "EZTouchHelper.h"
 #import "EZChess2Image.h"
 #import "EZCCExtender.h"
+#import "EZCoord.h"
+#import "EZChessPosition.h"
 
 @implementation EZFlexibleBoard
 
 - (id) initWithBoard:(NSString*)orgBoardName boardTouchRect:(CGRect)boardTouchRegion visibleSize:(CGSize)size
 {
     self = [super init];
+    self.anchorPoint = ccp(0.5, 0.5);
     _chessBoard = [[EZChessBoard alloc] initWithFile:orgBoardName touchRect:boardTouchRegion rows:19 cols:19];
+    
     _chessBoard.touchEnabled = NO;
-    _chessBoard.anchorPoint = ccp(0, 0);
-    _chessBoard.position = ccp(0, 0);
+    _chessBoard.anchorPoint = ccp(0.5, 0.5);
+    _chessBoard.position = ccp(size.width/2, size.height/2);
     _chessBoard.whiteChessName = @"white-button-large.png";
     _chessBoard.blackChessName = @"black-button-large.png";
     _visableSize = size;
-    
+    _touchEnabled = true;
     _simpleBoard = [CCSprite spriteWithFile:orgBoardName];
-    _simpleBoard.anchorPoint = ccp(0, 0);
-    _simpleBoard.position = ccp(-150, -150);
-    
+    _simpleBoard.anchorPoint = ccp(0.5, 0.5);
+    //_simpleBoard.position = ccp(-150, -150);
+    _simpleBoard.position = ccp(_visableSize.width/2, _visableSize.height/2);
     self.contentSize = _visableSize;
     _allTouches = [[NSMutableSet alloc] init];
     _touchState = kTouchStart;
@@ -40,15 +44,22 @@
     _movingCursor = [CCSprite spriteWithFile:@"board-move-sign.png"];
     _movingCursor.position = ccp(_visableSize.width/2, _visableSize.height/2);
     _movingCursor.visible = false;
-    CCLayerColor* colorLayer = [CCLayerColor layerWithColor:ccc4(128, 0, 128, 255)];
-    [self addChild:colorLayer z:0];
-    [self addChild:_simpleBoard];
-    //[self addChild:_chessBoard];
+    //CCLayerColor* colorLayer = [CCLayerColor layerWithColor:ccc4(128, 0, 128, 255)];
+    //[self addChild:colorLayer z:0];
+    //[self addChild:_simpleBoard];
+    [self addChild:_chessBoard];
     [self addChild:_movingCursor];
 
+    [[CCDirector sharedDirector].touchDispatcher addStandardDelegate:self priority:StandardTouchPriority];
     return self;
 }
 
+- (void) backToRollStatus
+{
+    _chessBoard.scale = _orgScale;
+    _chessBoard.position = ccp(_visableSize.width/2, _visableSize.height/2);
+    _chessBoard.anchorPoint = ccp(0.5, 0.5);
+}
 
 //Client don't need to care about the possiblity
 //The method will figure out a feasible scale value for it.
@@ -64,36 +75,36 @@
     }
     EZDEBUG(@"After normalize:%f", scale);
     
-    //CGPoint center = [EZTouchHelper center:self.boundingBox];
-    //CGPoint orgAnchor = _chessBoard.anchorPoint;
-    //CGPoint orgPosition = _chessBoard.position;
-    
-   // EZDEBUG(@"BoundingBox before scale:%@, the contentSize:%@, position:%@", NSStringFromCGRect(_chessBoard.boundingBox), NSStringFromCGSize(_chessBoard.contentSize), NSStringFromCGPoint(_chessBoard.position));
-    
-    //How about I manually update the position?
-    //Any side effects?
-    //_simpleBoard.position = _simpleBoard.boundingBox.origin;
-    
     CGPoint center = ccp(_visableSize.width/2, _visableSize.height/2);
     CGPoint globalCenter = [self convertToWorldSpace:center];
-    CGPoint localCenter = [_simpleBoard convertToNodeSpace:globalCenter];
-    CGPoint changedAnchor = ccp(localCenter.x/_simpleBoard.contentSize.width, localCenter.y/_simpleBoard.contentSize.height);
+    CGPoint localCenter = [_chessBoard convertToNodeSpace:globalCenter];
+    CGPoint changedAnchor = ccp(localCenter.x/_chessBoard.contentSize.width, localCenter.y/_chessBoard.contentSize.height);
     //EZDEBUG(@"Changed anchor:%@, center:%@, globalCenter:%@, localCenter:%@", NSStringFromCGPoint(changedAnchor), NSStringFromCGPoint(center), NSStringFromCGPoint(globalCenter), NSStringFromCGPoint(localCenter));
-     
-    [_simpleBoard changeAnchor:changedAnchor];
-    EZDEBUG(@"Position before scale:%@, boundingBox:%@", NSStringFromCGPoint(_simpleBoard.position), NSStringFromCGRect(_simpleBoard.boundingBox));
-    _simpleBoard.scale = scale;
-    EZDEBUG(@"Position after scale:%@, boundingBox:%@", NSStringFromCGPoint(_simpleBoard.position), NSStringFromCGRect(_simpleBoard.boundingBox));
-    [_simpleBoard changeAnchor:ccp(0, 0)];
-    EZDEBUG(@"Position after anchor change:%@", NSStringFromCGPoint(_simpleBoard.position));
-
-    CGPoint newPos = [EZTouchHelper adjustRect:_simpleBoard.boundingBox coveredRect:CGRectMake(0, 0, _visableSize.width, _visableSize.height)];
     
-    _simpleBoard.position = newPos;
+    [_chessBoard changeAnchor:changedAnchor];
+    EZDEBUG(@"Position before scale:%@, boundingBox:%@", NSStringFromCGPoint(_chessBoard.position), NSStringFromCGRect(_chessBoard.boundingBox));
+    _chessBoard.scale = scale;
+    EZDEBUG(@"Position after scale:%@, boundingBox:%@", NSStringFromCGPoint(_chessBoard.position), NSStringFromCGRect(_chessBoard.boundingBox));
+    [_chessBoard changeAnchor:ccp(0, 0)];
+    EZDEBUG(@"Position after anchor change:%@", NSStringFromCGPoint(_chessBoard.position));
+    
+    CGPoint newPos = [EZTouchHelper adjustRect:_chessBoard.boundingBox coveredRect:CGRectMake(0, 0, _visableSize.width, _visableSize.height)];
+    
+    _chessBoard.position = newPos;
     //Make sure the boundingBox accurately reflect the reality.
     
-    EZDEBUG(@"BoundingBox after scale:%@, the updatd position:%@", NSStringFromCGRect(_simpleBoard.boundingBox), NSStringFromCGPoint(newPos));
+    EZDEBUG(@"BoundingBox after scale:%@, the updatd position:%@", NSStringFromCGRect(_chessBoard.boundingBox), NSStringFromCGPoint(newPos));
      
+}
+
+- (void) recalculateBoardRegion
+{
+    NSArray* allChesssMan = _chessBoard.allSteps;
+    NSMutableArray* coords = [[NSMutableArray alloc] initWithCapacity:allChesssMan.count];
+    for(EZChessPosition* cp in allChesssMan){
+        [coords addObject:cp.coord];
+    }
+    [self calculateRegionForPattern:coords isPlant:NO];
 }
 
 - (void) zoomIn
@@ -124,13 +135,19 @@
     [self calculateRegionForPattern:_basicPatterns];
 }
 
-- (void) calculateRegionForPattern:(NSArray*)pattern
+
+//Some times, I just want to calculate the region without really plant it.
+//Like my recalculation jobs.
+- (void) calculateRegionForPattern:(NSArray*)pattern isPlant:(BOOL)plant
 {
     CGRect alignRect = [EZChess2Image shrinkBoard:pattern minimum:5];
     //EZDEBUG(@"alignedRect:%@", NSStringFromCGRect(alignRect));
     int iWidth = MAX(alignRect.size.height,alignRect.size.width);
     //CGFloat scala = orgWidth/size.width;
-    
+    _chessBoard.position = ccp(0, 0);
+    _chessBoard.anchorPoint = ccp(0, 0);
+    _chessBoard.scale = 1;
+    //We need to start with a fresh board, otherwise, it won't able to work
     CGFloat gap = 35.0;
     CGFloat pad = 27.0;
     CGFloat fWidth = 2*pad + gap*iWidth;
@@ -153,17 +170,29 @@
     
     CGRect clippedRect = CGRectMake(orgX, orgY, fWidth, fWidth);
     EZDEBUG(@"Final clippedRect is:%@", NSStringFromCGRect(clippedRect));
-    _chessBoard.anchorPoint = ccp(0, 0);
-        
+    //[_chessBoard changeAnchor:ccp(0, 0)];
+    
     EZDEBUG(@"Before scale:%@", NSStringFromCGRect(_chessBoard.boundingBox));
     CGFloat scaleFactor = _visableSize.width/fWidth;
     EZDEBUG(@"Before scale:%@, scalaFactor:%f", NSStringFromCGRect(_chessBoard.boundingBox), scaleFactor);
     _chessBoard.scale = scaleFactor;
     _chessBoard.position = ccp(orgX*scaleFactor, orgY*scaleFactor);
-
+    
     
     EZDEBUG(@"After scale:%@", NSStringFromCGRect(_chessBoard.boundingBox));
-    [_chessBoard putChessmans:pattern animated:NO];
+    if(plant){
+        [_chessBoard putChessmans:pattern animated:NO];
+    }
+
+    //What's the purpose of this?
+    //Make sure the rotation was normal
+    [_chessBoard changeAnchor:ccp(0.5, 0.5)];
+}
+
+
+- (void) calculateRegionForPattern:(NSArray*)pattern
+{
+    [self calculateRegionForPattern:pattern isPlant:YES];
 }
 
 - (void) adjustPosition:(CGPoint)delta
@@ -233,10 +262,10 @@
     //Some magic number
     //What's the meaning of the priority
     //When would I use it?
-    [[CCDirector sharedDirector].touchDispatcher addStandardDelegate:self priority:StandardTouchPriority];
-    //_pinchRecognizer.delegate = self;
-    //_panRecognizer.delegate = self;
-    
+    if(_touchEnabled){
+        //[[CCDirector sharedDirector].touchDispatcher addStandardDelegate:self priority:StandardTouchPriority];
+
+    }
 }
 
 - (void) onExit
@@ -316,6 +345,21 @@
     return res;
 }
 
+
+- (void) setTouchEnabled:(BOOL)touchEnabled
+{
+    if(_touchEnabled == touchEnabled){
+        EZDEBUG(@"Return without repeat");
+        return;
+    }
+    if(touchEnabled){
+        [[CCDirector sharedDirector].touchDispatcher addStandardDelegate:self priority:StandardTouchPriority];
+    }else{
+        [[[CCDirector sharedDirector] touchDispatcher] removeDelegate:self];
+    }
+    _touchEnabled = touchEnabled;
+}
+
 //Standard touch event
 - (void)ccTouchesBegan:(NSSet *)orgTouches withEvent:(UIEvent *)event
 {
@@ -326,6 +370,9 @@
     if(validTouches.count == 0){
         EZDEBUG(@"Quit for no valid touch");
         return;
+    }
+    if(_touchBlock){
+        _touchBlock();
     }
     //Why do I have oldTouch?
     //Because I want to use it to detect multiple touchs

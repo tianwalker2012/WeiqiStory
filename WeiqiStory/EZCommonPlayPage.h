@@ -12,6 +12,9 @@
 @class EZEpisodeVO;
 @class EZActionPlayer;
 
+
+//Great design, I would like the animation also implemented here.
+//Let's enjoy doing this.
 @interface EZCommonPlayPage : EZLayer
 
 @property(nonatomic, strong) UIView* gesturerView;
