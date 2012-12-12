@@ -108,6 +108,11 @@
 
 @property (nonatomic, strong) EZOperationBlock touchBlock;
 
+//Why 2 point, the initial Point is to calculate should I intepret the move as plant Move or board move
+@property (nonatomic, assign) CGPoint initialPoint;
+
+//This point is how much I shold intpret this event.
+@property (nonatomic, assign) CGPoint prevPoint;
 
 @property (nonatomic, assign) BOOL touchEnabled;
 

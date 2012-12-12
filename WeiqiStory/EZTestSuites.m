@@ -250,6 +250,10 @@ static NSInteger releaseCount;
     //[EZTestSuites testRectangularChange];
 }
 
++ (void) testCGPointAssign
+{
+    
+}
 
 + (void) testPurchase
 {

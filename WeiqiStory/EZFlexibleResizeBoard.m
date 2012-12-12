@@ -73,8 +73,18 @@
 }
 
 //Turn into local point
+//Turn off the move region.
+//Make the move more intuitive.
+//Let's me describe what's going on in my mind
+//1. Record the fist touch point.
+//2. for each moving event, compare it with the previous one
+//3. If it is farther away from the initial touch point, I will intepret it as you want to move the board rather than try to
+//Plant chessman, is this cool?
+//I will calculate the vectors, use it to move the board accordingly.
 - (BOOL) fallInMoveRegion:(CGPoint)localPt
 {
+    return TRUE;
+    
     if(CGRectContainsPoint(_moveOutterRegion, localPt) && !CGRectContainsPoint(_moveInnerRegion, localPt)){
         return TRUE;
     }
@@ -337,6 +347,59 @@
 }
 
 
+- (CGFloat) distanceBetween:(CGPoint)src dst:(CGPoint)dst
+{
+    return sqrtf((src.x - dst.x)*(src.x - dst.x) + (src.y - dst.y)*(src.y - dst.y));
+}
+
+//What I should do in the method?
+//I will only move when the segament larger than so threshold value.
+- (void) adjustPositionForPan:(CGPoint)localPoint
+{
+
+    CGFloat distance = [self distanceBetween:_prevPoint dst:localPoint];
+    //Some filter machanism
+    EZDEBUG("New Distance:%f, prevPoint:%@, localPoint:%@", distance, NSStringFromCGPoint(_prevPoint), NSStringFromCGPoint(localPoint));
+    if(distance < 10){
+        EZDEBUG("smaller than the threshold, ignore");
+        return;
+    }
+    EZDEBUG(@"Animated number:%i", _chessBoard.numberOfRunningActions);
+    if(_chessBoard.numberOfRunningActions > 0){
+        EZDEBUG(@"Animation are going on, ignore the pan");
+        return;
+    }
+    
+    //[_chessBoard ]
+    CGPoint oldPos = _chessBoard.position;
+    //I think I am doing the right thing, seems this is a typo.
+    CGPoint delta = ccp(localPoint.x - _prevPoint.x, localPoint.y - _prevPoint.y);
+    CGFloat scaleFactor = _chessBoard.boundingBox.size.width/_visableSize.width;
+    delta = ccp(delta.x*scaleFactor, delta.y*scaleFactor);
+    CGPoint newPos = ccp(_chessBoard.position.x + delta.x, _chessBoard.position.y + delta.y);
+    _prevPoint = localPoint;
+    [_chessBoard changeAnchor:ccp(0, 0)];
+    if(newPos.x > 0){
+        newPos.x = 0;
+    }
+    if(newPos.y > 0){
+        newPos.y = 0;
+    }
+    
+    if((_chessBoard.boundingBox.size.width + newPos.x) < _visableSize.width){
+        newPos.x = _visableSize.width - _chessBoard.boundingBox.size.width;
+    }
+    
+    if((_chessBoard.boundingBox.size.height + newPos.y) < _visableSize.height){
+        newPos.y = _visableSize.height - _chessBoard.boundingBox.size.height;
+    }
+    
+    EZDEBUG(@"delta:%@, scaleFactor:%f, newPos:%@, oldPos:%@", NSStringFromCGPoint(delta), scaleFactor, NSStringFromCGPoint(newPos), NSStringFromCGPoint(oldPos));
+    id animate = [CCMoveTo actionWithDuration:0.1 position:newPos];
+    [_chessBoard runAction:animate];
+    
+}
+
 - (void) handlePan:(CGPoint)uiPoint
 {
     CGPoint glPoint = [[CCDirector sharedDirector] convertToGL:uiPoint];
@@ -401,9 +464,9 @@
     //[_gestureView addGestureRecognizer:_pinchRecognizer];
     //[[CCDirector sharedDirector].view addSubview:_gestureView];
     //Is this necessary?
-    if(!_gestureView){
-        [self createGestureView:self.clippingRegion];
-    }
+    //if(!_gestureView){
+    //    [self createGestureView:self.clippingRegion];
+    //}
     [[CCDirector sharedDirector].view setMultipleTouchEnabled:YES];
     //Some magic number
     //What's the meaning of the priority
@@ -511,23 +574,6 @@
 - (void)ccTouchesBegan:(NSSet *)orgTouches withEvent:(UIEvent *)event
 {
     EZDEBUG(@"touch began new:%i", orgTouches.count);
-    UITouch* tch = [orgTouches anyObject];
-    CGPoint localPT = [self locationInSelf:tch];
-    if([self fallInMoveRegion:localPT]){
-        EZDEBUG(@"Fall into the move region:%@", NSStringFromCGPoint(localPT));
-        if(_touchState == kSingleTouch){
-            [_chessBoard ccTouchCancelled:tch withEvent:event];
-        }
-        _currMovingTouch = tch;
-        _touchState = kBoardMoving;
-        EZDEBUG(@"will handle board move");
-        _currMovingTouch = tch;
-        //_isFirstPan = TRUE;
-        _movingCursor.visible = true;
-        [self adjustPositionForPoint:localPT];
-        return;
-    }
-    
     NSSet* validTouches = [self pickWithinRegion:orgTouches];
     EZDEBUG(@"touch within is:%i", validTouches.count);
     if(validTouches.count == 0){
@@ -542,6 +588,7 @@
     UITouch* oldTouch = [_allTouches anyObject];
     [_allTouches addObjectsFromArray:validTouches.allObjects];
     UITouch* touch = [validTouches anyObject];
+    _initialPoint = [self locationInSelf:touch];
     if(!oldTouch){
         oldTouch = touch;
     }
@@ -556,6 +603,19 @@
     
 }
 
+//What's the purpose of this method?
+//To check if the move is to move the board or not
+- (BOOL) isBoardMoving:(CGPoint)org currentMove:(CGPoint)cur
+{
+
+    CGFloat thresholdDistance = 20;
+    CGFloat distance = sqrtf((cur.x-org.x)*(cur.x - org.x) + (cur.y - org.x)*(cur.y - org.y));
+    if(distance > thresholdDistance){
+        return TRUE;
+    }
+    return FALSE;
+}
+
 - (void)ccTouchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
     EZDEBUG(@"Touch moved, touch count:%i, allTouches:%i, touchState:%i", touches.count, _allTouches.count, _touchState);
@@ -563,16 +623,17 @@
     
     UITouch* tch = touch;
     CGPoint localPT = [self locationInSelf:tch];
-    if(_touchState == kBoardMoving || [self fallInMoveRegion:localPT]){
-        EZDEBUG(@"Fall into the move region:%@", NSStringFromCGPoint(localPT));
-        if(_touchState == kSingleTouch){
-            [_chessBoard ccTouchCancelled:tch withEvent:event];
-        }
+    
+    if(_touchState == kSingleTouch && [self isBoardMoving:_initialPoint currentMove:localPT]){
+        EZDEBUG(@"Board moving, initial:%@, current:%@",NSStringFromCGPoint(_initialPoint), NSStringFromCGPoint(localPT));
+        _prevPoint = localPT;
+        [_chessBoard ccTouchCancelled:tch withEvent:event];
         _touchState = kBoardMoving;
-        _currMovingTouch = tch;
-        //_isFirstPan = TRUE;
         _movingCursor.visible = true;
-        [self adjustPositionForPoint:localPT];
+    }
+    
+    if(_touchState == kBoardMoving){
+        [self adjustPositionForPan:localPT];
         return;
     }else if(_touchState == kSingleTouch){
         _movingCursor.visible = false;
@@ -591,7 +652,7 @@
     for(UITouch* touch in touches){
         [_allTouches removeObject:touch];
     }
-    if(_touchState == kBoardMoving || [self fallInMoveRegion:localPT]){
+    if(_touchState == kBoardMoving){
         EZDEBUG(@"Fall into the move region:%@", NSStringFromCGPoint(localPT));
         if(_touchState == kSingleTouch){
             [_chessBoard ccTouchCancelled:tch withEvent:event];
@@ -601,7 +662,7 @@
         EZDEBUG(@"will handle board move");
         //_currMovingTouch = tch;
         //_isFirstPan = TRUE;
-        [self adjustPositionForPoint:localPT];
+        [self adjustPositionForPan:localPT];
         return;
     }
     
