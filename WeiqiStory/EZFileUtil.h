@@ -39,6 +39,8 @@ static EZLRUMap* imageCaches;
 
 + (UIImage*) imageFromFile:(NSString*)file;
 
++ (UIImage*) imageFromFile:(NSString *)file scale:(CGFloat)scale;
+
 //IF all data have copied into the database
 //If it is I will read from the database rather than from the disk.
 //Save the efforts of copy things.

@@ -163,9 +163,9 @@
     NSString* fileName = [NSString stringWithFormat:@"%@%@%i.png",prefix, timestamp, countID];
     return fileName;
 }
-//Will pick the proper file with my own name conventions.
-//Great, I love this.
-+ (UIImage*) imageFromFile:(NSString *)file
+
+
++ (UIImage*) imageFromFile:(NSString *)file scale:(CGFloat)scale
 {
     if(imageCaches == nil){
         imageCaches = [[EZLRUMap alloc] initWithLimit:ImageCacheSize];
@@ -180,9 +180,20 @@
     NSString *fullpath = [[CCFileUtils sharedFileUtils] fullPathFromRelativePath:file resolutionType:&resolution];
     
     NSLog(@"Full path:%@, resolution type:%i", fullpath, resolution);
-    image = [[UIImage alloc] initWithContentsOfFile:fullpath];
+    @autoreleasepool {
+        UIImage* tmpImg = [[UIImage alloc] initWithContentsOfFile:fullpath];
+        image = [UIImage imageWithCGImage:tmpImg.CGImage scale:[UIScreen mainScreen].scale orientation:UIImageOrientationUp];
+        //image = [[UIImage alloc] initWithContentsOfFile:fullpath];
+    }
     [imageCaches setObject:image forKey:file];
     return image;
+
+}
+//Will pick the proper file with my own name conventions.
+//Great, I love this.
++ (UIImage*) imageFromFile:(NSString *)file
+{
+    return [self imageFromFile:file scale:1.0];
 }
 
 

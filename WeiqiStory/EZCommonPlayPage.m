@@ -11,7 +11,9 @@
 #import "EZCoreAccessor.h"
 #import "EZEpisode.h"
 #import "EZEpisodeVO.h"
-
+#import "EZAppPurchase.h"
+#import "EZTouchView.h"
+#import "EZFileUtil.h"
 
 @implementation EZCommonPlayPage
 
@@ -19,13 +21,14 @@
 - (void) onEnter
 {
     [super onEnter];
-    [[CCDirector sharedDirector].view addSubview:_gesturerView];
+    //[[CCDirector sharedDirector].view addSubview:_gesturerView];
 }
 
 - (void) onExit
 {
     [super onExit];
     [_gesturerView removeFromSuperview];
+    [_purchaseView removeFromSuperview];
 }
 
 
@@ -37,6 +40,78 @@
     return self;
 }
 
+
+- (id) initWithPos:(NSInteger)currentEpisode
+{
+    self = [super init];
+    [self createSwipeGesture];
+    
+    if(currentEpisode >= PurchaseBegin && ![[EZAppPurchase getInstance] isPurchased:ProductID]){
+        [self addPurchaseLayer];
+    }
+    
+    return self;
+}
+
+- (void) addPurchaseLayer
+{
+    CGSize winSize = [[CCDirector sharedDirector].view bounds].size;
+    EZDEBUG(@"The winSize is:%@", NSStringFromCGSize(winSize));
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad){
+        _purchaseView = [[EZTouchView alloc] initWithFrame:CGRectMake(0, 130, 768, winSize.height - 130)];
+    }else {
+        
+        if([[CCFileUtils sharedFileUtils] runningDevice] == kCCiPhone5){
+            _purchaseView = [[EZTouchView alloc] initWithFrame:CGRectMake(0, 87, 320, winSize.height - 87)];
+        }else{
+            _purchaseView = [[EZTouchView alloc] initWithFrame:CGRectMake(0, 80, 320, winSize.height - 80)];
+        }
+    }
+    
+    __weak EZCommonPlayPage* weakSelf = self;
+    _purchaseView.backgroundColor = [UIColor colorWithRed:0.4 green:0.4 blue:0.4 alpha:0.5];
+    _purchaseView.userInteractionEnabled = true;
+    
+    CGSize screenSize = [CCDirector sharedDirector].view.bounds.size;
+    UIImageView* lock = [[UIImageView alloc]initWithImage:[EZFileUtil imageFromFile:@"lock.png" scale:[UIScreen mainScreen].scale]];
+    lock.center = ccp(screenSize.width/2, screenSize.height/2);
+    [_purchaseView addSubview:lock];
+    
+    
+   
+    _purchaseView.touchBlock = ^(){
+        EZDEBUG(@"TouchedView");
+        CGSize screenSize = [CCDirector sharedDirector].view.bounds.size;
+        weakSelf.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+        [weakSelf.activityIndicator setFrame:[CCDirector sharedDirector].view.bounds];
+        weakSelf.activityIndicator.backgroundColor = [UIColor colorWithRed:0.5 green:0.5 blue:0.5 alpha:0.5];
+        
+        weakSelf.activityIndicator.center = ccp(screenSize.width/2, screenSize.height/2);
+        [[CCDirector sharedDirector].view addSubview:weakSelf.activityIndicator];
+        [weakSelf.activityIndicator startAnimating];
+        
+        [[EZAppPurchase getInstance] purchase:ProductID successBlock:^(id tr){
+            [[EZAppPurchase getInstance] setPurchased:TRUE pid:ProductID];
+            [weakSelf.activityIndicator stopAnimating];
+            [weakSelf.activityIndicator removeFromSuperview];
+            [weakSelf.purchaseView removeFromSuperview];
+        } failedBlock:^(id tr){
+            EZDEBUG(@"Failed to purchase");
+            [weakSelf.activityIndicator stopAnimating];
+            [weakSelf.activityIndicator removeFromSuperview];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedStringFromTable(@"purchaseFailureTitle", @"QueryInfo", @"")
+                                                            message:NSLocalizedStringFromTable(@"purchaseFailureContent", @"QueryInfo", @"")
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"OK"
+                                                  otherButtonTitles:nil];
+            [alert show];
+        }];
+
+    };
+
+    [[CCDirector sharedDirector].view addSubview:_purchaseView];
+    
+}
 
 - (void) createSwipeGesture
 {
@@ -65,7 +140,7 @@
     _gesturerView.backgroundColor = [UIColor clearColor];
     [_gesturerView addGestureRecognizer:recognizerRight];
     [_gesturerView addGestureRecognizer:recognizerLeft];
-    //[[CCDirector sharedDirector].view addSubview:_gesturerView];
+    [[CCDirector sharedDirector].view addSubview:_gesturerView];
 }
 
 

@@ -11,10 +11,14 @@
 #import "EZChessBoard.h"
 #import "EZChessBoardWrapper.h"
 #import "EZFlexibleBoard.h"
+#import "EZFileUtil.h"
+#import "EZTouchView.h"
+#import "EZFlexibleResizeBoard.h"
 
 @interface EZEnlargeTester()
 {
-    EZFlexibleBoard* flexBoard;
+    //EZFlexibleBoard* flexBoard;
+    EZFlexibleResizeBoard* flexBoard;
     CCSprite* chessBoard;
     CCSprite* chessMan;
 }
@@ -39,6 +43,17 @@
 	return scene;
 }
 
+
+- (void) testTouch
+{
+    EZTouchView* touchView = [[EZTouchView alloc] initWithFrame:[CCDirector sharedDirector].view.bounds];
+    touchView.backgroundColor = [UIColor colorWithRed:0.5 green:0.5 blue:0.5 alpha:0.5];
+    touchView.touchBlock = ^(){
+        EZDEBUG(@"Touch view get touched");
+    };
+    
+    [[CCDirector sharedDirector].view addSubview:touchView];
+}
 //We will only support potrait orientation
 - (id) init
 {
@@ -46,6 +61,7 @@
     if(self){
         
         self.isTouchEnabled = true;
+       
         /**
         EZResizeChessBoard* chessBoard = [[EZResizeChessBoard alloc] initWithOrgBoard:@"chess-board.png" orgRect:CGRectMake(13, 13, 271, 271) largeBoard:@"chess-board-large.png" largeRect:CGRectMake(27, 27, 632, 632)];
         
@@ -75,14 +91,25 @@
         board.cursorHolder = testBoard;
         [self addChild:testBoard];
          **/
-        flexBoard = [[EZFlexibleBoard alloc] initWithBoard:@"chess-board-large.png" boardTouchRect:CGRectMake(27, 27, 632, 632) visibleSize:CGSizeMake(300, 300)];
+        
+        _studyBoardHolder = [[CCNode alloc] init];
+        _studyBoardHolder.contentSize = CGSizeMake(320, 397);
+        _studyBoardHolder.anchorPoint = ccp(0.5, 0);
+        _studyBoardHolder.position = ccp(320/2, 0);
+
+        [self addChild:_studyBoardHolder];
+        
+        flexBoard = [[EZFlexibleResizeBoard alloc] initWithBoard:@"chess-board-large.png" boardTouchRect:CGRectMake(27, 27, 632, 632) visibleSize:CGSizeMake(300, 300)];
         flexBoard.anchorPoint = ccp(0.5, 0.5);
-        flexBoard.position = ccp(320/2, 300/2);
+        flexBoard.position = ccp(320/2, 400/2);
         
-        [flexBoard.chessBoard putChessmans:@[[[EZCoord alloc] init:2 y:15],[[EZCoord alloc]init:12 y:15],[[EZCoord alloc]init:14 y:14]] animated:NO];
-        //flexBoard.basicPatterns = @[[[EZCoord alloc] init:1 y:1],[[EZCoord alloc]init:12 y:15],[[EZCoord alloc]init:14 y:14]];
-        [self addChild:flexBoard];
-        
+        //[flexBoard.chessBoard putChessmans:@[[[EZCoord alloc] init:2 y:15],[[EZCoord alloc]init:12 y:15],[[EZCoord alloc]init:14 y:14]] animated:NO];
+        flexBoard.basicPatterns = @[[[EZCoord alloc] init:1 y:1],[[EZCoord alloc]init:12 y:15],[[EZCoord alloc]init:14 y:14]];
+        [_studyBoardHolder addChild:flexBoard];
+        //[self addChild:_studyBoardHolder];
+        //UIImageView* imageView = [[UIImageView alloc] initWithImage:[EZFileUtil imageFromFile:@"lock.png"]];
+        //imageView.contentScaleFactor = 2;
+        //[[CCDirector sharedDirector].view addSubview:imageView];
         
         //Following code is to understand the mechanism of local and world space transition.
         //After take some hard time, finally, I got the understanding about it.
@@ -102,6 +129,21 @@
         //[self addChild:chessBoard];
         //Let's debug the virual cursor issue, why no cursor show off.
         
+        EZDEBUG(@"Why it doesn't work to setup the frame");
+        
+        /**
+        UIActivityIndicatorView* activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+        //UIActivityIndicatorView* ac
+        [activityIndicator setFrame:CGRectMake(0, 0, 200, 200)];
+    
+        activityIndicator.center = ccp(160, 240);
+        activityIndicator.backgroundColor = [UIColor colorWithRed:0.5 green:0.3 blue:0.3 alpha:0.5];
+        [[CCDirector sharedDirector].view addSubview:activityIndicator];
+        [activityIndicator startAnimating];
+
+        **/
+        
+        //[[CCDirector sharedDirector].view addSubview:touchView];
         UIButton* zoomIn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
         zoomIn.frame = CGRectMake(0, 0, 88, 44);
         [zoomIn setTitle:@"Zoom in" forState:UIControlStateNormal];

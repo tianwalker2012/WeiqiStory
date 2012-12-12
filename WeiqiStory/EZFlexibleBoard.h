@@ -13,17 +13,12 @@
 
 #define  MaximumScale 2.5
 
+@class EZTitleImage;
 @class EZChessBoard;
 //What do I mean by flexible board.
 //1. First iteration The Board will try to demostrate the largest area could be displayed initially.
 //2. It allow users to pinch and pan,but have the limit for enlarge.
 //For example, the largest zoom in is 2.5, the smallest zoom out is to fit the frame of the Flexible Board.
-typedef enum{
-    kTouchStart,
-    kSingleTouch,
-    kBoardMoving
-} TouchState;
-
 
 @interface EZFlexibleBoard : EZClippingNode<CCStandardTouchDelegate, UIGestureRecognizerDelegate>
 //What's the purpose of the rectangular?
@@ -57,7 +52,7 @@ typedef enum{
 @property (nonatomic, strong) EZChessBoard* chessBoard;
 
 //Simplify the cases to illustrate the issue.
-@property (nonatomic, strong) CCSprite* simpleBoard;
+@property (nonatomic, strong) EZTitleImage* simpleBoard;
 
 @property (nonatomic, assign) CGFloat zoomScale;
 

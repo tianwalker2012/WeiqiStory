@@ -50,6 +50,7 @@
 #import "CCFileUtils.h"
 #import "EZThreadPool.h"
 #import "EZTouchHelper.h"
+#import "EZAppPurchase.h"
 
 
 static NSInteger releaseCount;
@@ -246,8 +247,37 @@ static NSInteger releaseCount;
     
     //[EZTestSuites testCreateSingleton];
     //[EZTestSuites testRectangularCover];
+    //[EZTestSuites testRectangularChange];
 }
 
+
++ (void) testPurchase
+{
+    EZAppPurchase* purchase = [EZAppPurchase getInstance];
+    /**
+     [purchase purchase:@"wu_collection_1" successBlock:^(SKPaymentTransaction* tr){
+     EZDEBUG(@"successfully purchased");
+     } failedBlock:^(id failure){
+     EZDEBUG(@"failed to purchase:%@", failure);
+     }];
+     **/
+    [purchase restorePurchase:^(SKPaymentTransaction* tr){
+        EZDEBUG(@"Restore success for:%@", tr.payment.productIdentifier);
+        
+    }];
+    EZDEBUG(@"Make the purchase call");
+}
+//Why do I have the impression that Rectangular can not be changed?
++ (void) testRectangularChange
+{
+    CGRect rect = CGRectMake(0, 0, 100, 100);
+    rect.origin.x = 100;
+    
+    assert(rect.origin.x == 100);
+    
+    assert(false);
+    
+}
 
 + (void) testAcceleration
 {

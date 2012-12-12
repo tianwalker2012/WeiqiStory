@@ -12,4 +12,6 @@
 @interface EZEnlargeTester : CCLayer
 + (CCScene*) scene;
 
+@property (nonatomic, strong) CCNode* studyBoardHolder;
+
 @end

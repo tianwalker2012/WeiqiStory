@@ -24,6 +24,9 @@
 //Last episode updated from Database
 //Will updated if recieved notification
 @property (nonatomic, assign) NSInteger recentEpisodes;
+
+
+@property (nonatomic, strong) UIActivityIndicatorView* activityIndicator;
 //@property (nonatomic, strong) NSArray* episodes;
 
 @end

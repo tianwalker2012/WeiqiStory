@@ -11,6 +11,7 @@
 
 @class EZEpisodeVO;
 @class EZActionPlayer;
+@class EZTouchView;
 
 
 //Great design, I would like the animation also implemented here.
@@ -19,11 +20,14 @@
 
 @property(nonatomic, strong) UIView* gesturerView;
 
+@property(nonatomic, strong) EZTouchView* purchaseView;
+
 //So that user could go back and forth.
 //How to disable the button?
 //This about it.
 @property(nonatomic, assign) NSInteger currentEpisodePos;
 
+@property (nonatomic, strong) UIActivityIndicatorView* activityIndicator;
 
 @property(nonatomic, strong) EZActionPlayer* player;
 //The sub class will implement this.
@@ -34,6 +38,8 @@
 //Get current episode
 - (EZEpisodeVO*) getEpisode:(NSInteger)curPos;
 
+
+- (id) initWithPos:(NSInteger)currentEpisode;
 //The puprose of this is that
 //I need to extract the common shared service between PodPage and PadPage
 //So that keep my code DRY.

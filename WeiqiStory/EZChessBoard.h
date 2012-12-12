@@ -60,6 +60,9 @@ typedef enum {
 
 @property (assign, nonatomic) NSInteger rows;
 
+//Used to specify the markCharSize,if zero mean I will go with my default setting.
+@property (assign, nonatomic) NSInteger markCharSize;
+
 @property (assign, nonatomic) BOOL touchEnabled;
 
 @property (assign, nonatomic) BOOL showStep;

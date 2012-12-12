@@ -195,7 +195,7 @@ typedef enum {
 //We will only support potrait orientation
 - (id) initWithEpisode:(EZEpisodeVO*)epv currentPos:(NSInteger)pos;
 {
-    self = [super init];
+    self = [super initWithPos:pos];
     if(self){
         //timer = [[CCTimer alloc] initWithTarget:self selector:@selector(generatedBubble) interval:1 repeat:kCCRepeatForever delay:1];
         __weak EZPlayPage* weakSelf = self;

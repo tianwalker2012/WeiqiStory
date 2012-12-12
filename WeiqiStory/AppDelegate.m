@@ -30,6 +30,8 @@
 #import "EZListTablePagePod.h"
 #import "EZLeakageMain.h"
 #import "EZThreadPool.h"
+#import "EZAppPurchase.h"
+#import "EZListTablePagePod.h"
 
 //#import "EZPlayerStatus.h"
 
@@ -57,6 +59,7 @@
     EZChessMoveAction* chessMove = [[EZChessMoveAction alloc] init];
     chessMove.plantMoves = @[[[EZCoord alloc]init:5 y:5],[[EZCoord alloc] init:6 y:6]];
     res.actions = @[chessMove];
+    res.basicPattern = chessMove.plantMoves;
     return res;
 }
 
@@ -69,6 +72,7 @@
 	[sharedFileUtils setiPadRetinaDisplaySuffix:@"-pad-hd"];	// Default on iPad RetinaDisplay is "-ipadhd"
     [sharedFileUtils setIPhone5Suffix:@"-hd5"];
     //[self returnToVirgin];
+    [[EZAppPurchase getInstance] setPurchased:FALSE pid:ProductID];
     [EZTestSuites runAllTests];
     
     //Load the large image files, so next time the speed will be faster.
@@ -77,6 +81,8 @@
         [self loadAllFromBundle];
     }
  
+    
+    
 	// Create the main window
 	window_ = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 
@@ -135,11 +141,11 @@
     //[director_ pushScene:[EZEffectTester scene]];
     //[director_ pushScene:[EZHomePage scene]];
     //[director_ pushScene:[EZLeakageMain node]];
-    //[director_ pushScene:[EZListEditPage scene]];
-    [director_ pushScene:[[[EZPlayPagePod alloc] initWithEpisode:[self generateEpisodeVO] currentPos:2] createScene]];
+    //[director_ pushScene:[EZListTablePagePod scene]];
+    //[director_ pushScene:[[[EZPlayPagePod alloc] initWithEpisode:[self generateEpisodeVO] currentPos:2] createScene]];
     
     //EZDEBUG(@"view class:%@, multiple Touch enabled:%i", [[CCDirector sharedDirector].view class], [CCDirector sharedDirector].view.multipleTouchEnabled);
-    //[director_ pushScene:[EZEnlargeTester node]];
+    [director_ pushScene:[EZEnlargeTester node]];
     
     //[director_ pushScene:[EZListTablePagePod node]];
 	// Create a Navigation Controller with the Director

@@ -5,3 +5,7 @@
   Created by xietian on 12-11-28.
 
 */
+
+"purchaseFailureTitle" = "Sorry, purchase failed";
+
+"purchaseFailureContent" = "Please check your network and retry later";

@@ -5,3 +5,7 @@
   Created by xietian on 12-11-28.
 
 */
+
+"purchaseFailureTitle" = "对不起，购买失败";
+
+"purchaseFailureContent" = "请检查您的网络，然后重试。";

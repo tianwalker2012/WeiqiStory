@@ -31,6 +31,8 @@
 #import "EZBubble.h"
 #import "EZLRUMap.h"
 #import "EZPlayPagePod.h"
+#import "EZAppPurchase.h"
+#import "EZExtender.h"
 
 @interface EZListTablePagePod()
 {
@@ -171,7 +173,7 @@
     
     //int col = (indexPath.ro-1) % 4;
     
-    
+    __weak EZListTablePagePod*  weakSelf = self;
     EZDEBUG(@"current row %i, will add item:%i",indexPath.row, (endPos - startPos));
     for(int i = startPos; i < endPos; i++){
         CGFloat xPos = (widthGap + panelWidth) * (i - startPos);
@@ -192,6 +194,43 @@
         EZDEBUG(@"row:%i ,The completeBoard size:%@, isMainThread:%@, epv.name:%@", indexPath.row, NSStringFromCGSize(smallboard.size), [NSThread isMainThread]?@"YES":@"NO", epv.name);
         
         [panel setPosition:ccp(xPos, 0)];
+        
+        if(i >= PurchaseBegin && ![[EZAppPurchase getInstance] isPurchased:ProductID]){
+            UIImageView* lock = [[UIImageView alloc]initWithImage:[EZFileUtil imageFromFile:@"lock.png" scale:[UIScreen mainScreen].scale]];
+            lock.frame = CGRectMake(57, 75, lock.bounds.size.width, lock.bounds.size.height);
+            [lock setPosition:ccp(57, 75)];
+            [panel addSubview:lock];
+            panel.tappedBlock = ^(){
+                CGSize screenSize = [CCDirector sharedDirector].view.bounds.size;
+                if(weakSelf.activityIndicator == nil){
+                    weakSelf.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+                    [weakSelf.activityIndicator setFrame:[CCDirector sharedDirector].view.bounds];
+                    weakSelf.activityIndicator.backgroundColor = [UIColor colorWithRed:0.5 green:0.5 blue:0.5 alpha:0.5];
+                }
+                weakSelf.activityIndicator.center = ccp(screenSize.width/2, screenSize.height/2);
+                [[CCDirector sharedDirector].view addSubview:weakSelf.activityIndicator];
+                [weakSelf.activityIndicator startAnimating];
+
+                [[EZAppPurchase getInstance] purchase:ProductID successBlock:^(id tr){
+                        [tableView reloadData];
+                        [[EZAppPurchase getInstance] setPurchased:TRUE pid:ProductID];
+                        [weakSelf.activityIndicator stopAnimating];
+                        [weakSelf.activityIndicator removeFromSuperview];
+                    
+                    } failedBlock:^(id tr){
+                    EZDEBUG(@"Failed to purchase");
+                    [weakSelf.activityIndicator stopAnimating];
+                    [weakSelf.activityIndicator removeFromSuperview];
+                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedStringFromTable(@"purchaseFailureTitle", @"QueryInfo", @"")
+                                                                        message:NSLocalizedStringFromTable(@"purchaseFailureContent", @"QueryInfo", @"")
+                                                                       delegate:nil
+                                                              cancelButtonTitle:@"OK"
+                                                              otherButtonTitles:nil];
+                    [alert show];
+                }];
+            };
+        }
+        else{
         panel.tappedBlock = ^(){
             EZDEBUG(@"The episode %@ get tapped", epv.name);
             [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
@@ -212,6 +251,7 @@
             [[CCDirector sharedDirector] replaceScene:nextScene];
             
         };
+        }
         [cell addSubview:panel];
         EZDEBUG(@"Added panel to cell subView");
     }
@@ -441,6 +481,7 @@
     [super onExit];
     //[[EZSoundManager sharedSoundManager]stopBackground];
     [_tableView removeFromSuperview];
+    [_activityIndicator removeFromSuperview];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 

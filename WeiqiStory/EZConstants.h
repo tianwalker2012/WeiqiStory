@@ -91,6 +91,11 @@ typedef enum {
 
 #define ImageCacheSize 30
 
+//Start with 30 I will add lock, user need to purchase to unlock it
+#define PurchaseBegin 30
+
+#define ProductID @"wu_collection_1"
+
 #define ChessMarkColor ccc3(122, 190, 83)
 
 #define AUDIO_MAX_WAITTIME 1.0
@@ -104,6 +109,12 @@ typedef enum {
 #define InitialVolume 0.8
 
 #define FingerZOrder 40
+
+typedef enum{
+    kTouchStart,
+    kSingleTouch,
+    kBoardMoving
+} TouchState;
 
 #define ezrect(x, y, w, h) \
     CGRectMake(x, y, w, h)

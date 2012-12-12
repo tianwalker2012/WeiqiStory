@@ -42,6 +42,8 @@
 
 @property (nonatomic, strong) EZFlexibleBoard* flexibleBoard;
 
+@property (nonatomic, strong) EZFlexibleBoard* mainFlexBoard;
+
 @property(nonatomic, strong) EZActionPlayer* player2;
 
 @property(nonatomic, strong) CCSprite* pauseImg;
