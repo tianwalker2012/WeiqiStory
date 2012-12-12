@@ -218,6 +218,8 @@
     _chessBoard.scale = scaleFactor;
     _chessBoard.position = ccp(orgX*scaleFactor, orgY*scaleFactor);
     
+    //I will back to this scale once being recovered
+    _prevScale = _chessBoard.scale;
     
     EZDEBUG(@"After scale:%@", NSStringFromCGRect(_chessBoard.boundingBox));
     if(plant){
@@ -570,6 +572,16 @@
     _touchEnabled = touchEnabled;
 }
 
+
+//What should I do in this code?
+//Set the board back to it's previous ratio.
+//Cool, Let's do it. 
+- (void) setBoardBack:(ccTime) time
+{
+    id animate = [CCScaleTo actionWithDuration:0.1 scale:_prevScale];
+    [_chessBoard runAction:animate];
+    EZDEBUG(@"setBoardBack to scale:%f", _prevScale);
+}
 //Standard touch event
 - (void)ccTouchesBegan:(NSSet *)orgTouches withEvent:(UIEvent *)event
 {
@@ -583,6 +595,7 @@
     if(_touchBlock){
         _touchBlock();
     }
+    [self unschedule:@selector(setboardBack:)];
     //Why do I have oldTouch?
     //Because I want to use it to detect multiple touchs
     UITouch* oldTouch = [_allTouches anyObject];
@@ -608,6 +621,7 @@
 - (BOOL) isBoardMoving:(CGPoint)org currentMove:(CGPoint)cur
 {
 
+    return FALSE;
     CGFloat thresholdDistance = 20;
     CGFloat distance = sqrtf((cur.x-org.x)*(cur.x - org.x) + (cur.y - org.x)*(cur.y - org.y));
     if(distance > thresholdDistance){
@@ -672,6 +686,7 @@
     if(_touchState == kSingleTouch && _allTouches.count == 0){
         _touchState = kTouchStart;
         [_chessBoard ccTouchEnded:touch withEvent:event];
+        [self schedule:@selector(setBoardBack:) interval:1.0 repeat:0 delay:0.5];
     }
     //[self schedule:@selector(setBoardBack:) interval:1];
 }

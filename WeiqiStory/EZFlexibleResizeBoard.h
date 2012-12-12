@@ -114,6 +114,8 @@
 //This point is how much I shold intpret this event.
 @property (nonatomic, assign) CGPoint prevPoint;
 
+@property (nonatomic, assign) CGFloat prevScale;
+
 @property (nonatomic, assign) BOOL touchEnabled;
 
 
