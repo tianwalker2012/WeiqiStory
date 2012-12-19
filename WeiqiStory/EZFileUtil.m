@@ -153,6 +153,20 @@
     return [EZFileUtil imageFromDocument:file scale:1];
 }
 
+
+//
++ (NSString*) changePostFix:(NSString*)org replace:(NSString*)replace
+{
+    NSRange header = [org rangeOfString:@"." options:NSBackwardsSearch];
+    if(header.location < org.length){
+        NSString* prev = [org substringToIndex:header.location];
+        NSString* combined = [prev stringByAppendingPathExtension:replace];
+        return combined;
+    }else {
+        return [org stringByAppendingPathExtension:replace];
+    }
+}
+
 + (NSString*) generateFileName:(NSString*) prefix
 {
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
@@ -182,7 +196,7 @@
     NSLog(@"Full path:%@, resolution type:%i", fullpath, resolution);
     @autoreleasepool {
         UIImage* tmpImg = [[UIImage alloc] initWithContentsOfFile:fullpath];
-        image = [UIImage imageWithCGImage:tmpImg.CGImage scale:[UIScreen mainScreen].scale orientation:UIImageOrientationUp];
+        image = [UIImage imageWithCGImage:tmpImg.CGImage scale:scale orientation:UIImageOrientationUp];
         //image = [[UIImage alloc] initWithContentsOfFile:fullpath];
     }
     [imageCaches setObject:image forKey:file];

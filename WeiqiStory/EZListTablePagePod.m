@@ -30,9 +30,11 @@
 #import "EZCoreAccessor.h"
 #import "EZBubble.h"
 #import "EZLRUMap.h"
-#import "EZPlayPagePod.h"
+//#import "EZPlayPagePod.h"
 #import "EZAppPurchase.h"
 #import "EZExtender.h"
+#import "EZPlayPagePodLearn.h"
+#import "EZFixBrokenPage.h"
 
 @interface EZListTablePagePod()
 {
@@ -139,6 +141,15 @@
     EZDEBUG(@"EZListTablePagePod Released");
 }
 
+
+//I don't want the purchase animation last too long,
+//Just longer enough for people to see they touch get submitted is good enough.
+- (void) dismissAnimating:(ccTime)time
+{
+    [_activityIndicator stopAnimating];
+    [_activityIndicator removeFromSuperview];
+}
+
 //When could I reuse the cells?
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -211,6 +222,7 @@
                 [[CCDirector sharedDirector].view addSubview:weakSelf.activityIndicator];
                 [weakSelf.activityIndicator startAnimating];
 
+                [self schedule:@selector(dismissAnimating:) interval:1.0 repeat:0 delay:3];
                 [[EZAppPurchase getInstance] purchase:ProductID successBlock:^(id tr){
                         [tableView reloadData];
                         [[EZAppPurchase getInstance] setPurchased:TRUE pid:ProductID];
@@ -239,9 +251,11 @@
             
             if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad){
                 EZPlayPage* playPage = [[EZPlayPage alloc] initWithEpisode:epv currentPos:i];
+                //EZFixBrokenPage* playPage = [[EZFixBrokenPage alloc] initWithEpisode:epv currentPos:i];
                 nextScene = [playPage createScene];
             }else{
-                EZPlayPagePod* playPage = [[EZPlayPagePod alloc] initWithEpisode:epv currentPos:i];
+                EZPlayPagePodLearn* playPage = [[EZPlayPagePodLearn alloc] initWithEpisode:epv currentPos:i];
+                
                
     EZDEBUG(@"Tapped index:%i, instance pointer:%i, readback value:%i", i, (int)playPage, playPage.currentEpisodePos);
                 nextScene = [playPage createScene];

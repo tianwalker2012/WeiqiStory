@@ -31,7 +31,7 @@
 
 - (void) dealloc
 {
-    EZDEBUG(@"episode deallocated:%@", self.name);
+    //EZDEBUG(@"episode deallocated:%@", self.name);
 }
 
 - (id) initWithPO:(EZEpisode*)po

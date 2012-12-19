@@ -29,6 +29,8 @@
 - (EZSoundPlayer*) initWithFile:(NSString*)fileName inMainBundle:(BOOL)mainBundle completeCall:(void(^)())blk
 {
     NSURL* fileURL = nil;
+    fileName = [EZFileUtil changePostFix:fileName replace:@"mp3"];
+    EZDEBUG(@"Converted fileName:%@", fileName);
     if(mainBundle){
         fileURL = [EZFileUtil fileToURL:fileName];
     }else{

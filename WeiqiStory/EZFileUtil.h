@@ -52,6 +52,8 @@ static EZLRUMap* imageCaches;
 
 + (UIImage*) imageFromDocument:(NSString *)file;
 
++ (NSString*) changePostFix:(NSString*)org replace:(NSString*)replace;
+
 + (void) storeImageFile:(UIImage*)image file:(NSString*)file;
 
 + (NSString*) generateFileName:(NSString*) prefix;

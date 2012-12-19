@@ -63,15 +63,16 @@
         if((showedStep+1)>0){
             CGRect boundBox = self.boundingBox;
             EZDEBUG(@"Will show the text:%@, color:%@, step:%i", NSStringFromCGRect(boundBox), isBlack?@"black":@"white", step);
-            CGFloat adjustedFontSize = (step>9)?((step>99)?18:20):25;
-            if(self.contentSize.width > 30){
-                adjustedFontSize = (step>9)?((step>99)?36:40):50;
-            }
+            //CGFloat adjustedFontSize = (step>9)?((step>99)?18:20):25;
+            //if(self.contentSize.width > 30){
+            CGFloat baseSize = self.contentSize.width;
+            CGFloat adjustedFontSize = (step>9)?((step>99)?baseSize*0.5:baseSize*0.65):baseSize*0.9;
+            //}
             EZDEBUG(@"Number Content Size:%@, adjusted font size:%f",NSStringFromCGSize(self.contentSize), adjustedFontSize);
             
-            if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone){
-                adjustedFontSize = adjustedFontSize * 5 / 9;
-            }
+            //if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone){
+            //    adjustedFontSize = adjustedFontSize * 5 / 9;
+           // }
             numberText = [CCLabelTTF labelWithString:[NSString stringWithFormat:@"%i",showedStep+1] fontName:@"Arial" fontSize:adjustedFontSize];
             //I assume the default color is White
             if(!isBlack){

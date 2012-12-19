@@ -1,11 +1,12 @@
 //
-//  EZChessEditor.m
+//  EZSpecificChessEditor.m
 //  WeiqiStory
 //
-//  Created by xietian on 12-9-23.
+//  Created by xietian on 12-12-18.
 //
 //
 
+#import "EZSpecificChessEditor.h"
 #import "EZChessEditor.h"
 #import "EZChessBoard.h"
 #import "EZConstants.h"
@@ -24,8 +25,9 @@
 #import "EZEpisodeUploader.h"
 #import "EZAudioFile.h"
 #import "EZPlayPage.h"
+#import "EZFixBrokenPage.h"
 
-@interface EZChessEditor()
+@interface EZSpecificChessEditor()
 {
     EZChessBoard* chessBoard;
     
@@ -55,17 +57,24 @@
 @end
 
 
-@implementation EZChessEditor
+@implementation EZSpecificChessEditor
 
 
 + (CCScene*) scene
 {
     CCScene* scene = [[CCScene alloc] init];
     
-    EZChessEditor* editor = [[EZChessEditor alloc] init];
+    EZSpecificChessEditor* editor = [[EZSpecificChessEditor alloc] init];
     
     [scene addChild:editor];
     
+    return scene;
+}
+
+- (CCScene*) createScene
+{
+    CCScene* scene = [[CCScene alloc] init];
+    [scene addChild:self];
     return scene;
 }
 
@@ -81,13 +90,13 @@
     
 	[statusText setPosition:ccp(500,34)];
     [self addChild:statusText];
-
+    
 }
 
 
 //What's the meaning init?
 //Initialize the the class.
-- (id) init
+- (id) initWithEpisode:(EZEpisodeVO*)epv playedPos:(NSInteger)pos
 {
     self = [super init];
     if(self){
@@ -108,10 +117,25 @@
         //[self addChild:previewBoard z:popupZOrder];
         
         //Will change the chessBoard later
-        actPlayer = [[EZActionPlayer alloc] initWithActions:nil chessBoard:previewBoard inMainBundle:false];
-                
         
-        currActPlayer = [[EZActionPlayer alloc] initWithActions:nil chessBoard:chessBoard inMainBundle:false];
+        _currentEpisode = epv;
+        _removedPos = pos-1;
+        _changedActions = [[NSMutableArray alloc] initWithArray:epv.actions];
+        //[_changedActions removeObjectAtIndex:_removedPos];
+        
+        actPlayer = [[EZActionPlayer alloc] initWithActions:nil chessBoard:previewBoard inMainBundle:false];
+        
+        
+        //I assume not record any audio here.
+        currActPlayer = [[EZActionPlayer alloc] initWithActions:_changedActions chessBoard:chessBoard inMainBundle:YES];
+        
+        //The pos will not including this pos.
+        [currActPlayer forwardFrom:0 to:_removedPos];
+        
+        EZAction* removedAction = [_changedActions objectAtIndex:_removedPos];
+        //[_changedActions removeObjectAtIndex:_removedPos];
+        
+        [statusLabel setString:[NSString stringWithFormat:@"%@,Pos:%i, totla:%i,removed class:%@",epv.name, _removedPos, epv.actions.count, [removedAction class]]];
         //One test cover all the functionality
         
         [chessBoard setScale:0.7];
@@ -126,7 +150,7 @@
         CCMenuItem* recording = [CCMenuItemFont itemWithString:@"录音" block:^(id sender){
             [editorStatus start:kLectures];
         }];
-                
+        
         CCMenuItem* startPresetting = [CCMenuItemFont itemWithString:@"开始预设" block:^(id sender){
             [editorStatus start:kPreSetting];
         }];
@@ -149,6 +173,8 @@
                 EZDEBUG(@"Add audio file:%@, total count:%i", editorStatus.audioFileName, audioFiles.count);
             }
             [editorStatus save];
+            //What if I added more steps
+            [_changedActions insertObject:[editorStatus.actions lastObject] atIndex:_removedPos++];
             EZDEBUG(@"Quit save");
         }];
         
@@ -158,20 +184,20 @@
             [editorStatus saveAsEpisodeBegin];
             basicPattern = chessBoard.getAllChessMoves;
         }];
-
+        
         
         //One menu handle all the color switch
         CCMenuItemFont* selectChessColor = [CCMenuItemFont itemWithString:@"正常落子" block:^(id sender){
-                if(chessBoard.chessmanSetType == kDetermineByBoard){
-                    [sender setString:@"落黑子"];
-                    chessBoard.chessmanSetType = kBlackChess;
-                }else if(chessBoard.chessmanSetType == kBlackChess){
-                    [sender setString:@"落白子"];
-                    chessBoard.chessmanSetType = kWhiteChess;
-                }else{
-                    [sender setString:@"正常落子"];
-                    chessBoard.chessmanSetType = kDetermineByBoard;
-                }
+            if(chessBoard.chessmanSetType == kDetermineByBoard){
+                [sender setString:@"落黑子"];
+                chessBoard.chessmanSetType = kBlackChess;
+            }else if(chessBoard.chessmanSetType == kBlackChess){
+                [sender setString:@"落白子"];
+                chessBoard.chessmanSetType = kWhiteChess;
+            }else{
+                [sender setString:@"正常落子"];
+                chessBoard.chessmanSetType = kDetermineByBoard;
+            }
         }];
         
         CCMenuItem* toggleBoardColor = [CCMenuItemFont itemWithString:chessBoard.isCurrentBlack?@"下一手黑色":@"下一手白色" block:^(id sender){
@@ -205,7 +231,7 @@
             [currActPlayer playOneStep:0 completeBlock:nil];
         }];
         
-       
+        
         
         
         CCMenuItem* addCleanAction = [CCMenuItemFont itemWithString:@"增加清盘动作" block:^(id sender){
@@ -215,9 +241,11 @@
             EZDEBUG(@"Added clean Action");
         }];
         
-        CCMenuItem* delete = [CCMenuItemFont itemWithString:[NSString stringWithFormat:@"删除Action,Pos:%i",editorStatus.actions.count] block:^(id sender){
-            [editorStatus removeLast];
-            [sender setString:[NSString stringWithFormat:@"删除Action,Pos:%i",editorStatus.actions.count]];
+        CCMenuItem* delete = [CCMenuItemFont itemWithString:[NSString stringWithFormat:@"删除Action,Pos:%i",_removedPos] block:^(id sender){
+            //[editorStatus removeLast];
+            //[sender setString:[NSString stringWithFormat:@"删除Action,Pos:%i",editorStatus.actions.count]];
+            EZDEBUG(@"Let's remove the current actions, %i", _removedPos);
+            [_changedActions removeObjectAtIndex:_removedPos];
         }];
         
         
@@ -236,18 +264,18 @@
             
         }];
         
-       /**
-        CCMenuItem* preViewAll = [CCMenuItemFont itemWithString:@"预览全部" block:^(id sender){
-            EZDEBUG(@"Review all");
-            actPlayer.actions = editorStatus.actions;
-            [previewBoard addChild:previewBoard z:popupZOrder];
-            [actPlayer playFrom:0 completeBlock:^(){
-                EZDEBUG(@"Complete play for whole board");
-                [previewBoard removeFromParentAndCleanup:NO];
-            }];
-            
-        }];
-        **/
+        /**
+         CCMenuItem* preViewAll = [CCMenuItemFont itemWithString:@"预览全部" block:^(id sender){
+         EZDEBUG(@"Review all");
+         actPlayer.actions = editorStatus.actions;
+         [previewBoard addChild:previewBoard z:popupZOrder];
+         [actPlayer playFrom:0 completeBlock:^(){
+         EZDEBUG(@"Complete play for whole board");
+         [previewBoard removeFromParentAndCleanup:NO];
+         }];
+         
+         }];
+         **/
         CCMenuItem* regretMove = [CCMenuItemFont itemWithString:@"回退一步棋" block:^(id sender){
             EZDEBUG(@"Back on step");
             [chessBoard regretSteps:1 animated:YES];
@@ -255,71 +283,69 @@
         
         
         /**
-        CCMenuItem* addView = [CCMenuItemFont itemWithString:@"增加新窗口" block:^(id sender){
-            
-            UIView* simpleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
-            simpleView.backgroundColor = [UIColor redColor];
-            [[CCDirector sharedDirector].view.window addSubview:simpleView];
-        }];
-        **/
+         CCMenuItem* addView = [CCMenuItemFont itemWithString:@"增加新窗口" block:^(id sender){
+         
+         UIView* simpleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
+         simpleView.backgroundColor = [UIColor redColor];
+         [[CCDirector sharedDirector].view.window addSubview:simpleView];
+         }];
+         **/
         
         /**
-        CCMenuItem* addMark = [CCMenuItemFont itemWithString:@"增加Mark" block:^(id sender){
-            EZDEBUG(@"Add mark get called");
-            CCLabelTTF*  markText = [CCLabelTTF labelWithString:@"C" fontName:@"Arial" fontSize:40];
-            [chessBoard putMark:markText coord:[[EZCoord alloc] init:10 y:10] animAction:nil];
-        }];
-        
-        CCMenuItem* removeMark = [CCMenuItemFont itemWithString:@"删除Mark" block:^(id sender){
-            EZDEBUG(@"Add mark get called");
-            [chessBoard removeMark:[[EZCoord alloc] init:10 y:10] animAction:nil];
-        }];
+         CCMenuItem* addMark = [CCMenuItemFont itemWithString:@"增加Mark" block:^(id sender){
+         EZDEBUG(@"Add mark get called");
+         CCLabelTTF*  markText = [CCLabelTTF labelWithString:@"C" fontName:@"Arial" fontSize:40];
+         [chessBoard putMark:markText coord:[[EZCoord alloc] init:10 y:10] animAction:nil];
+         }];
+         
+         CCMenuItem* removeMark = [CCMenuItemFont itemWithString:@"删除Mark" block:^(id sender){
+         EZDEBUG(@"Add mark get called");
+         [chessBoard removeMark:[[EZCoord alloc] init:10 y:10] animAction:nil];
+         }];
          **/
-       
+        
         CCMenuItem* goToPlayer = [CCMenuItemFont itemWithString:@"去播放界面" block:^(id sender){
             EZDEBUG(@"Will go to player interface");
             //CCScene* playFace = [EZChessPlay sceneWithActions:editorStatus.actions];
             //EZChessPlay* playUI = (EZChessPlay*)[playFace getChildByTag:10];
             //playUI.epsides = episodes;
             //[[CCDirector sharedDirector] pushScene:playFace];
-            EZEpisodeVO* ep = [[EZEpisodeVO alloc] init];
-            ep.name = @"test";
-            ep.introduction = @"intro";
-            ep.actions =  editorStatus.actions;
-            EZPlayPage* playPage = [[EZPlayPage alloc] initWithEpisode:ep currentPos:0];
+            _currentEpisode.inMainBundle = true;
+            _currentEpisode.actions = _changedActions;
+            EZFixBrokenPage* playPage = [[EZFixBrokenPage alloc] initWithEpisode:_currentEpisode currentPos:0];
             [[CCDirector sharedDirector] pushScene:[playPage createScene]];
         }];
         
         /**
-        CCMenuItem* storeCurrentView = [CCMenuItemFont itemWithString:@"保存当前界面" block:^(id sender){
-            EZDEBUG(@"Add a chessboard");
-            EZCoord* coord = [[EZCoord alloc] initChessType:kWhiteChess x:0 y:0];
-            EZCoord* coord1 = [[EZCoord alloc] initChessType:kWhiteChess x:18 y:18];
-            
-            EZCoord* coord2 = [[EZCoord alloc] initChessType:kWhiteChess x:0 y:18];
-            EZCoord* coord3 = [[EZCoord alloc] initChessType:kWhiteChess x:18 y:0];
-            
-            UIImage* image = [EZChess2Image generateChessBoard:@[coord, coord1, coord2, coord3] size:CGSizeMake(200, 200)];
-            UIImageView* imageView = [[UIImageView alloc] initWithImage:image];
-            //imageView.contentMode = UIViewContentModeCenter;
-            imageView.contentStretch = CGRectMake(0.2, 0.2, 0.8, 0.8);
-            imageView.frame = CGRectMake(0, 0, 300, 300);
-            [[CCDirector sharedDirector].view addSubview:imageView];
-        }];
-        **/
+         CCMenuItem* storeCurrentView = [CCMenuItemFont itemWithString:@"保存当前界面" block:^(id sender){
+         EZDEBUG(@"Add a chessboard");
+         EZCoord* coord = [[EZCoord alloc] initChessType:kWhiteChess x:0 y:0];
+         EZCoord* coord1 = [[EZCoord alloc] initChessType:kWhiteChess x:18 y:18];
+         
+         EZCoord* coord2 = [[EZCoord alloc] initChessType:kWhiteChess x:0 y:18];
+         EZCoord* coord3 = [[EZCoord alloc] initChessType:kWhiteChess x:18 y:0];
+         
+         UIImage* image = [EZChess2Image generateChessBoard:@[coord, coord1, coord2, coord3] size:CGSizeMake(200, 200)];
+         UIImageView* imageView = [[UIImageView alloc] initWithImage:image];
+         //imageView.contentMode = UIViewContentModeCenter;
+         imageView.contentStretch = CGRectMake(0.2, 0.2, 0.8, 0.8);
+         imageView.frame = CGRectMake(0, 0, 300, 300);
+         [[CCDirector sharedDirector].view addSubview:imageView];
+         }];
+         **/
         /**
-        CCMenuItem* showScreenShot = [CCMenuItemFont itemWithString:@"保存截屏" block:^(id sender){
-            EZDEBUG(@"Save screen shot");
-            [CCDirector sharedDirector].takeOneShot = true;
-            [self performBlock:^(){
-                EZDEBUG(@"Collect result");
-                UIImage* image = [CCDirector sharedDirector].screenShot;
-                UIImage* shrinkedImg = [EZChess2Image shrinkImage:image size:CGSizeMake(400, 300)];
-                UIImageView* imageView = [[UIImageView alloc] initWithImage:shrinkedImg];
-                [[CCDirector sharedDirector].view addSubview:imageView];
-            } withDelay:0.2];
-        }];
-        **/
+         CCMenuItem* showScreenShot = [CCMenuItemFont itemWithString:@"保存截屏" block:^(id sender){
+         EZDEBUG(@"Save screen shot");
+         [CCDirector sharedDirector].takeOneShot = true;
+         [self performBlock:^(){
+         EZDEBUG(@"Collect result");
+         UIImage* image = [CCDirector sharedDirector].screenShot;
+         UIImage* shrinkedImg = [EZChess2Image shrinkImage:image size:CGSizeMake(400, 300)];
+         UIImageView* imageView = [[UIImageView alloc] initWithImage:shrinkedImg];
+         [[CCDirector sharedDirector].view addSubview:imageView];
+         } withDelay:0.2];
+         }];
+         **/
         CCMenuItem* uploadAll = [CCMenuItemFont itemWithString:@"上传全部" block:^(id sender){
             EZDEBUG(@"Upload all");
             //[self setStatus:[NSString stringWithFormat:@"Will upload %i",  episodes.count]];
@@ -368,7 +394,7 @@
                 EZEpisodeInputer* ein = sender;
                 [ein.presentingViewController dismissViewControllerAnimated:YES completion:nil];
             };
-            //Store the data to database. 
+            //Store the data to database.
             [episode persist];
             
             
@@ -376,7 +402,7 @@
             statusLabel.string = [NSString stringWithFormat:@"All episode count:%i", episodes.count];
             
         }];
-        [editorStatus setBtnPreset:startPresetting audio:recording plantMove:startPlainMove save:save remove:delete preview:preView previewAll:nil];
+        [editorStatus setBtnPreset:startPresetting audio:recording plantMove:startPlainMove save:save remove:nil preview:preView previewAll:nil];
         //editorStatus.statusText = statusText;
         editorStatus.statusLabel = statusLabel;
         [statusLabel setPosition:ccp(500, 34)];
@@ -387,7 +413,7 @@
             EZDEBUG(@"Upload all");
             [episodes removeAllObjects];
         }];
-
+        
         CCMenu* menu = [CCMenu menuWithItems:recording,startPresetting,startPlainMove,save,regretMove,toggleMark,showHand,preView,delete,addPreset,saveAsBegin,selectChessColor,toggleBoardColor,saveEpisode,uploadAll,goToPlayer,deleteAllEpisode,nil];
         
         [menu alignItemsVerticallyWithPadding:5];
@@ -399,132 +425,6 @@
 }
 
 
-
-- (UIImage*) takeAsUIImageEX
-{
-	CCDirector* director = [CCDirector sharedDirector];
-	CGSize size = [self contentSize];
-    
-	//Create buffer for pixels
-	GLuint bufferLength = size.width * size.height * 4;
-	GLubyte* buffer = (GLubyte*)malloc(bufferLength);
-    
-	//Read Pixels from OpenGL
-	glReadPixels(0, 0, size.width, size.height, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-	//Make data provider with data.
-	CGDataProviderRef provider = CGDataProviderCreateWithData(NULL, buffer, bufferLength, NULL);
-    
-	//Configure image
-	int bitsPerComponent = 8;
-	int bitsPerPixel = 32;
-	int bytesPerRow = 4 * size.width;
-	CGColorSpaceRef colorSpaceRef = CGColorSpaceCreateDeviceRGB();
-	CGBitmapInfo bitmapInfo = kCGBitmapByteOrderDefault;
-	CGColorRenderingIntent renderingIntent = kCGRenderingIntentDefault;
-	CGImageRef iref = CGImageCreate(size.width, size.height, bitsPerComponent, bitsPerPixel, bytesPerRow, colorSpaceRef, bitmapInfo, provider, NULL, NO, renderingIntent);
-    
-	uint32_t* pixels = (uint32_t*)malloc(bufferLength);
-	CGContextRef context = CGBitmapContextCreate(pixels, [director winSize].width, [director winSize].height, 8, [director winSize].width * 4, CGImageGetColorSpace(iref), kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
-    
-	CGContextTranslateCTM(context, 0, size.height);
-	CGContextScaleCTM(context, 1.0f, -1.0f);
-    
-	switch (director.interfaceOrientation)
-	{
-		case UIInterfaceOrientationPortrait:
-			break;
-		case UIInterfaceOrientationPortraitUpsideDown:
-			CGContextRotateCTM(context, CC_DEGREES_TO_RADIANS(180));
-			CGContextTranslateCTM(context, -size.width, -size.height);
-			break;
-		case UIInterfaceOrientationLandscapeLeft:
-			CGContextRotateCTM(context, CC_DEGREES_TO_RADIANS(-90));
-			CGContextTranslateCTM(context, -size.height, 0);
-			break;
-		case UIInterfaceOrientationLandscapeRight:
-			CGContextRotateCTM(context, CC_DEGREES_TO_RADIANS(90));
-			CGContextTranslateCTM(context, size.width * 0.5f, -size.height);
-			break;
-	}
-
-    
-	CGContextDrawImage(context, CGRectMake(0.0f, 0.0f, size.width, size.height), iref);
-	UIImage *outputImage = [UIImage imageWithCGImage:CGBitmapContextCreateImage(context)];
-    
-	//Dealloc
-	CGDataProviderRelease(provider);
-	CGImageRelease(iref);
-	CGContextRelease(context);
-	free(buffer);
-	free(pixels);
-    
-	return outputImage;
-}
-
-+(CCTexture2D*) takeAsTexture2D
-{
-	//return [[[CCTexture2D alloc] initWithImage:[Screenshot takeAsUIImage]] autorelease];
-}
-
-- (UIImage*) takeAsUIImage
-{
-	CCDirector* director = [CCDirector sharedDirector];
-	CGSize size = [self contentSize];
-    
-	//Create buffer for pixels
-	GLuint bufferLength = size.width * size.height * 4;
-	GLubyte* buffer = (GLubyte*)malloc(bufferLength);
-    
-	//Read Pixels from OpenGL
-	glReadPixels(0, 0, size.width, size.height, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-	//Make data provider with data.
-	CGDataProviderRef provider = CGDataProviderCreateWithData(NULL, buffer, bufferLength, NULL);
-    
-	//Configure image
-	int bitsPerComponent = 8;
-	int bitsPerPixel = 32;
-	int bytesPerRow = 4 * size.width;
-	CGColorSpaceRef colorSpaceRef = CGColorSpaceCreateDeviceRGB();
-	CGBitmapInfo bitmapInfo = kCGBitmapByteOrderDefault;
-	CGColorRenderingIntent renderingIntent = kCGRenderingIntentDefault;
-	CGImageRef iref = CGImageCreate(size.width, size.height, bitsPerComponent, bitsPerPixel, bytesPerRow, colorSpaceRef, bitmapInfo, provider, NULL, NO, renderingIntent);
-    
-	uint32_t* pixels = (uint32_t*)malloc(bufferLength);
-	CGContextRef context = CGBitmapContextCreate(pixels, [director winSize].width, [director winSize].height, 8, [director winSize].width * 4, CGImageGetColorSpace(iref), kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
-    
-	CGContextTranslateCTM(context, 0, size.height);
-	CGContextScaleCTM(context, 1.0f, -1.0f);
-    
-	switch (director.interfaceOrientation)
-	{
-		case UIInterfaceOrientationPortrait:
-			break;
-		case UIInterfaceOrientationPortraitUpsideDown:
-			CGContextRotateCTM(context, CC_DEGREES_TO_RADIANS(180));
-			CGContextTranslateCTM(context, -size.width, -size.height);
-			break;
-		case UIInterfaceOrientationLandscapeLeft:
-			CGContextRotateCTM(context, CC_DEGREES_TO_RADIANS(-90));
-			CGContextTranslateCTM(context, -size.height, 0);
-			break;
-		case UIInterfaceOrientationLandscapeRight:
-			CGContextRotateCTM(context, CC_DEGREES_TO_RADIANS(90));
-			CGContextTranslateCTM(context, size.width * 0.5f, -size.height);
-			break;
-	}
-    
-	CGContextDrawImage(context, CGRectMake(0.0f, 0.0f, size.width, size.height), iref);
-	UIImage *outputImage = [UIImage imageWithCGImage:CGBitmapContextCreateImage(context)];
-    
-	//Dealloc
-	CGDataProviderRelease(provider);
-	CGImageRelease(iref);
-	CGContextRelease(context);
-	free(buffer);
-	free(pixels);
-    
-	return outputImage;
-}
 
 
 @end

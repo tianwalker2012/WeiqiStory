@@ -48,7 +48,13 @@
     //Clean all the audio files
     [EZFileUtil removeAllAudioFiles];
     [EZFileUtil removeAllFileWithSuffix:@"png"];
+    
+    //The animation show that user can swipe the board, will last only 3 time]
+    [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:@"swipeCount"];
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"Executed"];
+    
+    //Will clean the purchased flag, for purchase test only
+    [[EZAppPurchase getInstance] setPurchased:FALSE pid:ProductID];
 }
 
 - (EZEpisodeVO*) generateEpisodeVO
@@ -72,7 +78,7 @@
 	[sharedFileUtils setiPadRetinaDisplaySuffix:@"-pad-hd"];	// Default on iPad RetinaDisplay is "-ipadhd"
     [sharedFileUtils setIPhone5Suffix:@"-hd5"];
     //[self returnToVirgin];
-    [[EZAppPurchase getInstance] setPurchased:FALSE pid:ProductID];
+    
     [EZTestSuites runAllTests];
     
     //Load the large image files, so next time the speed will be faster.
@@ -139,13 +145,13 @@
     //[director_ pushScene:[EZChessPlay scene]];
 	//[director_ pushScene:[EZListTablePage scene]];
     //[director_ pushScene:[EZEffectTester scene]];
-    //[director_ pushScene:[EZHomePage scene]];
+    [director_ pushScene:[EZHomePage scene]];
     //[director_ pushScene:[EZLeakageMain node]];
     //[director_ pushScene:[EZListTablePagePod scene]];
     //[director_ pushScene:[[[EZPlayPagePod alloc] initWithEpisode:[self generateEpisodeVO] currentPos:2] createScene]];
     
     //EZDEBUG(@"view class:%@, multiple Touch enabled:%i", [[CCDirector sharedDirector].view class], [CCDirector sharedDirector].view.multipleTouchEnabled);
-    [director_ pushScene:[EZEnlargeTester node]];
+    //[director_ pushScene:[EZEnlargeTester node]];
     
     //[director_ pushScene:[EZListTablePagePod node]];
 	// Create a Navigation Controller with the Director
@@ -165,7 +171,8 @@
 // Supported orientations: Landscape. Customize it for your own needs
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
-    
+
+    //return true;
 	BOOL res = UIInterfaceOrientationIsPortrait(interfaceOrientation);
     EZDEBUG(@"Current orientation is:%i, %@", interfaceOrientation, res?@"supported":@"not supported");
     //Have done some stupid thing?
@@ -181,11 +188,8 @@
     downloader.baseURL = ((NSURL*)[NSURL fileURLWithPath:[[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@""]]).absoluteString;
     //NSData* fileData = [NSData dataWithContentsOfURL:[EZFileUtil fileToURL:@"completefiles.ar"]];
     //EZDEBUG(@"pre-read length:%i", fileData.length);
-    [downloader downloadEpisode:[EZFileUtil fileToURL:@"completefiles.ar"] completeBlock:nil];
-    //EZDEBUG(@"process episode completed");
-    //[downloader downloadEpisode:[EZFileUtil fileToURL:@"episode20121113211142.ar"] completeBlock:nil];
-    //[downloader downloadAccordingToList:[EZFileUtil fileToURL:@"episode-small.lst"]];
-    
+    //[downloader downloadEpisodes:@[[EZFileUtil fileToURL:@"completefiles.ar"],[EZFileUtil fileToURL:@"final1214.ar"]]  completeBlock:nil];
+    [downloader downloadEpisodes:@[[EZFileUtil fileToURL:@"modified.ar"]] completeBlock:nil];
     
 }
 

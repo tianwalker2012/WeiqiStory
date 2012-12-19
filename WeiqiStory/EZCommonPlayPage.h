@@ -13,6 +13,7 @@
 @class EZActionPlayer;
 @class EZTouchView;
 
+#define SwipeCountLimit 3
 
 //Great design, I would like the animation also implemented here.
 //Let's enjoy doing this.
@@ -30,6 +31,15 @@
 @property (nonatomic, strong) UIActivityIndicatorView* activityIndicator;
 
 @property(nonatomic, strong) EZActionPlayer* player;
+
+
+@property (nonatomic, strong) CCNode* swipeNode;
+
+@property (nonatomic, strong) CCSprite* finger;
+
+@property (nonatomic, strong) id swipeAnim;
+
+@property (nonatomic, strong) id fadeOutAnim;
 //The sub class will implement this.
 //Otherwise, because i don't know which class this will instantiated
 //isNext mean, we are from left to right, or from left to right.
@@ -37,6 +47,11 @@
 
 //Get current episode
 - (EZEpisodeVO*) getEpisode:(NSInteger)curPos;
+
+//Add the swipe sign and animation to remind user that we are swipable.
+//Only do it 3 times is enough.
+//Cool. 
+- (void) createSwipeSign;
 
 
 - (id) initWithPos:(NSInteger)currentEpisode;

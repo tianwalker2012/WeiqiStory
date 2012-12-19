@@ -54,6 +54,9 @@
 //It will not block the main thead. 
 - (void) downloadEpisode:(NSURL*)url completeBlock:(EZOperationBlock)block;
 
+//We will let you do it.
+- (void) downloadEpisodes:(NSArray*)urls completeBlock:(EZOperationBlock)block;
+
 //what's the purpos of this method
 //I may have multiple episode, so I need to download them
 //According to a list on the server side.

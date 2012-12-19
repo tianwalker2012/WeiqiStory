@@ -248,6 +248,91 @@ static NSInteger releaseCount;
     //[EZTestSuites testCreateSingleton];
     //[EZTestSuites testRectangularCover];
     //[EZTestSuites testRectangularChange];
+    //[EZTestSuites testSubString];
+    //[EZTestSuites testChangePostFix];
+    //[EZTestSuites testConvertCharToGB];
+    //[EZTestSuites removeAndInsert];
+}
+
++ (void) removeAndInsert
+{
+    NSMutableArray* marr = [[NSMutableArray alloc] initWithArray:@[@"0", @"1", @"2", @"3"]];
+    [marr removeObjectAtIndex:1];
+    [marr insertObject:@"a" atIndex:1];
+    
+    for(int i = 0; i < marr.count; i++){
+        EZDEBUG(@"%@", [marr objectAtIndex:i]);
+    }
+    
+    assert([@"a" isEqualToString:[marr objectAtIndex:1]]);
+    
+    [marr removeObjectAtIndex:3];
+    [marr insertObject:@"d" atIndex:3];
+    
+    assert([@"d" isEqualToString:[marr objectAtIndex:3]]);
+    assert(false);
+    
+}
+
++ (void) testConvertCharToGB
+{
+    NSStringEncoding gbkEncoding = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
+    
+    NSData* pageData = [NSData dataWithContentsOfURL:[EZFileUtil fileToURL:@"wuqingyuan.sgf"]];
+    
+    EZDEBUG(@"The data length:%i", pageData.length);
+    
+    NSString *pageSource = [[NSString alloc] initWithData:pageData encoding:gbkEncoding];
+    
+    NSError* error = nil;
+    [pageSource writeToURL:[EZFileUtil fileToURL:@"Converted" dirType:NSDocumentDirectory] atomically:YES encoding:NSUTF8StringEncoding error:&error];
+    
+    NSString* readBack = [NSString stringWithContentsOfURL:[EZFileUtil fileToURL:@"Converted" dirType:NSDocumentDirectory] encoding:NSUTF8StringEncoding error:&error];
+    EZDEBUG(@"Page source:%@", pageSource);
+    EZDEBUG(@"Read back:%@", readBack);
+    assert(false);
+}
+
++ (void) testChangePostFix
+{
+    NSString* changed = [EZFileUtil changePostFix:@"haha.caf" replace:@"mp3"];
+    
+    EZDEBUG("changed %@", changed);
+    assert([@"haha.mp3" isEqualToString:changed]);
+    
+    changed = [EZFileUtil changePostFix:@"hehe" replace:@"mp3"];
+    assert([@"hehe.mp3" isEqualToString:changed]);
+    assert(false);
+}
+
++ (void) testSubString
+{
+    NSString* cool = @"c.ool.caf";
+    
+    NSRange prev = [cool rangeOfString:@"." options:NSBackwardsSearch];
+    
+    assert(prev.location == 5);
+    
+    NSString* notExist = @"coolcaf";
+    prev = [notExist rangeOfString:@"." options:NSBackwardsSearch];
+    EZDEBUG(@"Nonexist location is:%i", prev.location);
+    assert(prev.location > notExist.length);
+    //assert(false);
+    
+    
+    cool = @"cool.caf";
+    NSString* suffix = @"mp3";
+    NSRange header = [cool rangeOfString:@"." options:NSBackwardsSearch];
+    if(header.location < cool.length){
+   
+        NSString* prev = [cool substringToIndex:header.location];
+        EZDEBUG(@"Previous is:%@, location:%i", prev, header.location);
+        
+        NSString* combined = [prev stringByAppendingPathExtension:suffix];
+        assert([@"cool.mp3" isEqualToString:combined]);
+    }
+    assert(false);
+    
 }
 
 + (void) testCGPointAssign

@@ -14,6 +14,7 @@
 #import "EZAppPurchase.h"
 #import "EZTouchView.h"
 #import "EZFileUtil.h"
+#import "EZActionPlayer.h"
 
 @implementation EZCommonPlayPage
 
@@ -22,6 +23,7 @@
 {
     [super onEnter];
     //[[CCDirector sharedDirector].view addSubview:_gesturerView];
+    [self createSwipeSign];
 }
 
 - (void) onExit
@@ -29,6 +31,7 @@
     [super onExit];
     [_gesturerView removeFromSuperview];
     [_purchaseView removeFromSuperview];
+    //[_swipeNode removeFromParentAndCleanup:NO];
 }
 
 
@@ -51,6 +54,14 @@
     }
     
     return self;
+}
+
+
+//The purpose of this method is to stop the animating cycle, make user not very annoying
+- (void) dismissAnimating:(ccTime)time
+{
+    [_activityIndicator stopAnimating];
+    [_activityIndicator removeFromSuperview];
 }
 
 - (void) addPurchaseLayer
@@ -78,7 +89,7 @@
     [_purchaseView addSubview:lock];
     
     
-   
+ 
     _purchaseView.touchBlock = ^(){
         EZDEBUG(@"TouchedView");
         CGSize screenSize = [CCDirector sharedDirector].view.bounds.size;
@@ -90,6 +101,7 @@
         [[CCDirector sharedDirector].view addSubview:weakSelf.activityIndicator];
         [weakSelf.activityIndicator startAnimating];
         
+        [weakSelf schedule:@selector(dismissAnimating:) interval:1.0 repeat:0 delay:3];
         [[EZAppPurchase getInstance] purchase:ProductID successBlock:^(id tr){
             [[EZAppPurchase getInstance] setPurchased:TRUE pid:ProductID];
             [weakSelf.activityIndicator stopAnimating];
@@ -111,6 +123,59 @@
 
     [[CCDirector sharedDirector].view addSubview:_purchaseView];
     
+}
+
+//Add the swipe sign and animation to remind user that we are swipable.
+//Only do it 3 times is enough.
+//Cool.
+- (void) createSwipeSign
+{
+    NSInteger swipeCount = [[NSUserDefaults standardUserDefaults] integerForKey:@"swipeCount"];
+    if(swipeCount >= SwipeCountLimit ){
+        EZDEBUG(@"Quit for already demoed %i times", swipeCount);
+        return;
+    }
+    [[NSUserDefaults standardUserDefaults] setInteger:swipeCount+1 forKey:@"swipeCount"];
+    
+    if(!_swipeNode){
+        //_swipeNode = [[CCNode alloc] init];
+        //_swipeNode.contentSize = CGSizeMake(276, 116);
+        _swipeNode = [CCSprite spriteWithFile:@"swipe-sign.png"];
+        _finger = [CCSprite spriteWithFile:@"swipe-finger.png"];
+        //CCSprite* swipe = [CCSprite spriteWithFile:@"swipe-sign.png"];
+        //swipe.anchorPoint = ccp(0, 0);
+        //On the upper side of the swipeNode;
+        //swipe.position = ccp(0, _swipeNode.contentSize.height - swipe.contentSize.height + 10);
+        //[_swipeNode addChild:swipe];
+        _finger.anchorPoint = ccp(1.0, 1.0);
+        CGFloat startX = _swipeNode.contentSize.width/6;
+        CGFloat endX = _swipeNode.contentSize.width*5/6+_finger.contentSize.width;
+        _finger.position = ccp(startX, _swipeNode.contentSize.height/2);
+        [_swipeNode addChild:_finger];
+        //_swipeNode.anchorPoint = ccp(0.5, 0.5);
+        if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad){
+            _swipeNode.position = ccp(384, 512);
+        }else {
+            _swipeNode.position = ccp(320/2, 244);
+        }
+        
+        CGFloat fingerY = _finger.position.y;
+        //CGPoint pos = swipe.position;
+        __weak EZCommonPlayPage* weakSelf = self;
+        _swipeAnim = [CCSpawn actions:[CCRepeat actionWithAction:[CCSequence actions:[CCMoveTo actionWithDuration:1.0 position:ccp(endX, fingerY)], [CCMoveTo actionWithDuration:1.0 position:ccp(startX, fingerY)], nil] times:2.0],[CCFadeOut actionWithDuration:2.0],nil];
+        
+        _fadeOutAnim = [CCSequence actions:[CCFadeOut actionWithDuration:2.0],[CCCallBlock actionWithBlock:^(){
+            [weakSelf.swipeNode removeFromParentAndCleanup:NO];
+        }], nil];
+    }
+    [_swipeNode removeFromParentAndCleanup:NO];
+    
+    //Make sure this is on the top of the convas.
+    EZDEBUG(@"Will run swipe animation");
+    [self addChild:_swipeNode z:100];
+    [_finger runAction:_swipeAnim];
+    [_swipeNode runAction:_fadeOutAnim];
+
 }
 
 - (void) createSwipeGesture
@@ -149,6 +214,8 @@
 //It make you can see each step of your achievements.
 - (void) swiped:(id) sender
 {
+    
+    [[NSUserDefaults standardUserDefaults] setInteger:SwipeCountLimit forKey:@"swipeCount"];
     UISwipeGestureRecognizer* swiper = sender;
     
     NSInteger nextPos = _currentEpisodePos + 1;

@@ -80,6 +80,48 @@
     } inThread:_worker];
 }
 
+
+- (void) downloadEpisodes:(NSArray*)urls completeBlock:(EZOperationBlock)block
+{
+    EZDEBUG(@"Downloading File URL:%i", urls.count);
+    [self executeBlockInBackground:^(){
+         NSInteger count = 1;
+        for(NSURL* url in urls){
+        NSData* episodeData = [NSData dataWithContentsOfURL:url];
+        EZDEBUG(@"Downloaded content:%i", episodeData.length);
+        if(episodeData){
+            //EZDEBUG(@"Successfully download %i from %@", episodeData.length, url);
+            NSMutableArray* episodes =[NSMutableArray arrayWithArray:[NSKeyedUnarchiver unarchiveObjectWithData:episodeData]];
+            EZDEBUG(@"Total episodes:%i", episodes.count);
+            _episodeCounts += episodes.count;
+            while(episodes.count > 0){
+                EZEpisodeVO* ep = [episodes objectAtIndex:0];
+                [episodes removeObjectAtIndex:0];
+                
+                NSRange pos = [ep.name rangeOfString:@":"];
+                if(pos.location > ep.name.length){
+                    //What's the purpose of this?
+                    //Make sure the name will not show again.
+                    ep.name = [NSString stringWithFormat:@"%i:%@", count++, ep.name];
+                }
+                @autoreleasepool {
+                    [self processEpisode:ep];
+                }
+                //Release the object.
+                ep = nil;
+                //if(count > 20){
+                //    break;
+                // }
+            }
+            
+        }else{
+            EZDEBUG(@"Failed to download episodes:%@", url);
+        }
+        }
+        
+    } inThread:_worker];
+}
+
 //Process each episode
 //Generate the thumbNail, download each files and update the data base accordingly.
 - (void) processEpisode:(EZEpisodeVO*)episode
