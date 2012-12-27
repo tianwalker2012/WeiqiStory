@@ -19,9 +19,21 @@
     return self;
 }
 
+
+//For the shaped mark, the purpose of the text is to determine which kind of shape it is.
+- (id) initWithType:(EZChessMarkType)type text:(NSString*)text coord:(EZCoord*)coord
+{
+    self = [super init];
+    _text = text;
+    _type = type;
+    _coord = coord;
+    return self;
+}
+
 - (id) initWithText:(NSString*)text fontSize:(NSInteger)fontSize coord:(EZCoord*)coord 
 {
     self = [super init];
+    _type = kTextMark;
     _text = text;
     _coord = coord;
     _fontSize = fontSize;

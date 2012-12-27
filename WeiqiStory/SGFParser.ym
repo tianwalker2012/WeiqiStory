@@ -1,0 +1,45 @@
+%{
+    #import "EZChessNode.h"
+    #import "EZSGFItem.h"
+    #import "EZConstants.h"
+    //#import "EZSGFParser.h"
+    #import "EZParserStatus.h"
+%}
+
+%union {
+    char* nm;
+    char* node;
+}
+
+%token <nm> ItemName ItemContent
+
+%type <nm> ChessNode NodeItems NodeItem NodeBodys
+//%token NDBegin NDEnd ContentBegin ContentEnd SemiColon
+//End of compile file
+%token EOC
+
+
+%%
+ChessNode:/* nothing */{
+    EZDEBUG("Empty input");
+    //return nil;
+}
+|'(' NodeItems ')' EOC {
+    EZDEBUG("Reduced Node to end of file, No Return");
+    return 0;
+};
+
+NodeItems: NodeItem { EZDEBUG(@"Encounter chess node");}
+| '(' NodeItems ')' { EZDEBUG(@"Counter new Node item"); }
+| NodeItem NodeItems { EZDEBUG(@"Simple Encounter chess node 2, switched"); };
+
+
+
+NodeItem: ItemName NodeBodys {EZDEBUG(@"NodeItem 2 Encounter name,%@, "),UTF8($1);};
+
+NodeBodys: ItemContent { EZDEBUG(@"Encounter Node body:%@", UTF8($1));};
+| NodeBodys ItemContent { EZDEBUG(@"Encounter tail body:%@", UTF8($2));};
+
+%%
+
+

@@ -78,5 +78,6 @@
 
 @property(nonatomic, assign) NSInteger playButtonStatus;
 
+@property (nonatomic, strong) CCMenuItemImage* playButton;
 
 @end

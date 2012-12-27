@@ -1,0 +1,110 @@
+%{
+    #import "SGFLexer.h"
+    #import "EZConstants.h"
+    #import "y.tab.h"
+    #import "EZSGFParser.h"
+    #import "EZParserStatus.h"
+%}
+
+%option noyywrap nodefault yylineno
+
+
+%%
+
+"//".*\n  {
+    EZDEBUG(@"Ignore comments");
+}
+
+[a-zA-Z]+ {
+    NSString* curItemName = UTF8(yytext);
+    NSLog(@"NodeName:%@", curItemName);
+    //yylval.nm = yytext;
+    [EZParserStatus createNodeItem:curItemName];
+    //return ItemName;
+   
+}
+
+"(" {
+    EZDEBUG(@"Node begin");
+    [EZParserStatus createChessNode];
+    //return yytext[0];
+    
+}
+
+")" {
+    EZDEBUG(@"Node end");
+    [EZParserStatus popChessNode];
+    //return yytext[0];
+}
+
+
+
+
+";" {
+    EZDEBUG(@"Ignore semicolon");
+}
+
+[ \t] {//Yes, this is mean ignore
+    EZDEBUG(@"Ignore white space");
+}
+
+"["[^\[\]]*"]" {
+    EZDEBUG(@"Coord value:%@",UTF8(yytext));
+    //yylval.nm = yytext;
+    [EZParserStatus addNodeProperty:UTF8(yytext)];
+    //return ItemContent;
+    //return 0;
+}
+
+"/*" { EZDEBUG(@"Begin comment"); }
+
+\n { charsCount++; linesCount++; }
+. { charsCount++; }
+
+<<EOF>> { EZDEBUG(@"End of File"); return EOC;}
+
+%%
+
+void CountAll(NSString* fileName)
+{
+    NSString* fullPath = [[NSBundle mainBundle] pathForResource:@"first" ofType:@"sgf"];
+    EZDEBUG(@"Second FullPath is:%@", fullPath);
+    
+    FILE* fin = fopen([fullPath UTF8String], "r");
+    //int firstChar = fgetc(fin);
+    yyin = fin;
+    yylex();
+    EZDEBUG(@"firstChar is:%i, %i, %i", charsCount, wordsCount, linesCount);
+    fclose(fin);
+    
+}
+
+
+EZChessNode* parseFullPath(NSString* fileName)
+{
+    EZDEBUG("The full path is:%@", fileName);
+    FILE* fin = fopen([fileName UTF8String], "r");
+    //int firstChar = fgetc(fin);
+    yyin = fin;
+    //yyparse();
+    yylex();
+    fclose(fin);
+    return [EZParserStatus getInstance].rootNode;
+}
+
+
+EZChessNode* parse(NSString* fileName)
+{
+    NSString* fullPath = [[NSBundle mainBundle] pathForResource:fileName ofType:@"sgf"];
+    EZDEBUG(@"Second FullPath is:%@, fileName:%@", fullPath, fileName);
+    return parseFullPath(fullPath);
+}
+
+void yyerror (char *s) /* Called by yyparse on error */
+{
+     //NSLog(@”%@”, [NSString stringWithUTF8String:s]);
+    //sprintf(stder)
+    EZDEBUG(@"%@", [NSString stringWithUTF8String:s]);
+}
+
+

@@ -71,6 +71,7 @@
     //Have have cleaned Marks. let's plant them back.
     if(_cleanedMarks.count > 0){
         //[player.board putCharMark:<#(NSString *)#> fontSize:<#(NSInteger)#> coord:<#(EZCoord *)#> animAction:<#(CCAction *)#>]
+        [player.board putMarks:_cleanedMarks];
     }
 }
 

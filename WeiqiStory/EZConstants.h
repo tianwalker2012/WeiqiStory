@@ -55,6 +55,7 @@ typedef enum {
     kDiagonalT
 } CoordTransformType;
 
+#define UTF8(x)  [NSString stringWithUTF8String:x]
 //Why need to differentiate this 2?
 //So that I can test the functionality without need to worry about all the things.
 

@@ -24,6 +24,7 @@
 #import "EZCoreAccessor.h"
 //#import "EZFlexibleBoard.h"
 #import "EZFlexibleResizeBoard.h"
+#import "MobClick.h"
 
 
 //Only 2 status.
@@ -121,49 +122,7 @@ typedef enum {
     
     CCMenuItemImage* quitButton = [CCMenuItemImage itemWithNormalImage:@"study-over-button.png" selectedImage:@"study-over-button.png"
                                                                  block:^(id sender){
-                                                                     [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
-                                                                     /**
-                                                                      id action = [CCScaleTo actionWithDuration:0.3 scaleX:1 scaleY:0.1];
-                                                                      //id action = [CCMoveTo actionWithDuration:0.3 position:ccp(0, -studyBoardHolder.position.y)];
-                                                                      CCAction* removeAction = [CCSequence actions:action,[CCCallBlock actionWithBlock:^(){
-                                                                      [studyBoardHolder removeFromParentAndCleanup:NO];
-                                                                      }], nil];
-                                                                      **/
-                                                                     if(weakSelf.currentFinger.visible){
-                                                                         weakSelf.currentFinger.visible = false;
-                                                                         [weakSelf.currentFinger stopAllActions];
-                                                                         [weakSelf.currentFinger removeFromParentAndCleanup:NO];
-                                                                     }
-                                                                     
-                                                                     
-                                                                     id animation = [CCScaleTo actionWithDuration:0.3 scaleX:0.05 scaleY:1];
-                                                                     
-                                                                     id completed = [CCCallBlock actionWithBlock:^(){
-                                                                         EZDEBUG(@"start show study board");
-                                                                         //studyBoardHolder.scaleX = 0.05;
-                                                                         //[self addChild:studyBoardHolder z:100];
-                                                                         if(!weakSelf.mainLayout){
-                                                                             [weakSelf createMainLayout:epv];
-                                                                         }
-                                                                         
-                                                                         [weakSelf.mainLayout removeFromParentAndCleanup:NO];
-                                                                         weakSelf.mainLayout.scaleX = 0.05;
-                                                                         [weakSelf.mainFlexBoard backToRollStatus];
-                                                                         [weakSelf addChild:weakSelf.mainLayout z:10];
-                                                                         id scaleDown = [CCScaleTo actionWithDuration:0.3f scaleX:1 scaleY:1];
-                                                                         id scaleDownComplete = [CCCallBlock actionWithBlock:^(){
-                                                                             [weakSelf.mainFlexBoard recalculateBoardRegion];
-                                                                         }];
-                                                                         //id moveTo = [CCMoveTo actionWithDuration:0.3f position:ccp(0, 0)];
-                                                                         [weakSelf.mainLayout runAction:[CCSequence actions:scaleDown, scaleDownComplete, nil]];
-                                                                         [weakSelf.studyBoardHolder removeFromParentAndCleanup:NO];
-                                                                     }];
-                                                                     id sequence = [CCSequence actions:animation, completed, nil];
-                                                                     weakSelf.flexibleBoard.touchEnabled = false;
-                                                                     [weakSelf.flexibleBoard backToRollStatus];
-                                                                     
-                                                                     
-                                                                     [weakSelf.studyBoardHolder runAction:sequence];
+                                                                     [weakSelf quitButtonClicked:epv];
                                                                  }
                                    ];
     
@@ -175,6 +134,7 @@ typedef enum {
     
     CCMenuItemImage* prevButton = [CCMenuItemImage itemWithNormalImage:@"prev-button.png" selectedImage:@"prev-button-pressed.png" block:^(id sender) {
         [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
+        [MobClick event:@"prev_step_clicked" label:nil];
         [weakSelf.chessBoard2 regretSteps:1 animated:NO];
         EZDEBUG(@"Regret queue:%i", weakSelf.chessBoard2.regrets.count);
     }];
@@ -188,6 +148,7 @@ typedef enum {
     
     CCMenuItemImage* nextButton = [CCMenuItemImage itemWithNormalImage:@"next-button.png" selectedImage:@"next-button-pressed.png" block:^(id sender){
         EZDEBUG(@"Regret queue:%i", weakSelf.chessBoard2.regrets.count);
+        [MobClick event:@"next_step_clicked" label:nil];
         [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
         [weakSelf.chessBoard2 redoRegret:NO];
     }];
@@ -220,6 +181,54 @@ typedef enum {
     }] ,nil];
 }
 
+
+//Actully, this is a better solution then using the weakSelf, the code is more readable.
+- (void) quitButtonClicked:(EZEpisodeVO*)epv
+{
+    EZPlayPagePodLearn* weakSelf = self;
+    [MobClick event:@"study_over_clicked" label:nil];
+    [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
+    /**
+     id action = [CCScaleTo actionWithDuration:0.3 scaleX:1 scaleY:0.1];
+     //id action = [CCMoveTo actionWithDuration:0.3 position:ccp(0, -studyBoardHolder.position.y)];
+     CCAction* removeAction = [CCSequence actions:action,[CCCallBlock actionWithBlock:^(){
+     [studyBoardHolder removeFromParentAndCleanup:NO];
+     }], nil];
+     **/
+    if(weakSelf.currentFinger.visible){
+        weakSelf.currentFinger.visible = false;
+        [weakSelf.currentFinger stopAllActions];
+        [weakSelf.currentFinger removeFromParentAndCleanup:NO];
+    }
+    
+    
+    id animation = [CCScaleTo actionWithDuration:0.3 scaleX:0.05 scaleY:1];
+    
+    id completed = [CCCallBlock actionWithBlock:^(){
+        EZDEBUG(@"start show study board");
+        //studyBoardHolder.scaleX = 0.05;
+        //[self addChild:studyBoardHolder z:100];
+        if(!weakSelf.mainLayout){
+            [weakSelf createMainLayout:epv];
+        }
+        
+        [weakSelf.mainLayout removeFromParentAndCleanup:NO];
+        weakSelf.mainLayout.scaleX = 0.05;
+        [weakSelf.mainFlexBoard backToRollStatus];
+        [weakSelf addChild:weakSelf.mainLayout z:10];
+        id scaleDown = [CCScaleTo actionWithDuration:0.3f scaleX:1 scaleY:1];
+        id scaleDownComplete = [CCCallBlock actionWithBlock:^(){
+            [weakSelf.mainFlexBoard recalculateBoardRegion];
+        }];
+        //id moveTo = [CCMoveTo actionWithDuration:0.3f position:ccp(0, 0)];
+        [weakSelf.mainLayout runAction:[CCSequence actions:scaleDown, scaleDownComplete, nil]];
+        [weakSelf.studyBoardHolder removeFromParentAndCleanup:NO];
+    }];
+    id sequence = [CCSequence actions:animation, completed, nil];
+    weakSelf.flexibleBoard.touchEnabled = false;
+    [weakSelf.flexibleBoard backToRollStatus];
+    [weakSelf.studyBoardHolder runAction:sequence];
+}
 - (void) onExit
 {
     //if(chessBoard2.touchEnabled){
@@ -285,6 +294,7 @@ typedef enum {
             [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
             [weakSelf.player stop];
             [[CCDirector sharedDirector] replaceScene:[EZListTablePagePod node]];
+            [MobClick event:@"back_clicked" label:nil];
         }];
         
         CCMenu* backMenu = [CCMenu menuWithItems:backButton, nil];
@@ -376,8 +386,8 @@ typedef enum {
 {
     [self createMainLayout:epv];
     [self addChild:_mainLayout z:10];
-    [_mainFlexBoard setBasicPatterns:epv.basicPattern];
-    [_mainFlexBoard recalculateBoardRegion];
+    //[_mainFlexBoard setBasicPatterns:epv.basicPattern i];
+    [_mainFlexBoard calculateRegionForPattern:epv.basicPattern isPlant:NO];
 }
 
 - (void) createMainLayout:(EZEpisodeVO*)epv
@@ -427,37 +437,12 @@ typedef enum {
     
     
     
-    CCMenuItemImage* playButton = [CCMenuItemImage itemWithNormalImage:@"play-button.png" selectedImage:@"play-button-pressed.png"
+    _playButton = [CCMenuItemImage itemWithNormalImage:@"play-button.png" selectedImage:@"play-button-pressed.png"
                                                                  block:^(id sender) {
-                                                                     [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
-                                                                     CCMenuItemImage* imageItem = sender;
-                                                                     EZDEBUG(@"play clicked, play status:%i", weakSelf.playButtonStatus);
-                                                                     if(!weakSelf.player.isPlaying){
-                                                                         //It is end and user click play button again.
-                                                                         if(weakSelf.player.isEnd){
-                                                                             [weakSelf.player rewind];
-                                                                         }
-                                                                         weakSelf.playButtonStatus = kPlayerPlaying;
-                                                                         //Play mean play from current action.
-                                                                         [imageItem setNormalSpriteFrame:weakSelf.pauseImg.displayFrame];
-                                                                         [weakSelf.player play:^(){
-                                                                             EZDEBUG(@"play completed, I will set button to play again.");
-                                                                             //CCMenuItemImage* imageItem = sender;
-                                                                             //TODO will add clicked frame too.
-                                                                             weakSelf.playButtonStatus = kPlayerPause;
-                                                                             //[player rewind];
-                                                                             [imageItem setNormalSpriteFrame:weakSelf.playImg.displayFrame];
-                                                                         }];
-                                                                     }else{//I am thinking about one case, not yet stopped, but play button get hit again.Let's experiment them. Only real case can help me solve it
-                                                                         EZDEBUG(@"Paused");
-                                                                         [weakSelf.player pause];
-                                                                         weakSelf.playButtonStatus = kPlayerPause;
-                                                                         [imageItem setNormalSpriteFrame:weakSelf.playImg.displayFrame];
-                                                                     }
-                                                                     
+                                                                     [weakSelf playClicked:sender];
                                                                  }
                                    ];
-    CCMenu* playMenu = [CCMenu menuWithItems:playButton, nil];
+    CCMenu* playMenu = [CCMenu menuWithItems:_playButton, nil];
     playMenu.position = ccp(44, 47);
     
     CCSprite* progressBar = [[CCSprite alloc] initWithFile:@"progress-bar.png"];
@@ -467,9 +452,10 @@ typedef enum {
     //progressNob.position = ccp(294, 59);
     EZProgressBar* myBar = [[EZProgressBar alloc] initWithNob:progressNob bar:progressBar maxValue:epv.actions.count changedBlock:^(NSInteger prv, NSInteger cur) {
         EZDEBUG(@"Player2 Nob position changed from:%i to %i", prv, cur);
+        [MobClick event:@"progress_dragged" label:[NSString stringWithFormat:@"from:%i to %i",prv, cur]];
         //pause the player, no harm will be done
         [weakSelf.player pause];
-        [playButton setNormalSpriteFrame:weakSelf.playImg.displayFrame];
+        [_playButton setNormalSpriteFrame:weakSelf.playImg.displayFrame];
         [weakSelf.player forwardFrom:prv to:cur];
     }];
     
@@ -489,49 +475,7 @@ typedef enum {
     
     CCMenuItemImage* studyButton = [CCMenuItemImage itemWithNormalImage:@"study-button.png" selectedImage:@"study-button.png"
                                                                   block:^(id sender){
-                                                                      [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
-                                                                      [weakSelf.player pause];
-                                                                      [playButton setNormalSpriteFrame:weakSelf.playImg.displayFrame];
-                                                                      
-                                                                      //More straightforward.
-                                                                      if(!weakSelf.studyBoardHolder){
-                                                                          [weakSelf initStudyBoard2:epv];
-                                                                      }else{
-                                                                          weakSelf.flexibleBoard.touchEnabled = YES;
-                                                                      }
-                                                                      //[self addChild:chessBoard2];
-                                                                      //[studyBoardHolder setScale:0.2];
-                                                                      //studyBoardHolder.position = ccp(studyBoardHolder.position.x, -studyBoardHolder.position.y);
-                                                                      id animation = [CCScaleTo actionWithDuration:0.3 scaleX:0.05 scaleY:1];
-                                                                      
-                                                                      id completed = [CCCallBlock actionWithBlock:^(){
-                                                                          EZDEBUG(@"start show study board");
-                                                                          [weakSelf.mainLayout removeFromParentAndCleanup:NO];
-                                                                          weakSelf.studyBoardHolder.scaleX = 0.05;
-                                                                          //why make it 100, so typo.
-                                                                          [weakSelf addChild:weakSelf.studyBoardHolder z:10];
-                                                                          id scaleDown = [CCScaleTo actionWithDuration:0.3f scaleX:1 scaleY:1];
-                                                                          id scaleComplete = [CCCallBlock actionWithBlock:^(){
-                                                                              [weakSelf.flexibleBoard recalculateBoardRegion];
-                                                                          }];
-                                                                          //id moveTo = [CCMoveTo actionWithDuration:0.3f position:ccp(0, 0)];
-                                                                          [weakSelf.studyBoardHolder runAction:[CCSequence actions:scaleDown, scaleComplete, nil]];
-                                                                      }];
-                                                                      id sequence = [CCSequence actions:animation, completed, nil];
-                                                                      [weakSelf.mainLayout runAction:sequence];
-                                                                      
-                                                                      [weakSelf.chessBoard2 cleanAll];
-                                                                      [weakSelf.player2 forwardFrom:0 to:weakSelf.player.currentAction];
-                                                                      
-                                                                      
-                                                                      [weakSelf setupStudyBoard:epv];
-                                                                      [weakSelf.flexibleBoard backToRollStatus];
-                                                                      [weakSelf.mainFlexBoard backToRollStatus];
-                                                                      //Make sure the inner board and outboard color is consistent.
-                                                                      //It is all because initially, I didn't get all the
-                                                                      //BoardFront interface well define.
-                                                                      //Otherwise it could be much simpler to add functionality like this.
-                                                                      EZDEBUG(@"Raise study panel successfully");
+                                                                      [weakSelf studyClicked:epv];
                                                                   }
                                     ];
     
@@ -547,6 +491,93 @@ typedef enum {
     [_mainLayout addChild:studyMenu];
 }
 
+//Make is more readable
+- (void) playClicked:(id)sender
+{
+    EZPlayPagePodLearn* weakSelf = self;
+    [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
+    CCMenuItemImage* imageItem = sender;
+    EZDEBUG(@"play clicked, play status:%i", weakSelf.playButtonStatus);
+    
+    if(!weakSelf.player.isPlaying){
+        [MobClick event:@"play_button_clicked" label:nil];
+        //It is end and user click play button again.
+        if(weakSelf.player.isEnd){
+            [weakSelf.player rewind];
+        }
+        weakSelf.playButtonStatus = kPlayerPlaying;
+        //Play mean play from current action.
+        [imageItem setNormalSpriteFrame:weakSelf.pauseImg.displayFrame];
+        [weakSelf.player play:^(){
+            EZDEBUG(@"play completed, I will set button to play again.");
+            //CCMenuItemImage* imageItem = sender;
+            //TODO will add clicked frame too.
+            weakSelf.playButtonStatus = kPlayerPause;
+            //[player rewind];
+            [imageItem setNormalSpriteFrame:weakSelf.playImg.displayFrame];
+        }];
+    }else{//I am thinking about one case, not yet stopped, but play button get hit again.Let's experiment them. Only real case can help me solve it
+        EZDEBUG(@"Paused");
+        [MobClick event:@"pause_button_clicked" label:nil];
+        [weakSelf.player pause];
+        weakSelf.playButtonStatus = kPlayerPause;
+        [imageItem setNormalSpriteFrame:weakSelf.playImg.displayFrame];
+    }
+    
+}
+
+- (void) studyClicked:(EZEpisodeVO*)epv
+{
+    EZPlayPagePodLearn* weakSelf = self;
+    [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
+    [MobClick event:@"study_button_clicked" label:nil];
+    [weakSelf.player pause];
+    [_playButton setNormalSpriteFrame:weakSelf.playImg.displayFrame];
+    
+    //More straightforward.
+    if(!weakSelf.studyBoardHolder){
+        [weakSelf initStudyBoard2:epv];
+    }else{
+        weakSelf.flexibleBoard.touchEnabled = YES;
+    }
+    //[self addChild:chessBoard2];
+    //[studyBoardHolder setScale:0.2];
+    //studyBoardHolder.position = ccp(studyBoardHolder.position.x, -studyBoardHolder.position.y);
+    id animation = [CCScaleTo actionWithDuration:0.3 scaleX:0.05 scaleY:1];
+    
+    id completed = [CCCallBlock actionWithBlock:^(){
+        EZDEBUG(@"start show study board");
+        [weakSelf.mainLayout removeFromParentAndCleanup:NO];
+        weakSelf.studyBoardHolder.scaleX = 0.05;
+        //why make it 100, so typo.
+        [weakSelf addChild:weakSelf.studyBoardHolder z:10];
+        id scaleDown = [CCScaleTo actionWithDuration:0.3f scaleX:1 scaleY:1];
+        id scaleComplete = [CCCallBlock actionWithBlock:^(){
+            if(weakSelf.flexibleBoard.chessBoard.allSteps.count > 0){
+                [weakSelf.flexibleBoard recalculateBoardRegion];
+            }else{
+                [weakSelf.flexibleBoard calculateRegionForPattern:epv.basicPattern isPlant:false];
+            }
+        }];
+        //id moveTo = [CCMoveTo actionWithDuration:0.3f position:ccp(0, 0)];
+        [weakSelf.studyBoardHolder runAction:[CCSequence actions:scaleDown, scaleComplete, nil]];
+    }];
+    id sequence = [CCSequence actions:animation, completed, nil];
+    [weakSelf.mainLayout runAction:sequence];
+    
+    [weakSelf.chessBoard2 cleanAll];
+    [weakSelf.player2 forwardFrom:0 to:weakSelf.player.currentAction];
+    
+    
+    [weakSelf setupStudyBoard:epv];
+    [weakSelf.flexibleBoard backToRollStatus];
+    [weakSelf.mainFlexBoard backToRollStatus];
+    //Make sure the inner board and outboard color is consistent.
+    //It is all because initially, I didn't get all the
+    //BoardFront interface well define.
+    //Otherwise it could be much simpler to add functionality like this.
+    EZDEBUG(@"Raise study panel successfully");
+}
 
 - (void) setupStudyBoard:(EZEpisodeVO*)  epv
 {
@@ -585,6 +616,7 @@ typedef enum {
 //I am make sure the epv is a valid one
 - (void) swipeTo:(EZEpisodeVO*)epv currentPos:(NSInteger)currentPos isNext:(BOOL)isNext
 {
+    [MobClick event:@"swiped" label:[NSString stringWithFormat:@"position:%i,next:%@",currentPos, isNext?@"true":@"false"]];
     EZPlayPagePodLearn* nextPage = [[EZPlayPagePodLearn alloc] initWithEpisode:epv currentPos:currentPos];
     if(isNext){
         [[CCDirector sharedDirector] replaceScene:[CCTransitionSlideInR transitionWithDuration:0.5 scene:[nextPage createScene]]];

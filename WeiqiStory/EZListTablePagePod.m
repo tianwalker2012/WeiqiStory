@@ -35,6 +35,7 @@
 #import "EZExtender.h"
 #import "EZPlayPagePodLearn.h"
 #import "EZFixBrokenPage.h"
+#import "MobClick.h"
 
 @interface EZListTablePagePod()
 {
@@ -212,6 +213,7 @@
             [lock setPosition:ccp(57, 75)];
             [panel addSubview:lock];
             panel.tappedBlock = ^(){
+                [MobClick event:@"purchase_clicked" label:[NSString stringWithFormat:@"purchase_clicked:%i", i]];
                 CGSize screenSize = [CCDirector sharedDirector].view.bounds.size;
                 if(weakSelf.activityIndicator == nil){
                     weakSelf.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
@@ -247,6 +249,7 @@
             EZDEBUG(@"The episode %@ get tapped", epv.name);
             [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
             
+            [MobClick event:@"episode_clicked" label:[NSString stringWithFormat:@"episode_clicked:%i", i]];
             CCScene* nextScene = nil;
             
             if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad){

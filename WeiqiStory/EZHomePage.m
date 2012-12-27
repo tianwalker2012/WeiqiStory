@@ -14,6 +14,7 @@
 #import "EZListTablePage.h"
 #import "EZBubble.h"
 #import "EZListTablePagePod.h"
+#import "MobClick.h"
 
 @interface EZHomePage()
 {
@@ -51,11 +52,10 @@
         CCMenuItemImage* startButton = [CCMenuItemImage itemWithNormalImage:@"start-button.png" selectedImage:@"start-button-pressed.png" block:^(id sender){
             EZDEBUG(@"Button get clicked");
             [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
-            //if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone){
-                [[CCDirector sharedDirector] replaceScene:[EZListTablePagePod node]];
-            //}else{
-                //[[CCDirector sharedDirector] replaceScene:[EZListTablePage node]];
-            //}
+            
+            [[CCDirector sharedDirector] replaceScene:[EZListTablePagePod node]];
+            [MobClick event:@"HomeButtonClick" label:@"HomeButtonClick"];
+            
         }];
         
         __weak CCNode* weakSelf = self;
@@ -97,6 +97,7 @@
 - (void) onEnter{
     [super onEnter];
     [[EZSoundManager sharedSoundManager] playBackgroundTrack:@"background.mp3"];
+    [MobClick beginLogPageView:@"EZHomePage"];
 }
 
 
@@ -104,6 +105,7 @@
 {
     [super onExit];
     [[EZSoundManager sharedSoundManager] stopBackground];
+    [MobClick endLogPageView:@"EZHomePage"];
 }
 
 

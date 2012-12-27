@@ -9,6 +9,16 @@
 #import <Foundation/Foundation.h>
 
 
+//Why differentiate those?
+//Should we add the organially?
+//I guess so.
+typedef enum{
+    kGameOtherType,
+    kGameSurvive,
+    kGameWhole,
+    kGameEndSkill
+} EZGameType;
+
 @class EZEpisode;
 //What's the purpose of this class?
 //So that I could be serialized.
@@ -53,6 +63,20 @@
 @property (strong, nonatomic) NSString* thumbNailFile;
 
 @property (strong, nonatomic) EZEpisode* PO;
+
+
+//newly added to support wider range of game type
+@property (nonatomic, strong) NSString* gameName;
+
+@property (nonatomic, strong) NSString* result;
+
+@property (nonatomic, assign) BOOL blackFirst;
+
+@property (nonatomic, strong) NSString* blackName;
+
+@property (nonatomic, strong) NSString* whiteName;
+
+@property (nonatomic, assign) EZGameType gameType;
 
 
 - (id) initWithPO:(EZEpisode*)po;

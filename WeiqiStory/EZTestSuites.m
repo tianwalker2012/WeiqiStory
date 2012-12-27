@@ -51,6 +51,11 @@
 #import "EZThreadPool.h"
 #import "EZTouchHelper.h"
 #import "EZAppPurchase.h"
+//#import <SGFParser/SGFParser.h>
+#import "EZSimpleSGFParser.h"
+#import "EZChessNode.h"
+#import "EZSGFItem.h"
+#import "EZSGFHelper.h"
 
 
 static NSInteger releaseCount;
@@ -252,8 +257,127 @@ static NSInteger releaseCount;
     //[EZTestSuites testChangePostFix];
     //[EZTestSuites testConvertCharToGB];
     //[EZTestSuites removeAndInsert];
+    //[EZTestSuites testSGFParser];
+    //[EZTestSuites testStaticLib];
+    //[EZTestSuites testLibraryIssue];
+    //[EZTestSuites testSubRangeOfString];
+    //[EZTestSuites testNodeToAction];
+    //[EZTestSuites testReadFileToEpisode];
 }
 
++ (void) testReadFileToEpisode
+{
+    EZEpisodeVO* epv  = [EZSGFHelper readSGF:@"1001r"];
+    EZDEBUG(@"Action number:%i", epv.actions.count);
+    //assert(false);
+}
+
+//Have 3 nodes, 2 embeded nodes, each nodes have different action with it.
+//Let's check if my code generate the correct actions for it.
++ (void) testNodeToAction
+{
+    EZChessNode* parent = [[EZChessNode alloc] init];
+    EZSGFItem* item = [[EZSGFItem alloc] init];
+    item.name = @"AB";
+    [item.properties addObjectsFromArray:@[@"ab",@"cd"]];
+    
+    EZChessNode* child = [[EZChessNode alloc] init];
+    [child.nodes addObject:item];
+    
+    EZChessNode* grandChild = [[EZChessNode alloc] init];
+    
+    EZChessNode* child2 = [[EZChessNode alloc] init];
+    
+    [parent.nodes addObjectsFromArray: @[child, child2]];
+    [child.nodes addObject:grandChild];
+    
+    EZEpisodeVO* episode = [EZSGFHelper convertNodeToAction:parent];
+    
+    
+    assert(episode.actions.count == 9);
+    for(EZAction* action in episode.actions){
+        if([[action class].description isEqualToString:@"EZChessPresetAction"]){
+            EZChessPresetAction* cpa = (EZChessPresetAction*)action;
+            EZDEBUG(@"Found the presetActions");
+            assert(cpa.preSetMoves.count == 2);
+        }
+    }
+    
+    
+    assert(false);
+    
+}
+
++ (void) testSubRangeOfString
+{
+    NSString* text = @"1234";
+    
+    NSString* first = [text substringToIndex:1];
+    EZDEBUG(@"first is:%@", first);
+    
+    NSString* second = [text substringFromIndex:1];
+    EZDEBUG(@"second is:%@", second);
+    assert(false);
+}
+
+//Seems I found the rhythm of doing things
+//This is really some kind of pleasure.
+//Let's keep doing it. 
++ (void) testLibraryIssue
+{
+    EZChessNode* node = [EZSimpleSGFParser parseSGF:@"test"];
+    EZDEBUG(@"Node count :%i", node.nodes.count);
+    assert(node.nodes.count == 4);
+    EZSGFItem* si = [node.nodes objectAtIndex:0];
+    EZDEBUG(@"si name:%@, property count:%i, properties 0:%@, properties 1:%@", si.name, si.properties.count, [si.properties objectAtIndex:0], [si.properties objectAtIndex:1]);
+    si = [node.nodes objectAtIndex:1];
+    EZDEBUG(@"si name:%@, property count:%i, properties 0:%@, properties 1:%@", si.name, si.properties.count, [si.properties objectAtIndex:0], [si.properties objectAtIndex:1]);
+   
+    EZChessNode* lastNode = [node.nodes objectAtIndex:3];
+    
+
+    si = [lastNode.nodes objectAtIndex:0];
+    EZDEBUG(@"si name:%@, property count:%i",si.name, si.properties.count);
+    EZDEBUG(@"si name:%@, property count:%i, properties 0:%@", si.name, si.properties.count, [si.properties objectAtIndex:0]);
+    //[EZSimpleSGFParser parseSGFFull:@"full"];
+    //assert(false);
+}
+
+
++ (void) testStaticLib
+{
+}
+/**
++ (void) parseSGF:(NSString*)fileName
+{
+    
+    NSString * filePath = [[NSBundle bundleForClass:[self class] ] pathForResource:fileName ofType:@"sgf"];
+    EZChessNode* node = [SGFParser parseSGFFull:filePath];
+    [self iterateNode:node];
+}
+
++ (void) iterateNode:(EZChessNode*) node
+{
+    
+    for(EZSGFItem* item in node.nodes){
+        EZDEBUG(@"Current node type:%@, type:%i", [item class], item.type);
+        if(item.type != kChessNode){
+            EZDEBUG(@"Name:%@, properties:%@", item.name, item.properties);
+        }else{
+            [self iterateNode:(EZChessNode*)item];
+        }
+    }
+    
+}
+
+
++ (void) testSGFParser
+{
+     EZChessNode* node = [SGFParser parseSGF:@"1001r"];
+    [EZTestSuites iterateNode:node];
+    assert(false);
+}
+**/
 + (void) removeAndInsert
 {
     NSMutableArray* marr = [[NSMutableArray alloc] initWithArray:@[@"0", @"1", @"2", @"3"]];

@@ -160,7 +160,7 @@ typedef enum ChessPutStatus{
 //Remove this coord plus all it's connected neighor
 //Return the total removed button count
 //Will remove black
-- (NSInteger) cascadeRemoveEaten:(EZCoord*)coord  isBlack:(BOOL)black animated:(BOOL)animated;
+//- (NSInteger) cascadeRemoveEaten:(EZCoord*)coord  isBlack:(BOOL)black animated:(BOOL)animated;
 
 
 //Initially it is a internal method,

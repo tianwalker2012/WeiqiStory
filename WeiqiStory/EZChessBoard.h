@@ -15,6 +15,7 @@
 #import "EZActionPlayer.h"
 
 #import "EZCoord.h"
+#import "EZBoardSnapshot.h"
 
 
 #define  OverExistingChess 30
@@ -46,6 +47,8 @@ typedef enum {
 //It can be initialized by column and row.
 //And what's the rectangular for the board.
 //It will only accept the touch event on this retangular.
+@class  EZChessMark;
+
 @interface EZChessBoard : CCSprite<CCTargetedTouchDelegate, EZBoardFront, EZBoardDelegate>
 
 
@@ -109,6 +112,8 @@ typedef enum {
 
 - (void) putMarks:(NSArray*) marks;
 
+- (void) putMark:(EZChessMark*) mark animate:(id)anim;
+
 - (void) putChessmans:(NSArray*)coords animated:(BOOL)animated;
 
 //How many steps I will regret.
@@ -125,5 +130,30 @@ typedef enum {
 
 //For study mood to show the right color.
 - (void) syncChessColorWithLastMove;
+
+
+//Following method is related to recover and store the current board status
+@property (nonatomic, strong) NSMutableArray* snapshotStack;
+
+//Push current status to the stack, which can be recovered later.
+- (void) pushStatus;
+
+//Pop the current status from the stack so that the stored status could be recovered.
+- (void) popStatus;
+
+//What's the meaning of this?
+//Just pop the status out of the field
+//
+- (void) popStatusWithoutApplying;
+
+//Get the snapshot of the board
+- (EZBoardSnapshot*) getSnapshot;
+
+//This is a total operation. mean the whole status will get recovered.
+- (void) playSnapshot:(EZBoardSnapshot*)snapshot;
+//My worry is that the snapshot recover operation is a very costly operation, how to make it little more efficient.
+//First I need to identifiy where is the bottleneck of the performance.
+//Once I idenitify performance bottle I could solve it.
+
 
 @end

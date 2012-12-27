@@ -180,38 +180,47 @@
 - (void) putMarks:(NSArray*) marks
 {
     for(EZChessMark* mark in marks){
-        [self putCharMark:mark.text fontSize:mark.fontSize coord:mark.coord animAction:nil];
+        //[self putCharMark:mark.text fontSize:mark.fontSize coord:mark.coord animAction:nil];
+        [self putMark:mark animate:nil];
     }
+}
+
+- (void) putMark:(EZChessMark*) mark animate:(id)anim
+{
+    CCLabelTTF*  markText = nil;
+    CGFloat fontSize = mark.fontSize;
+    if(fontSize <= 0){
+        fontSize = 30.0;
+    }
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone){
+        markText = [CCLabelTTF labelWithString:mark.text fontName:@"Arial" fontSize:fontSize*.05];
+    }else{
+        markText = [CCLabelTTF labelWithString:mark.text fontName:@"Arial" fontSize:fontSize];
+    }
+    
+    markText.color = ChessMarkColor;
+    NSMutableArray* marks = [coordToMarks objectForKey:mark.coord.getKey];
+    if(!marks){
+        marks = [[NSMutableArray alloc] init];
+        [coordToMarks setValue:marks forKey:mark.coord.getKey];
+    }
+    //EZDEBUG(@"coordMarks size:%i, object pointer:%i, marks size:%i",coordToMarks.count, (int)coordToMarks, marks.count);
+   
+    [marks addObject:mark];
+    [_allMarks addObject:mark];
+    CGPoint pt = [boardStatus bcToPoint:mark.coord];
+    [markText setPosition:pt];
+    [self addChild:markText z:MarkZOrder+marks.count];
+    if(anim){
+        [markText runAction:anim];
+    }
+
 }
 
 - (void) putCharMark:(NSString*)str fontSize:(NSInteger)fontSize coord:(EZCoord*)coord animAction:(CCAction*)action
 {
-    //NSString* markStr = [chessMarkChar objectAtIndex:(coordToMarks.count % chessMarkChar.count)];
-    CCLabelTTF*  markText = nil;
-    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone){
-        markText = [CCLabelTTF labelWithString:str fontName:@"Arial" fontSize:fontSize*.05];
-    }else{
-        markText = [CCLabelTTF labelWithString:str fontName:@"Arial" fontSize:fontSize];
-    }
-    
-    markText.color = ChessMarkColor;
-    NSMutableArray* marks = [coordToMarks objectForKey:coord.getKey];
-    if(!marks){
-        marks = [[NSMutableArray alloc] init];
-        [coordToMarks setValue:marks forKey:coord.getKey];
-    }
-    //EZDEBUG(@"coordMarks size:%i, object pointer:%i, marks size:%i",coordToMarks.count, (int)coordToMarks, marks.count);
-    EZChessMark* markObj = [[EZChessMark alloc] initWithText:str fontSize:fontSize coord:coord];
-    markObj.mark = markText;
-    [marks addObject:markObj];
-    [_allMarks addObject:markObj];
-    CGPoint pt = [boardStatus bcToPoint:coord];
-    [markText setPosition:pt];
-    [self addChild:markText z:MarkZOrder+marks.count];
-    if(action){
-        [markText runAction:action];
-    }
-    
+    EZChessMark* mark = [[EZChessMark alloc] initWithText:str fontSize:fontSize coord:coord];
+    [self putMark:mark animate:action];
 }
 
 - (BOOL) isCurrentBlack
@@ -603,5 +612,61 @@
     [self removeCursorButton];
 }
 
+
+//Push current status to the stack, which can be recovered later.
+- (void) pushStatus
+{
+    EZBoardSnapshot* snapshot = [self getSnapshot];
+    [_snapshotStack addObject:snapshot];
+}
+
+- (void) popStatusWithoutApplying
+{
+     if(_snapshotStack.count > 0){
+         [_snapshotStack removeAllObjects];
+     }
+}
+
+//Pop the current status from the stack so that the stored status could be recovered.
+- (void) popStatus
+{
+    if(_snapshotStack.count > 0){
+        EZBoardSnapshot* snapshot = [_snapshotStack lastObject];
+        [self playSnapshot:snapshot];
+        [_snapshotStack removeLastObject];
+    }
+}
+
+//Get the snapshot of the board
+- (EZBoardSnapshot*) getSnapshot
+{
+    //TODO
+    EZBoardSnapshot* res = [[EZBoardSnapshot alloc] init];
+    NSMutableArray* coords = [[NSMutableArray alloc] initWithCapacity:self.allSteps.count];
+    for(EZChessPosition* cp in self.allSteps){
+        [coords addObject:cp.coord];
+    }
+    
+    NSArray* marks = [NSArray arrayWithArray:self.allMarks];
+    
+    res.coords = coords;
+    res.marks = marks;
+    res.showStep = showStep;
+    res.showStepStarted = showStepStarted;
+    return res;
+}
+
+//This is a total operation. mean the whole status will get recovered.
+- (void) playSnapshot:(EZBoardSnapshot*)snapshot
+{
+    //This will clean all the marks and the moves and the regret stack.
+    //Basically, it have nothing left after the cleanAll.
+    EZDEBUG(@"I will recover all the status to the board");
+    [self cleanAll];
+    self.showStep = snapshot.showStep;
+    self.showStepStarted = snapshot.showStepStarted;
+    [self putChessmans:snapshot.coords animated:NO];
+    [self putMarks:snapshot.marks];
+}
 
 @end

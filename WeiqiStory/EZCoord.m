@@ -86,7 +86,6 @@
     _chessType = ((NSNumber*)[dict objectForKey:@"chessType"]).intValue;
     _x = ((NSNumber*)[dict objectForKey:@"x"]).shortValue;
     _y = ((NSNumber*)[dict objectForKey:@"y"]).shortValue;
-    //[self initChessType: x:<#(short)#> y:<#(short)#>]
     return self;
 }
 

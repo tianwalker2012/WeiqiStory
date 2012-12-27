@@ -15,6 +15,12 @@
 //Enjoy.
 //I can feel you are happy. Of course, I am
 //I am creating things which could help my daughter to be a Go master.
+
+typedef enum {
+    kTextMark,
+    kShapeMark
+} EZChessMarkType;
+
 @class EZCoord;
 @interface EZChessMark : NSObject
 
@@ -24,12 +30,22 @@
 @property (strong, nonatomic) NSString* text;
 @property (assign, nonatomic) NSInteger fontSize;
 
+//Newly added to support multiple mark types
+//By default it is text mark
+@property (assign, nonatomic) EZChessMarkType type;
+@property (strong, nonatomic) UIColor* markColor;
+
+
 - (id) initWithNode:(CCNode*)mark coord:(EZCoord*)coord;
 
-- (id) initWithText:(NSString*)text fontSize:(NSInteger)fontSize coord:(EZCoord*)coord ;
+- (id) initWithText:(NSString*)text fontSize:(NSInteger)fontSize coord:(EZCoord*)coord;
+
+- (id) initWithType:(EZChessMarkType)type text:(NSString*)text coord:(EZCoord*)coord;
 
 - (NSDictionary*) toDict;
 
 - (id) initWithDict:(NSDictionary*)dict;
+
+
 
 @end

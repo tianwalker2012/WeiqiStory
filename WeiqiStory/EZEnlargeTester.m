@@ -104,7 +104,7 @@
         flexBoard.position = ccp(320/2, 400/2);
         
         //[flexBoard.chessBoard putChessmans:@[[[EZCoord alloc] init:2 y:15],[[EZCoord alloc]init:12 y:15],[[EZCoord alloc]init:14 y:14]] animated:NO];
-        flexBoard.basicPatterns = @[[[EZCoord alloc] init:1 y:1],[[EZCoord alloc]init:12 y:15],[[EZCoord alloc]init:14 y:14]];
+        flexBoard.basicPatterns = nil;//@[[[EZCoord alloc] init:1 y:1],[[EZCoord alloc]init:12 y:15],[[EZCoord alloc]init:14 y:14]];
         [_studyBoardHolder addChild:flexBoard];
         //[self addChild:_studyBoardHolder];
         //UIImageView* imageView = [[UIImageView alloc] initWithImage:[EZFileUtil imageFromFile:@"lock.png"]];

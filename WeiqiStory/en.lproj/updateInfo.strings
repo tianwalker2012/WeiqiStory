@@ -1,0 +1,13 @@
+/* 
+  updateInfo.strings
+  WeiqiStory
+
+  Created by xietian on 12-12-19.
+
+*/
+
+
+"cancelButtonTitle" = "Cancel";
+"okButtonTitle" = "Update Now";
+"updateTitle" = "Have new version";
+

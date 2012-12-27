@@ -20,6 +20,7 @@
 #import "EZViewGesturer.h"
 #import "EZCoreAccessor.h"
 #import "EZEpisode.h"
+#import "MobClick.h"
 //Only 2 status.
 //Let's visualize what's was going on for a while.
 //Should I disable the progress.
@@ -93,6 +94,7 @@ typedef enum {
     __weak EZPlayPage* weakSelf = self;
     CCMenuItemImage* quitButton = [CCMenuItemImage itemWithNormalImage:@"study-over-button.png" selectedImage:@"study-over-button.png"
         block:^(id sender){
+            [MobClick event:@"study_over_clicked" label:nil];
             [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
             /**
             id action = [CCScaleTo actionWithDuration:0.3 scaleX:1 scaleY:0.1];
@@ -125,6 +127,7 @@ typedef enum {
     
     
     CCMenuItemImage* prevButton = [CCMenuItemImage itemWithNormalImage:@"prev-button.png" selectedImage:@"prev-button-pressed-pad.png" block:^(id sender) {
+        [MobClick event:@"prev_step_clicked" label:nil];
         [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
         [weakSelf.chessBoard2 regretSteps:1 animated:NO];
         EZDEBUG(@"Regret queue:%i", weakSelf.chessBoard2.regrets.count);
@@ -137,6 +140,7 @@ typedef enum {
     //What's the meaning of nextStep?, It mean what?
     
     CCMenuItemImage* nextButton = [CCMenuItemImage itemWithNormalImage:@"next-button.png" selectedImage:@"next-button-pressed-pad.png" block:^(id sender){
+        [MobClick event:@"next_step_clicked" label:nil];
         EZDEBUG(@"Regret queue:%i", weakSelf.chessBoard2.regrets.count);
         [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
         [weakSelf.chessBoard2 redoRegret:NO];
@@ -183,6 +187,7 @@ typedef enum {
 //I am make sure the epv is a valid one
 - (void) swipeTo:(EZEpisodeVO*)epv currentPos:(NSInteger)currentPos isNext:(BOOL)isNext
 {
+    [MobClick event:@"swiped" label:[NSString stringWithFormat:@"position:%i,next:%@",currentPos, isNext?@"true":@"false"]];
     EZPlayPage* nextPage = [[EZPlayPage alloc] initWithEpisode:epv currentPos:currentPos];
     if(isNext){
         [[CCDirector sharedDirector] replaceScene:[CCTransitionSlideInR transitionWithDuration:0.5 scene:[nextPage createScene]]];
@@ -273,6 +278,7 @@ typedef enum {
         _pauseImg = [CCSprite spriteWithFile:@"pause-button.png"];
         
         CCMenuItemImage* backButton = [CCMenuItemImage itemWithNormalImage:@"back-button.png" selectedImage:@"back-button-pressed.png" block:^(id sender){
+            [MobClick event:@"back_button_clicked" label:nil];
             [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
             [weakSelf.player stop];
             [[CCDirector sharedDirector] replaceScene:[EZListTablePagePod node]];
@@ -290,6 +296,7 @@ typedef enum {
                                             CCMenuItemImage* imageItem = sender;
                                            EZDEBUG(@"play clicked, play status:%i", weakSelf.playButtonStatus);
                                            if(!weakSelf.player.isPlaying){
+                                               [MobClick event:@"play_button_clicked" label:nil];
                                                //It is end and user click play button again.
                                                if(weakSelf.player.isEnd){
                                                    [weakSelf.player rewind];
@@ -306,6 +313,7 @@ typedef enum {
                                                    [imageItem setNormalSpriteFrame:weakSelf.playImg.displayFrame];
                                                }];
                                            }else{//I am thinking about one case, not yet stopped, but play button get hit again.Let's experiment them. Only real case can help me solve it
+                                               [MobClick event:@"pause_button_clicked" label:nil];
                                                EZDEBUG(@"Paused");
                                                [weakSelf.player pause];
                                                weakSelf.playButtonStatus = kPlayerPause;
@@ -327,6 +335,7 @@ typedef enum {
         EZProgressBar* myBar = [[EZProgressBar alloc] initWithNob:progressNob bar:progressBar maxValue:epv.actions.count changedBlock:^(NSInteger prv, NSInteger cur) {
             EZDEBUG(@"Player2 Nob position changed from:%i to %i", prv, cur);
             //pause the player, no harm will be done
+            [MobClick event:@"progress_dragged" label:[NSString stringWithFormat:@"from:%i to %i",prv, cur]];
             [weakSelf.player pause];
             [weakPlay setNormalSpriteFrame:weakSelf.playImg.displayFrame];
             [weakSelf.player forwardFrom:prv to:cur];
@@ -349,6 +358,7 @@ typedef enum {
         
         CCMenuItemImage* studyButton = [CCMenuItemImage itemWithNormalImage:@"study-button.png" selectedImage:@"study-button-pad.png"
                                         block:^(id sender){
+                                            [MobClick event:@"study_button_clicked" label:nil];
                                             [[EZSoundManager sharedSoundManager] playSoundEffect:sndButtonPress];
                                             [weakSelf.player pause];
                                             [playButton setNormalSpriteFrame:weakSelf.playImg.displayFrame];

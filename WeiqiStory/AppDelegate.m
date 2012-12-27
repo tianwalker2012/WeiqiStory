@@ -32,12 +32,43 @@
 #import "EZThreadPool.h"
 #import "EZAppPurchase.h"
 #import "EZListTablePagePod.h"
+#import "MobClick.h"
+#import "EZSGFHelper.h"
+#import "EZPlayPagePodLearn.h"
+
 
 //#import "EZPlayerStatus.h"
 
 @implementation AppController
 
 @synthesize window=window_, navController=navController_, director=director_;
+
+
+
+- (void)umengTrack {
+    //    [MobClick setCrashReportEnabled:NO]; // 如果不需要捕捉异常，注释掉此行
+    //[MobClick setLogEnabled:YES];  // 打开友盟sdk调试，注意Release发布时需要注释掉此行,减少io消耗
+    //    [MobClick setAppVersion:@"2.0"]; //参数为NSString * 类型,自定义app版本信息，如果不设置，默认从CFBundleVersion里取
+    //
+    [MobClick startWithAppkey:@"50d199e45270157925000045" reportPolicy:(ReportPolicy) REALTIME channelId:nil];
+    //   reportPolicy为枚举类型,可以为 REALTIME, BATCH,SENDDAILY,SENDWIFIONLY几种
+    //   channelId 为NSString * 类型，channelId 为nil或@""时,默认会被被当作@"App Store"渠道
+    
+    //[MobClick checkUpdate];   //自动更新检查, 如果需要自定义更新请使用下面的方法,需要接收一个(NSDictionary *)appInfo的参数
+    //[MobClick checkUpdateWithDelegate:self selector:@selector(updateMethod:)];
+    [MobClick checkUpdate:NSLocalizedStringFromTable(@"updateTitle", @"updateInfo", @"") cancelButtonTitle:NSLocalizedStringFromTable(@"cancelButtonTitle", @"updateInfo", @"")  otherButtonTitles:NSLocalizedStringFromTable(@"okButtonTitle", @"updateInfo", @"")];
+    [MobClick updateOnlineConfig];  //在线参数配置
+    
+    //    1.6.8之前的初始化方法
+    //    [MobClick setDelegate:self reportPolicy:REALTIME];  //建议使用新方法
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onlineConfigCallBack:) name:UMOnlineConfigDidFinishedNotification object:nil];
+    
+}
+
+- (void)onlineConfigCallBack:(NSNotification *)note {
+    
+    NSLog(@"online config has fininshed and note = %@", note.userInfo);
+}
 
 //The purpose of this method call is for test purpose.
 //Make the whole application as if it is run the first time on the device.
@@ -80,7 +111,8 @@
     //[self returnToVirgin];
     
     [EZTestSuites runAllTests];
-    
+    //Configure the user track.
+    [self umengTrack];
     //Load the large image files, so next time the speed will be faster.
     if(![[NSUserDefaults standardUserDefaults] boolForKey:@"Executed"]){
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"Executed"];
@@ -145,10 +177,12 @@
     //[director_ pushScene:[EZChessPlay scene]];
 	//[director_ pushScene:[EZListTablePage scene]];
     //[director_ pushScene:[EZEffectTester scene]];
-    [director_ pushScene:[EZHomePage scene]];
+    //[director_ pushScene:[EZHomePage scene]];
     //[director_ pushScene:[EZLeakageMain node]];
     //[director_ pushScene:[EZListTablePagePod scene]];
-    //[director_ pushScene:[[[EZPlayPagePod alloc] initWithEpisode:[self generateEpisodeVO] currentPos:2] createScene]];
+    
+    EZEpisodeVO* epv = [EZSGFHelper readSGF:@"1001r"];
+    [director_ pushScene:[[[EZPlayPagePodLearn alloc] initWithEpisode:epv currentPos:2] createScene]];
     
     //EZDEBUG(@"view class:%@, multiple Touch enabled:%i", [[CCDirector sharedDirector].view class], [CCDirector sharedDirector].view.multipleTouchEnabled);
     //[director_ pushScene:[EZEnlargeTester node]];

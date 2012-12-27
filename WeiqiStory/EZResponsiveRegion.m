@@ -82,7 +82,6 @@
 //Check if the point are in this region. 
 - (BOOL) regionCheck:(UITouch*) touch
 {
-    CGPoint globalPoint = touch.locationInGL;
     CGPoint selfPoint = [self locationInSelf:touch];
     //EZDEBUG(@"global:%@ , selfPoint:%@, Bounds:%@",NSStringFromCGPoint(globalPoint), NSStringFromCGPoint(selfPoint), NSStringFromCGRect(bounds));
     if(selfPoint.x > bounds.origin.x && selfPoint.x < bounds.size.width){

@@ -168,10 +168,10 @@
 //2.Calculate the shift in largeBoard
 //3.Shift the bound to the board
 //4.Scale the board to fit the frame.
+//5. I assume don't have basic pattern mean don't scale at all. 
 - (void) setBasicPatterns:(NSArray *)basicPatterns
 {
     _basicPatterns = basicPatterns;
-    
     [self calculateRegionForPattern:_basicPatterns];
 }
 
@@ -180,6 +180,14 @@
 //Like my recalculation jobs.
 - (void) calculateRegionForPattern:(NSArray*)pattern isPlant:(BOOL)plant
 {
+    
+    if(pattern.count == 0){
+        //Will back to the original size
+        //Why? This is a convention. 
+        _chessBoard.scale = _orgScale;
+        return;
+    }
+    //EZDEBUG(@"CalculateRegion get called, thread stack is:%@", [NSThread callStackSymbols]);
     CGRect alignRect = [EZChess2Image shrinkBoard:pattern minimum:5];
     //EZDEBUG(@"alignedRect:%@", NSStringFromCGRect(alignRect));
     int iWidth = MAX(alignRect.size.height,alignRect.size.width);
