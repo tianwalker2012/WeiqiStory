@@ -55,9 +55,10 @@
 {
     //Why? so that the board status can be stored
     NSMutableArray* actions = (NSMutableArray*)epv.actions;
-    
-    [actions addObject:[EZStackPushAction new]];
-    
+    if(!isFirst){
+        //It make no sense to add push actions
+        [actions addObject:[EZStackPushAction new]];
+    }
     for(EZSGFItem* item in node.nodes){
         if(item.type == kChessNode){
             [self populateAcions:epv node:(EZChessNode*)item first:FALSE];
@@ -66,7 +67,9 @@
         }
     }
     
-    [actions addObject:[EZStackPopAction new]];
+    if(!isFirst){
+        [actions addObject:[EZStackPopAction new]];
+    }
 }
 
 //Once I get this done, I will use a simple test to illustrate what I have done.
@@ -101,17 +104,31 @@
         action.marks =  [self labelToMarks:item];
         res = action;
     }else if([@"AB" isEqualToString:item.name] || [@"AW" isEqualToString:item.name]){
-        EZChessPresetAction* presetAction = [[EZChessPresetAction alloc] init];
-        presetAction.preSetMoves = [self itemToCoord:item];
-        res = presetAction;
+        EZChessPresetAction* presetAction = nil;
+        if(first){
+            if(epv.actions.count > 0){
+                EZDEBUG(@"Reuse old presetActions");
+                EZChessPresetAction* act = [epv.actions objectAtIndex:0];
+                if([[act class].description isEqualToString:@"EZChessPresetAction"]){
+                    presetAction = act;
+                }
+            }
+        }
+        
+        if(presetAction == nil){
+            presetAction = [[EZChessPresetAction alloc] init];
+            res = presetAction;
+        }
+        NSArray* curCoords = [self itemToCoord:item];
         if(first){
             NSMutableArray* arr = [[NSMutableArray alloc] init];
             if(epv.basicPattern){
                 [arr addObjectsFromArray:epv.basicPattern];
             }
-            [arr addObjectsFromArray:presetAction.preSetMoves];
+            [arr addObjectsFromArray:curCoords];
             epv.basicPattern = arr;
         }
+        presetAction.preSetMoves = epv.basicPattern;
         
     }else if([@"B" isEqualToString:item.name] || [@"W" isEqualToString:item.name]){
         EZChessMoveAction* moveAction = [[EZChessMoveAction alloc] init];

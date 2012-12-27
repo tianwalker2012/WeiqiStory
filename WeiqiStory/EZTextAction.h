@@ -29,6 +29,8 @@ typedef enum {
 
 @property (nonatomic, strong) NSString* text;
 
+@property (nonatomic, strong) NSString* prevText;
+
 @property (nonatomic, assign) EZTextType type;
 
 @end

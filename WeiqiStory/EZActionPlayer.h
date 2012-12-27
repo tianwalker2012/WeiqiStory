@@ -20,6 +20,8 @@ typedef enum {
     kEnd
 } EZActionPlayerStatus;
 
+
+#define DefaultUnitDelay 1.0
 //What's the purpose of this Player
 //I am like a action playback.
 //What do I need is audio service
@@ -93,6 +95,20 @@ typedef enum {
 
 @end
 
+@protocol EZCommentShower <NSObject>
+
+- (void) showComment:(NSString*)comment;
+
+//This comment may get showed beside the exact move
+- (void) showMoveComment:(NSString*)comment;
+
+- (NSString*) getComment;
+
+//This comment may get showed beside the exact move
+- (NSString*) getMoveComment;
+
+
+@end
 
 @interface EZActionPlayer : NSObject
 
@@ -139,6 +155,8 @@ typedef enum {
 //Prev mean to undo the effects of current action.
 - (void) prev;
 
+- (void) undoOneStep;
+
 - (void) prev:(EZOperationBlock)block;
 
 - (BOOL) isEnd;
@@ -160,7 +178,6 @@ typedef enum {
 
 - (void) playMoves:(EZAction*)action completeBlock:(void (^)())blk withDelay:(CGFloat)delay;
 
-
 @property (assign, nonatomic) NSInteger currentAction;
 @property (assign, nonatomic) EZActionPlayerStatus playingStatus;
 @property (strong, nonatomic) NSArray* actions;
@@ -172,5 +189,11 @@ typedef enum {
 @property (strong, readonly) NSMutableArray* stepCompletionBlocks;
 
 @property (assign, nonatomic) CGFloat soundVolume;
+
+//The user could control the delay at their will. 
+@property (assign, nonatomic) CGFloat actionDelay;
+
+//how the text message get showed
+@property (strong, nonatomic) NSObject<EZCommentShower>* textShower;
 
 @end

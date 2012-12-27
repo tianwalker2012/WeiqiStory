@@ -57,6 +57,7 @@
         _stepCompletionBlocks = [[NSMutableArray alloc] init];
         _soundVolume = InitialVolume;
         _inMainBundle = mainBundle;
+        _actionDelay = DefaultUnitDelay;
     }
     return self;
 }
@@ -207,14 +208,10 @@
     [_board regretSteps:moves.count animated:NO];
     //}
 }
-//What's the meaning of prev?
-//Once this was called, I will play the previous action.
-//For the prev to work?
-//I need to reset the effects of current action.
-//Prev mean to undo the effects of current action.
-- (void) prev
+
+
+- (void) undoOneStep
 {
-    //Why? because each steps get played the _currentAction will move to the next step
     --_currentAction;
     if(_currentAction < 0){
         //assert(@"Should not call when no step have been played." == nil);
@@ -225,7 +222,17 @@
     
     EZAction* currAction = [_actions objectAtIndex:_currentAction];
     [self undoAction:currAction];
+}
+//What's the meaning of prev?
+//Once this was called, I will play the previous action.
+//For the prev to work?
+//I need to reset the effects of current action.
+//Prev mean to undo the effects of current action.
+- (void) prev
+{
+    //Why? because each steps get played the _currentAction will move to the next step
     
+    [self undoOneStep];
     --_currentAction;
     if(_currentAction < 0){
         _currentAction = 0;
@@ -351,6 +358,7 @@
     }
 }
 
+
 - (void) playMoves:(EZAction*)act completeBlock:(void (^)())blk withDelay:(CGFloat)delay
 {
     EZChessMoveAction* action = (EZChessMoveAction*)act;
@@ -363,7 +371,7 @@
     
     
     
-    actionTimer = [NSTimer scheduledTimerWithTimeInterval:action.unitDelay target:bw selector:@selector(runBlock) userInfo:nil repeats:NO];
+    actionTimer = [NSTimer scheduledTimerWithTimeInterval:action.unitDelay>0?action.unitDelay:_actionDelay target:bw selector:@selector(runBlock) userInfo:nil repeats:NO];
 }
 
 //The logic is clean and nice.

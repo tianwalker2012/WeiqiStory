@@ -28,6 +28,14 @@
     //Kiss, is my life blood.
     EZDEBUG(@"Push status");
     EZChessBoard* board = (EZChessBoard*)player.board;
+    _prevShowStep = player.board.showStep;
+    _prevShowStepStart = player.board.showStepStarted;
+    
+    //Show from now
+    player.board.showStepStarted = player.board.allSteps.count;
+    
+    player.board.showStep = TRUE;
+    
     [board pushStatus];
 }
 
@@ -37,6 +45,8 @@
     EZDEBUG(@"Undo action");
     EZChessBoard* board = (EZChessBoard*)player.board;
     [board popStatusWithoutApplying];
+    player.board.showStepStarted = _prevShowStepStart;
+    player.board.showStep = _prevShowStep;
 }
 
 

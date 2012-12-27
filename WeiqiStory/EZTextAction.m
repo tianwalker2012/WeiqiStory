@@ -7,6 +7,7 @@
 //
 
 #import "EZTextAction.h"
+#import "EZActionPlayer.h"
 
 @implementation EZTextAction
 
@@ -26,6 +27,15 @@
 - (void) undoAction:(EZActionPlayer*)player
 {
     EZDEBUG(@"Undo for text action");
+    if(_type == kStoneComment){
+        if(_prevText)
+            [player.textShower showMoveComment:_prevText];
+    }else{
+        if(_prevText){
+            [player.textShower showComment:_prevText];
+        }
+        
+    }
 }
 
 //For the subclass, override this method.
@@ -33,6 +43,13 @@
 - (void) actionBody:(EZActionPlayer*)player
 {
     EZDEBUG(@"Show the comments");
+    if(_type == kStoneComment){
+        _prevText = [player.textShower getMoveComment];
+        [player.textShower showMoveComment:_text];
+    }else{
+        _prevText = [player.textShower getComment];
+        [player.textShower showComment:_text];
+    }
 }
 
 

@@ -16,4 +16,10 @@
 //Which can simplify my operation a lot.
 @interface EZStackPushAction : EZAction
 
+//Record the status whether to show the steps or not
+@property (nonatomic, assign) BOOL prevShowStep;
+
+//From where to start the step show
+@property (nonatomic, assign) NSInteger prevShowStepStart;
+
 @end

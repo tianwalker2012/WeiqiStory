@@ -82,6 +82,7 @@
         _allMarks = [[NSMutableArray alloc] init];
         boardStatus = [[EZBoardStatus alloc] initWithBound:rect rows:rws cols:cls];
         boardStatus.front = self;
+        _snapshotStack = [[NSMutableArray alloc] init];
         [self initializeCursor];
     }
     return self;
@@ -630,6 +631,7 @@
 //Pop the current status from the stack so that the stored status could be recovered.
 - (void) popStatus
 {
+    EZDEBUG(@"I will pop snapshot, current stack count:%i",_snapshotStack.count);
     if(_snapshotStack.count > 0){
         EZBoardSnapshot* snapshot = [_snapshotStack lastObject];
         [self playSnapshot:snapshot];

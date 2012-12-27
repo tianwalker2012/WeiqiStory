@@ -10,7 +10,7 @@
 #import "cocos2d.h"
 #import "EZLayer.h"
 #import "EZCommonPlayPage.h"
-
+#import "EZActionPlayer.h"
 
 
 @class EZChessBoard;
@@ -20,7 +20,7 @@
 @class EZFlexibleResizeBoard;
 
 
-@interface EZPlayPagePodLearn : EZCommonPlayPage
+@interface EZPlayPagePodLearn : EZCommonPlayPage<EZCommentShower>
 
 + (CCScene*) scene;
 
@@ -79,5 +79,7 @@
 @property(nonatomic, assign) NSInteger playButtonStatus;
 
 @property (nonatomic, strong) CCMenuItemImage* playButton;
+
+@property (nonatomic, strong) UITextView* textView;
 
 @end

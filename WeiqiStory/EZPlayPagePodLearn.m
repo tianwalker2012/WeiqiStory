@@ -238,7 +238,72 @@ typedef enum {
     [super onExit];
 }
 
+//I may need add the animation later, now keep it simple and stupid.
+//Let's fix the drag issue, why sometime I will have an empty.
+- (void) showComment:(NSString*)comment
+{
+    EZDEBUG(@"showComment");
+    _textView.text = comment;
+}
 
+//This comment may get showed beside the exact move
+- (void) showMoveComment:(NSString*)comment
+{
+    EZDEBUG(@"showMoveComment");
+    _textView.text = comment;
+}
+
+- (NSString*) getComment
+{
+    return _textView.text;
+}
+
+//This comment may get showed beside the exact move
+- (NSString*) getMoveComment
+{
+    return _textView.text;
+}
+
+- (void) nextAction:(id)sender
+{
+    EZDEBUG(@"Next clicked,Current action number:%i", self.player.currentAction);
+    [self.player next];
+}
+
+- (void) prevAction:(id)sender
+{
+    EZDEBUG(@"Prev clicked, Current action number:%i", self.player.currentAction);
+    [self.player undoOneStep];
+}
+
+- (void) addTextShower
+{
+    _textView = [[UITextView alloc] initWithFrame:CGRectMake(0, 60, 100, 100)];
+    _textView.backgroundColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:0.6];
+    _textView.font = [UIFont fontWithName:@"Adobe Kaiti Std" size:20];
+    
+    [[CCDirector sharedDirector].view addSubview:_textView];
+    
+}
+//As it's name imply
+- (void) addTestStepBackAndForth
+{
+    UIButton* nextButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    nextButton.frame = CGRectMake(200, 0, 88, 44);
+    [nextButton setTitle:@"Next Action" forState:UIControlStateNormal];
+    [nextButton addTarget:self action:@selector(nextAction:) forControlEvents:UIControlEventTouchUpInside|UIControlEventTouchUpOutside];
+    
+    
+    UIButton* prevButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    prevButton.frame = CGRectMake(40, 0, 88, 44);
+    [prevButton setTitle:@"Prev Action" forState:UIControlStateNormal];
+    [prevButton addTarget:self action:@selector(prevAction:) forControlEvents:UIControlEventTouchUpInside|UIControlEventTouchUpOutside];
+    
+    
+    [[CCDirector sharedDirector].view addSubview:nextButton];
+    [[CCDirector sharedDirector].view addSubview:prevButton];
+    
+}
 
 
 //We will only support potrait orientation
@@ -246,6 +311,8 @@ typedef enum {
 {
     self = [super initWithPos:pos];
     if(self){
+        [self addTestStepBackAndForth];
+        [self addTextShower];
         //timer = [[CCTimer alloc] initWithTarget:self selector:@selector(generatedBubble) interval:1 repeat:kCCRepeatForever delay:1];
         self.currentEpisodePos = pos;
         __weak EZPlayPagePodLearn* weakSelf = self;
@@ -427,7 +494,7 @@ typedef enum {
     //[self addChild:chessBoard2];
     self.player = [[EZActionPlayer alloc] initWithActions:epv.actions chessBoard:_chessBoard inMainBundle:epv.inMainBundle];
     
-    
+    self.player.textShower = self;
     //[player2 forwardFrom:0 to:epv.actions.count];
     
     _playImg = [CCSprite spriteWithFile:@"play-button.png"];
@@ -454,6 +521,7 @@ typedef enum {
         EZDEBUG(@"Player2 Nob position changed from:%i to %i", prv, cur);
         [MobClick event:@"progress_dragged" label:[NSString stringWithFormat:@"from:%i to %i",prv, cur]];
         //pause the player, no harm will be done
+        //The bug maybe here. mean I play from this place to next one
         [weakSelf.player pause];
         [_playButton setNormalSpriteFrame:weakSelf.playImg.displayFrame];
         [weakSelf.player forwardFrom:prv to:cur];
