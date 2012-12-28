@@ -59,7 +59,7 @@
     //Cool.
     self.beginStep = player.board.allSteps.count;
     //self.beginStep = player.board.allSteps.count;
-    [player playMoves:cloned completeBlock:self.nextBlock withDelay:cloned.unitDelay];
+    [player playMoves:cloned completeBlock:self.nextBlock withDelay:cloned.unitDelay*player.delayScale];
 }
 
 - (void) fastForward:(EZActionPlayer *)player

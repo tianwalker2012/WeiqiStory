@@ -80,6 +80,7 @@
 
 @property (nonatomic, strong) CCMenuItemImage* playButton;
 
-@property (nonatomic, strong) UITextView* textView;
+@property (nonatomic, strong) UIWebView* textView;
+
 
 @end

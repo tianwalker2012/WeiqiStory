@@ -243,25 +243,49 @@ typedef enum {
 - (void) showComment:(NSString*)comment
 {
     EZDEBUG(@"showComment");
-    _textView.text = comment;
+    NSString* basicFormat = @"<html><head>\
+    <style type='text/css'>\
+    body {font-family:Adobe Kaiti Std;background-image:url('comment-background-hd.png');}\
+    div {font-size:20px; padding:5px; line-height:22px; letter-spacing:－2px;}\
+    </style>\
+    </head><body><div>%@</div></body></html>";
+    NSString* formatedStr = [NSString stringWithFormat:basicFormat, comment];
+    NSString *path = [[NSBundle mainBundle] bundlePath];
+        
+    __weak EZPlayPagePodLearn* weakSelf = self;
+    
+    
+    [UIView animateWithDuration:0.3 animations:^(){
+            weakSelf.textView.layer.anchorPoint = ccp(0.5, 0.5);
+            weakSelf.textView.layer.transform = CATransform3DMakeScale(0.1, 0.1, 1);
+            [weakSelf.textView loadHTMLString:formatedStr baseURL:[NSURL fileURLWithPath:path]];
+     }
+     
+        completion:^(BOOL completed){
+            [UIView animateWithDuration:0.3
+                             animations:^()
+            {weakSelf.textView.layer.transform = CATransform3DIdentity;}];
+            }];
+    //_textView.alpha = 0.5;
+    
 }
 
 //This comment may get showed beside the exact move
 - (void) showMoveComment:(NSString*)comment
 {
     EZDEBUG(@"showMoveComment");
-    _textView.text = comment;
+    [self showComment:comment];
 }
 
 - (NSString*) getComment
 {
-    return _textView.text;
+    return @"empty";
 }
 
 //This comment may get showed beside the exact move
 - (NSString*) getMoveComment
 {
-    return _textView.text;
+    return @"empty";
 }
 
 - (void) nextAction:(id)sender
@@ -278,10 +302,12 @@ typedef enum {
 
 - (void) addTextShower
 {
-    _textView = [[UITextView alloc] initWithFrame:CGRectMake(0, 60, 100, 100)];
-    _textView.backgroundColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:0.6];
-    _textView.font = [UIFont fontWithName:@"Adobe Kaiti Std" size:20];
-    
+    //_textView = [[UITextView alloc] initWithFrame:CGRectMake(0, 60, 100, 100)];
+    _textView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 60, 150, 150)];
+    _textView.backgroundColor = [UIColor clearColor];
+    //_textView.font = [UIFont fontWithName:@"Adobe Kaiti Std" size:20];
+    _textView.layer.cornerRadius = 10;
+    _textView.layer.masksToBounds = true;
     [[CCDirector sharedDirector].view addSubview:_textView];
     
 }
@@ -313,6 +339,7 @@ typedef enum {
     if(self){
         [self addTestStepBackAndForth];
         [self addTextShower];
+        [self showComment:@"我爱大大棒棒糖"];
         //timer = [[CCTimer alloc] initWithTarget:self selector:@selector(generatedBubble) interval:1 repeat:kCCRepeatForever delay:1];
         self.currentEpisodePos = pos;
         __weak EZPlayPagePodLearn* weakSelf = self;

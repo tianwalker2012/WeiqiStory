@@ -17,7 +17,7 @@
 - (id) init
 {
     self = [super init];
-    self.syncType = kSync;
+    self.syncType = kAsync;
     //self.actionType = kPlantMoves;
     return self;
 }
@@ -43,6 +43,20 @@
 - (void) actionBody:(EZActionPlayer*)player
 {
     EZDEBUG(@"Show the comments");
+    [self showText:_text player:player animated:YES];
+    
+    CGFloat delay = 1.5;
+    
+    CGFloat deltaDelay = _text.length * 0.1;
+    
+    delay += deltaDelay;
+    delay = delay * player.delayScale;
+    EZDEBUG(@"delayNext step to:%f seconds, text length:%i, delayScale:%f", delay, _text.length, player.delayScale);
+    [player delayBlock:self.nextBlock delay:delay];
+}
+
+- (void) showText:(NSString*)text player:(EZActionPlayer*)player animated:(BOOL)animated
+{
     if(_type == kStoneComment){
         _prevText = [player.textShower getMoveComment];
         [player.textShower showMoveComment:_text];
@@ -52,6 +66,17 @@
     }
 }
 
+- (void) pause:(EZActionPlayer *)player
+{
+    //Otherwise the next move will get called;
+    [player stopPlayMoves];
+}
+
+- (void) fastForward:(EZActionPlayer *)player
+{
+    EZDEBUG(@"fastforward get called");
+    [self showText:_text player:player animated:NO];
+}
 
 
 -(void)encodeWithCoder:(NSCoder *)coder {

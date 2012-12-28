@@ -248,6 +248,8 @@
 		18543727168B467F000240E9 /* SGFParser.ym in Sources */ = {isa = PBXBuildFile; fileRef = 1854371D168B467E000240E9 /* SGFParser.ym */; };
 		18543728168B467F000240E9 /* EZParserStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 18543720168B467F000240E9 /* EZParserStatus.m */; };
 		18543729168B467F000240E9 /* SGFParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 18543722168B467F000240E9 /* SGFParser.m */; };
+		1854372B168C623D000240E9 /* comment-background-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 1854372A168C623D000240E9 /* comment-background-hd.png */; };
+		1854372D168D4DF3000240E9 /* comment-background.png in Resources */ = {isa = PBXBuildFile; fileRef = 1854372C168D4DF3000240E9 /* comment-background.png */; };
 		185BF458164373460044214A /* back-button-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 185BF445164373460044214A /* back-button-pad.png */; };
 		185BF459164373460044214A /* next-button-pressed-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 185BF446164373460044214A /* next-button-pressed-pad.png */; };
 		185BF45A164373460044214A /* prev-button-pressed-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 185BF447164373460044214A /* prev-button-pressed-pad.png */; };
@@ -1798,6 +1800,8 @@
 		18543720168B467F000240E9 /* EZParserStatus.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZParserStatus.m; sourceTree = "<group>"; };
 		18543721168B467F000240E9 /* SGFParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SGFParser.h; sourceTree = "<group>"; };
 		18543722168B467F000240E9 /* SGFParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SGFParser.m; sourceTree = "<group>"; };
+		1854372A168C623D000240E9 /* comment-background-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "comment-background-hd.png"; sourceTree = "<group>"; };
+		1854372C168D4DF3000240E9 /* comment-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "comment-background.png"; sourceTree = "<group>"; };
 		185BF445164373460044214A /* back-button-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "back-button-pad.png"; path = "../../../icons/weiqi/back-button-pad.png"; sourceTree = "<group>"; };
 		185BF446164373460044214A /* next-button-pressed-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "next-button-pressed-pad.png"; path = "../../../icons/weiqi/next-button-pressed-pad.png"; sourceTree = "<group>"; };
 		185BF447164373460044214A /* prev-button-pressed-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "prev-button-pressed-pad.png"; path = "../../../icons/weiqi/prev-button-pressed-pad.png"; sourceTree = "<group>"; };
@@ -3545,6 +3549,8 @@
 		18451DE41609CBA800BF530C /* images */ = {
 			isa = PBXGroup;
 			children = (
+				1854372C168D4DF3000240E9 /* comment-background.png */,
+				1854372A168C623D000240E9 /* comment-background-hd.png */,
 				1893AB7E16806A8C0056067B /* board-move-sign.png */,
 				1893A45716773AB30056067B /* lock-pad.png */,
 				180D66A816722FD20075AF15 /* answer-button-pad-hd.png */,
@@ -6066,6 +6072,8 @@
 				18E80DB216820275002C2D24 /* updateInfo.strings in Resources */,
 				18E80DC31686B75C002C2D24 /* 1001r.sgf in Resources */,
 				18E80FB116898C2B002C2D24 /* test.sgf in Resources */,
+				1854372B168C623D000240E9 /* comment-background-hd.png in Resources */,
+				1854372D168D4DF3000240E9 /* comment-background.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

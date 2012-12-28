@@ -178,6 +178,10 @@ typedef enum {
 
 - (void) playMoves:(EZAction*)action completeBlock:(void (^)())blk withDelay:(CGFloat)delay;
 
+//What's the purpose of this method?
+//I want some block to be called with some delay.
+- (void) delayBlock:(EZOperationBlock)block delay:(CGFloat)delay;
+
 @property (assign, nonatomic) NSInteger currentAction;
 @property (assign, nonatomic) EZActionPlayerStatus playingStatus;
 @property (strong, nonatomic) NSArray* actions;
@@ -185,6 +189,9 @@ typedef enum {
 @property (strong, nonatomic) NSObject<EZActionCompleted>* completedHandler;
 @property (strong, nonatomic) EZOperationBlock completeBlock;
 @property (assign, nonatomic) BOOL inMainBundle;
+//This is used to control the speed of the game,
+//The default value is 1.
+@property (nonatomic, assign) CGFloat delayScale;
 
 @property (strong, readonly) NSMutableArray* stepCompletionBlocks;
 

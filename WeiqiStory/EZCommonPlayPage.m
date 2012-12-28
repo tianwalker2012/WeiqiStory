@@ -39,7 +39,6 @@
 {
     self = [super init];
     [self createSwipeGesture];
-    
     return self;
 }
 

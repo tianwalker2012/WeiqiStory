@@ -40,6 +40,7 @@
 @property (nonatomic, strong) id swipeAnim;
 
 @property (nonatomic, strong) id fadeOutAnim;
+
 //The sub class will implement this.
 //Otherwise, because i don't know which class this will instantiated
 //isNext mean, we are from left to right, or from left to right.

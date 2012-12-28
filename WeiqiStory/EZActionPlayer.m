@@ -58,6 +58,7 @@
         _soundVolume = InitialVolume;
         _inMainBundle = mainBundle;
         _actionDelay = DefaultUnitDelay;
+        _delayScale = 1;
     }
     return self;
 }
@@ -369,9 +370,13 @@
     };
     EZBlockWrapper* bw = [[EZBlockWrapper alloc] initWithBlock:block];
     
-    
-    
     actionTimer = [NSTimer scheduledTimerWithTimeInterval:action.unitDelay>0?action.unitDelay:_actionDelay target:bw selector:@selector(runBlock) userInfo:nil repeats:NO];
+}
+
+- (void) delayBlock:(EZOperationBlock)block delay:(CGFloat)delay
+{
+    EZBlockWrapper* bw = [[EZBlockWrapper alloc] initWithBlock:block];
+    actionTimer = [NSTimer scheduledTimerWithTimeInterval:delay target:bw selector:@selector(runBlock) userInfo:nil repeats:NO];
 }
 
 //The logic is clean and nice.
