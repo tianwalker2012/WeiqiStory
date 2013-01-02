@@ -244,6 +244,18 @@ typedef enum {
 
 - (void) showCommentArea:(EZOperationBlock)showBlock completeBlock:(EZOperationBlock)completeBlock
 {
+    //Mean only show it if not visiable yet.
+    if(_isCommentShowing){
+        EZDEBUG(@"Already showing, will call the block directly");
+        if(showBlock){
+            showBlock();
+        }
+        if(completeBlock){
+            completeBlock();
+        }
+        
+        return;
+    }
     _isCommentShowing = true;
     __weak EZPlayPagePodLearn* weakSelf = self;
     [UIView animateWithDuration:0.3
@@ -268,6 +280,16 @@ typedef enum {
 
 - (void) hideCommentArea:(EZOperationBlock)hideCalledBlock completeBlock:(EZOperationBlock)completeBlock
 {
+    if(!_isCommentShowing){
+        EZDEBUG(@"Already hide will call the block directly");
+        if(hideCalledBlock){
+            hideCalledBlock();
+        }
+        if(completeBlock){
+            completeBlock();
+        }
+        return;
+    }
     _isCommentShowing = false;
     __weak EZPlayPagePodLearn* weakSelf = self;
     [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionCurveEaseOut animations:^(){
@@ -279,11 +301,11 @@ typedef enum {
             hideCalledBlock();
         }
     }
-                     completion:^(BOOL completed){
-                         if(completeBlock){
-                             completeBlock();
-                         }
-                     }
+        completion:^(BOOL completed){
+            if(completeBlock){
+                completeBlock();
+            }
+        }
      ];
 
 }
@@ -305,12 +327,34 @@ typedef enum {
     NSString *path = [[NSBundle mainBundle] bundlePath];
         
     __weak EZPlayPagePodLearn* weakSelf = self;
-    
+    /**
     [self hideCommentArea:^(){
         [weakSelf.textView loadHTMLString:formatedStr baseURL:[NSURL fileURLWithPath:path]];
     } completeBlock:^(){
         [weakSelf showCommentArea:nil completeBlock:nil];
     }];
+     **/
+    CGPoint orgPos = _textView.center;
+    EZDEBUG(@"Original position:%@, center:%@", NSStringFromCGPoint(orgPos), NSStringFromCGPoint(_textView.center));
+    [weakSelf.textView loadHTMLString:formatedStr baseURL:[NSURL fileURLWithPath:path]];
+    [self showCommentArea:nil completeBlock:^(){
+        [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionCurveEaseIn animations:^(){
+            //[weakSelf.textView setPosition:ccp(-weakSelf.textView.bounds.size.width, orgPos.y)];
+            weakSelf.textView.center = ccp(-weakSelf.textView.bounds.size.width/2, orgPos.y);
+            weakSelf.textView.alpha = 0.0;
+        
+        } completion:^(BOOL completed){
+            CGSize winSize = [CCDirector sharedDirector].winSize;
+            weakSelf.textView.center = ccp(weakSelf.textView.bounds.size.width , orgPos.y);
+            [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionCurveEaseOut animations:^(){
+                weakSelf.textView.center = ccp(orgPos.x, orgPos.y);
+                weakSelf.textView.alpha = 1.0;
+                [weakSelf.textView stringByEvaluatingJavaScriptFromString:@"'哈哈'"];
+            } completion:nil];
+        }];
+    
+    }];
+    
     /**
     [UIView animateWithDuration:0.3 animations:^(){
             //weakSelf.commentBackground.layer.anchorPoint = ccp(0.5, 0.5);
@@ -371,6 +415,7 @@ typedef enum {
     //_textView.layer.masksToBounds = true;
     
     _commentBackground =[[UIImageView alloc]initWithImage:[EZFileUtil imageFromFile:@"comment-region.png" scale:[UIScreen mainScreen].scale]];
+    _commentBackground.clipsToBounds = true;
     
     //_commentBackground.layer.cornerRadius = 10;
     //_commentBackground.layer.masksToBounds = true;
@@ -393,7 +438,6 @@ typedef enum {
     [_revealButton setFrame:CGRectMake(60+ _commentBackground.bounds.size.width/2,-25, 44, 66)];
     //[_revealButton setPosition:ccp(_commentBackground.bounds.size.width/2,_commentBackground.bounds.size.height-10)];
     [_revealButton addTarget:self action:@selector(revealClicked:) forControlEvents:UIControlEventTouchUpInside];
-    [_commentBackground addSubview:_revealButton];
     [[CCDirector sharedDirector].view addSubview:_commentBackground];
     [[CCDirector sharedDirector].view addSubview:_revealButton];
     
@@ -443,7 +487,7 @@ typedef enum {
         [self addTextShower];
         
         //Test code
-        [self showComment:@"我爱大大棒棒糖"];
+        //[self showComment:@"我爱大大棒棒糖"];
         /**
         EZShape* shape = [[EZShape alloc] init];
         shape.lineWidth = 4;
