@@ -41,6 +41,7 @@
     _chessBoard.touchEnabled = NO;
     _chessBoard.anchorPoint = ccp(0.5, 0.5);
     _chessBoard.position = ccp(size.width/2, size.height/2);
+    _chessBoard.isLargeBoard = true;
     _chessBoard.whiteChessName = @"white-button-large.png";
     _chessBoard.blackChessName = @"black-button-large.png";
     _visableSize = size;
@@ -435,6 +436,7 @@
         EZDEBUG(@"quit enlarging board for the board already big enough");
         return;
     }
+    _prevScale = _chessBoard.scale;
     //CGFloat deltaX = (pt.x/_visableSize.width) * _largeSize.width - pt.x;
     
     //CGFloat deltaY = (pt.y/_visableSize.height) * _largeSize.height - pt.y;

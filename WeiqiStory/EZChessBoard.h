@@ -95,6 +95,19 @@ typedef enum {
 
 @property (strong, nonatomic) NSString* blackChessName;
 
+//To indicate whether our board is a large board or not.
+//What did this affect us?
+//This will affect which chessman size we will use?
+//Which mark size we will use?
+//Let get things up and run as fast as possible, then refractor it later, is this solution ok with you?
+//Cool, I am cool with it.
+@property (assign, nonatomic) BOOL isLargeBoard;
+@property (strong, nonatomic) NSString* triangularMarkName;
+
+//Why do we need this?
+//So we can estimate how big the mark should be.
+@property (assign, nonatomic) CGSize estimatedChessmanSize;
+
 //Why do I add this?
 //I want to make the cursor be above the frame.
 //The simplst way to do this is to make the frame a part of the board.

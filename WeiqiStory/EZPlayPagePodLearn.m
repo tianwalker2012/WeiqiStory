@@ -25,6 +25,9 @@
 //#import "EZFlexibleBoard.h"
 #import "EZFlexibleResizeBoard.h"
 #import "MobClick.h"
+#import "EZShape.h"
+#import "EZFileUtil.h"
+#import "EZExtender.h"
 
 
 //Only 2 status.
@@ -238,6 +241,52 @@ typedef enum {
     [super onExit];
 }
 
+
+- (void) showCommentArea:(EZOperationBlock)showBlock completeBlock:(EZOperationBlock)completeBlock
+{
+    _isCommentShowing = true;
+    __weak EZPlayPagePodLearn* weakSelf = self;
+    [UIView animateWithDuration:0.3
+                    delay:0.0 options:UIViewAnimationOptionCurveEaseOut 
+                     animations:^(){
+                         ///weakSelf.textView.layer.transform = CATransform3DIdentity;}];
+                         [weakSelf.commentBackground setPosition:ccp(75, 0)];
+                         //weakSelf.revealButton.layer.anchorPoint = ccp(0.5, 0.5);
+                         weakSelf.revealButton.layer.transform = CATransform3DConcat(CATransform3DIdentity, CATransform3DMakeRotation(M_PI, 0, 0, 1.0));
+                         [weakSelf.revealButton setPosition:ccp(60+ _commentBackground.bounds.size.width/2, weakSelf.commentBackground.bounds.size.height-30)];
+                         if(showBlock){
+                             showBlock();
+                         }
+                     }
+                     completion:^(BOOL complete){
+                         if(completeBlock){
+                             completeBlock();
+                         }
+                     }
+     ];
+}
+
+- (void) hideCommentArea:(EZOperationBlock)hideCalledBlock completeBlock:(EZOperationBlock)completeBlock
+{
+    _isCommentShowing = false;
+    __weak EZPlayPagePodLearn* weakSelf = self;
+    [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionCurveEaseOut animations:^(){
+        [weakSelf.commentBackground setPosition:ccp(75, -weakSelf.commentBackground.bounds.size.height)];
+        //weakSelf.revealButton.layer.anchorPoint = ccp(0.5, 0.5);
+        weakSelf.revealButton.layer.transform = CATransform3DIdentity;
+        [weakSelf.revealButton setPosition:ccp(60+ _commentBackground.bounds.size.width/2,-25)];
+        if(hideCalledBlock){
+            hideCalledBlock();
+        }
+    }
+                     completion:^(BOOL completed){
+                         if(completeBlock){
+                             completeBlock();
+                         }
+                     }
+     ];
+
+}
 //I may need add the animation later, now keep it simple and stupid.
 //Let's fix the drag issue, why sometime I will have an empty.
 - (void) showComment:(NSString*)comment
@@ -245,8 +294,11 @@ typedef enum {
     EZDEBUG(@"showComment");
     NSString* basicFormat = @"<html><head>\
     <style type='text/css'>\
-    body {font-family:Adobe Kaiti Std;background-image:url('comment-background-hd.png');}\
-    div {font-size:20px; padding:5px; line-height:22px; letter-spacing:－2px;}\
+    body {font-family:Adobe Kaiti Std; \
+        color: white;\
+        back-ground-color: transparent;\
+    }\
+    div {font-size:18px; padding:2px; line-height:20px; letter-spacing:－2px;}\
     </style>\
     </head><body><div>%@</div></body></html>";
     NSString* formatedStr = [NSString stringWithFormat:basicFormat, comment];
@@ -254,20 +306,28 @@ typedef enum {
         
     __weak EZPlayPagePodLearn* weakSelf = self;
     
-    
+    [self hideCommentArea:^(){
+        [weakSelf.textView loadHTMLString:formatedStr baseURL:[NSURL fileURLWithPath:path]];
+    } completeBlock:^(){
+        [weakSelf showCommentArea:nil completeBlock:nil];
+    }];
+    /**
     [UIView animateWithDuration:0.3 animations:^(){
-            weakSelf.textView.layer.anchorPoint = ccp(0.5, 0.5);
-            weakSelf.textView.layer.transform = CATransform3DMakeScale(0.1, 0.1, 1);
+            //weakSelf.commentBackground.layer.anchorPoint = ccp(0.5, 0.5);
+            //weakSelf.textView.layer.transform = CATransform3DMakeScale(0.1, 0.1, 1);
+            //weakSelf.commentBackground.layer.transform = CATransform3DMakeTranslation(0, -weakSelf.commentBackground.bounds.size.height, 0);
+            [weakSelf.commentBackground setPosition:ccp(75, -weakSelf.commentBackground.bounds.size.height)];
             [weakSelf.textView loadHTMLString:formatedStr baseURL:[NSURL fileURLWithPath:path]];
      }
      
         completion:^(BOOL completed){
             [UIView animateWithDuration:0.3
-                             animations:^()
-            {weakSelf.textView.layer.transform = CATransform3DIdentity;}];
-            }];
+                             animations:^(){
+            ///weakSelf.textView.layer.transform = CATransform3DIdentity;}];
+            [weakSelf.commentBackground setPosition:ccp(75, 0)];}
+             ];}];
     //_textView.alpha = 0.5;
-    
+    **/
 }
 
 //This comment may get showed beside the exact move
@@ -303,14 +363,56 @@ typedef enum {
 - (void) addTextShower
 {
     //_textView = [[UITextView alloc] initWithFrame:CGRectMake(0, 60, 100, 100)];
-    _textView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 60, 150, 150)];
+    _textView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, 200, 80)];
     _textView.backgroundColor = [UIColor clearColor];
+    _textView.opaque = NO;
     //_textView.font = [UIFont fontWithName:@"Adobe Kaiti Std" size:20];
-    _textView.layer.cornerRadius = 10;
-    _textView.layer.masksToBounds = true;
-    [[CCDirector sharedDirector].view addSubview:_textView];
+    //_textView.layer.cornerRadius = 10;
+    //_textView.layer.masksToBounds = true;
+    
+    _commentBackground =[[UIImageView alloc]initWithImage:[EZFileUtil imageFromFile:@"comment-region.png" scale:[UIScreen mainScreen].scale]];
+    
+    //_commentBackground.layer.cornerRadius = 10;
+    //_commentBackground.layer.masksToBounds = true;
+    _textView.center =  ccp(_commentBackground.bounds.size.width/2, _commentBackground.bounds.size.height/2);
+    
+    
+    [_commentBackground addSubview:_textView];
+    
+    [_commentBackground setPosition:ccp(72, -_commentBackground.bounds.size.height)];
+    
+    [_commentBackground.layer setShadowColor:[UIColor blackColor].CGColor];
+    [_commentBackground.layer setShadowOpacity:0.8];
+    [_commentBackground.layer setShadowRadius:3.0];
+    [_commentBackground.layer setShadowOffset:CGSizeMake(3.0, 3.0)];
+    _commentBackground.userInteractionEnabled = true;
+    
+    _revealButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [_revealButton setImage:[EZFileUtil imageFromFile:@"reveal.png" scale:[UIScreen mainScreen].scale] forState:UIControlStateNormal];
+    
+    [_revealButton setFrame:CGRectMake(60+ _commentBackground.bounds.size.width/2,-25, 44, 66)];
+    //[_revealButton setPosition:ccp(_commentBackground.bounds.size.width/2,_commentBackground.bounds.size.height-10)];
+    [_revealButton addTarget:self action:@selector(revealClicked:) forControlEvents:UIControlEventTouchUpInside];
+    [_commentBackground addSubview:_revealButton];
+    [[CCDirector sharedDirector].view addSubview:_commentBackground];
+    [[CCDirector sharedDirector].view addSubview:_revealButton];
+    
+    //[[CCDirector sharedDirector].view addSubview:reveal];
     
 }
+
+
+//what should this method do?
+- (void) revealClicked:(id)sender
+{
+    EZDEBUG(@"Reveal clicked:%@", _isCommentShowing?@"Showed":@"Hidden");
+    if(!_isCommentShowing){
+        [self showCommentArea:nil completeBlock:nil];
+    }else{
+        [self hideCommentArea:nil completeBlock:nil];
+    }
+}
+
 //As it's name imply
 - (void) addTestStepBackAndForth
 {
@@ -337,9 +439,19 @@ typedef enum {
 {
     self = [super initWithPos:pos];
     if(self){
-        [self addTestStepBackAndForth];
+        //[self addTestStepBackAndForth];
         [self addTextShower];
+        
+        //Test code
         [self showComment:@"我爱大大棒棒糖"];
+        /**
+        EZShape* shape = [[EZShape alloc] init];
+        shape.lineWidth = 4;
+        shape.contentSize = CGSizeMake(300, 300);
+        shape.position = ccp(0, 0);
+        
+        [self addChild:shape z:1000];
+        **/
         //timer = [[CCTimer alloc] initWithTarget:self selector:@selector(generatedBubble) interval:1 repeat:kCCRepeatForever delay:1];
         self.currentEpisodePos = pos;
         __weak EZPlayPagePodLearn* weakSelf = self;

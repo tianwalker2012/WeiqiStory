@@ -54,9 +54,6 @@
     NSMutableDictionary* res = (NSMutableDictionary*)[super actionToDict];
     [res setValue:self.class.description forKey:@"class"];
     [res setValue:[self marksToArray:_marks] forKey:@"marks"];
-    
-    return res;
-    
     return res;
 }
 

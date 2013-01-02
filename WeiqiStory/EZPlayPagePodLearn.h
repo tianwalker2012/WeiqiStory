@@ -82,5 +82,11 @@
 
 @property (nonatomic, strong) UIWebView* textView;
 
+@property (nonatomic, strong) UIImageView* commentBackground;
+
+@property (nonatomic, strong) UIButton* revealButton;
+
+@property (nonatomic, assign) BOOL isCommentShowing;
+
 
 @end

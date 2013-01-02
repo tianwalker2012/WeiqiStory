@@ -14,6 +14,7 @@
 #import "EZFileUtil.h"
 #import "EZTouchView.h"
 #import "EZFlexibleResizeBoard.h"
+#import "EZShape.h"
 
 @interface EZEnlargeTester()
 {
@@ -106,6 +107,26 @@
         //[flexBoard.chessBoard putChessmans:@[[[EZCoord alloc] init:2 y:15],[[EZCoord alloc]init:12 y:15],[[EZCoord alloc]init:14 y:14]] animated:NO];
         flexBoard.basicPatterns = nil;//@[[[EZCoord alloc] init:1 y:1],[[EZCoord alloc]init:12 y:15],[[EZCoord alloc]init:14 y:14]];
         [_studyBoardHolder addChild:flexBoard];
+        
+        CCSprite* shapeMark = [CCSprite spriteWithFile:@"triangular-large.png"];
+        [flexBoard.chessBoard putMark:shapeMark coord:[[EZCoord alloc] init:5 y:5] animAction:nil];
+        
+        shapeMark = [CCSprite spriteWithFile:@"triangular-large.png"];
+        [flexBoard.chessBoard putMark:shapeMark coord:[[EZCoord alloc] init:6 y:6] animAction:nil];
+        
+        shapeMark = [CCSprite spriteWithFile:@"triangular-large.png"];
+        [flexBoard.chessBoard putMark:shapeMark coord:[[EZCoord alloc] init:7 y:7] animAction:nil];
+        
+        
+        //EZShape* shape  = [[EZShape alloc] init];
+        //shape.contentSize = CGSizeMake(38, 38);
+        //[flexBoard.chessBoard putMark:shape coord:[[EZCoord alloc]init:8 y:8] animAction:nil];
+        
+        //shape  = [[EZShape alloc] init];
+        //shape.contentSize = CGSizeMake(38, 38);
+        //[flexBoard.chessBoard putMark:shape coord:[[EZCoord alloc]init:10 y:10] animAction:nil];
+        
+        
         //[self addChild:_studyBoardHolder];
         //UIImageView* imageView = [[UIImageView alloc] initWithImage:[EZFileUtil imageFromFile:@"lock.png"]];
         //imageView.contentScaleFactor = 2;

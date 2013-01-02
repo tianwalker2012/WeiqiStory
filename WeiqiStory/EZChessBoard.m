@@ -83,6 +83,7 @@
         boardStatus = [[EZBoardStatus alloc] initWithBound:rect rows:rws cols:cls];
         boardStatus.front = self;
         _snapshotStack = [[NSMutableArray alloc] init];
+        _estimatedChessmanSize = CGSizeMake(rect.size.width/(rws-1), rect.size.height/(rws-1));
         [self initializeCursor];
     }
     return self;
@@ -155,9 +156,22 @@
     
 }
 
+
+//Simplest case, make sure things work as expected
+
+- (void) putMark:(CCNode*)mark coord:(EZCoord*)coord animAction:(CCAction*)action
+{
+    CGPoint pt = [boardStatus bcToPoint:coord];
+    [mark setPosition:pt];
+    //[mark setPosition:ccp(200, 200)];
+    EZDEBUG(@"mark point:%@, mark position:%@", NSStringFromCGPoint(pt), NSStringFromCGPoint(mark.position));
+    //[self addChild:]
+    [self addChild:mark z:MarkZOrder+10];
+
+}
 //What's the purpose of this method?
 //I will put a specified mark on the board.
-- (void) putMark:(CCNode*)mark coord:(EZCoord*)coord animAction:(CCAction*)action
+- (void) putMarkOld:(CCNode*)mark coord:(EZCoord*)coord animAction:(CCAction*)action
 {
     NSMutableArray* marks = [coordToMarks objectForKey:coord.getKey];
     if(!marks){
@@ -170,6 +184,8 @@
     [_allMarks addObject:markObj];
     CGPoint pt = [boardStatus bcToPoint:coord];
     [mark setPosition:pt];
+    
+    EZDEBUG(@"mark point:%@", NSStringFromCGPoint(pt));
     [self addChild:mark z:MarkZOrder+marks.count];
     if(action){
         [mark runAction:action];

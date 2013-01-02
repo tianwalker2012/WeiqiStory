@@ -241,15 +241,27 @@
 		18451E51160F09FD00BF530C /* EZPlayerStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 18451E50160F09FA00BF530C /* EZPlayerStatus.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		18451E54160F22C100BF530C /* EZChessEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = 18451E53160F22BF00BF530C /* EZChessEditor.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		18451E57160F2AD000BF530C /* EZEditorStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 18451E56160F2ACE00BF530C /* EZEditorStatus.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
-		18543723168B467F000240E9 /* EZSimpleSGFParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 18543716168B467E000240E9 /* EZSimpleSGFParser.m */; };
+		18543723168B467F000240E9 /* EZSimpleSGFParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 18543716168B467E000240E9 /* EZSimpleSGFParser.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		18543724168B467F000240E9 /* SGFLexer.lm in Sources */ = {isa = PBXBuildFile; fileRef = 18543717168B467E000240E9 /* SGFLexer.lm */; };
-		18543725168B467F000240E9 /* EZChessNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 1854371A168B467E000240E9 /* EZChessNode.m */; };
-		18543726168B467F000240E9 /* EZSGFItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 1854371C168B467E000240E9 /* EZSGFItem.m */; };
+		18543725168B467F000240E9 /* EZChessNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 1854371A168B467E000240E9 /* EZChessNode.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		18543726168B467F000240E9 /* EZSGFItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 1854371C168B467E000240E9 /* EZSGFItem.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		18543727168B467F000240E9 /* SGFParser.ym in Sources */ = {isa = PBXBuildFile; fileRef = 1854371D168B467E000240E9 /* SGFParser.ym */; };
-		18543728168B467F000240E9 /* EZParserStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 18543720168B467F000240E9 /* EZParserStatus.m */; };
+		18543728168B467F000240E9 /* EZParserStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 18543720168B467F000240E9 /* EZParserStatus.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		18543729168B467F000240E9 /* SGFParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 18543722168B467F000240E9 /* SGFParser.m */; };
 		1854372B168C623D000240E9 /* comment-background-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 1854372A168C623D000240E9 /* comment-background-hd.png */; };
 		1854372D168D4DF3000240E9 /* comment-background.png in Resources */ = {isa = PBXBuildFile; fileRef = 1854372C168D4DF3000240E9 /* comment-background.png */; };
+		18543730168D7F91000240E9 /* EZShape.m in Sources */ = {isa = PBXBuildFile; fileRef = 1854372F168D7F90000240E9 /* EZShape.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		18543733168D91E0000240E9 /* EZShapeMarkAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 18543732168D91DF000240E9 /* EZShapeMarkAction.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		1854373D1691429F000240E9 /* triangular.png in Resources */ = {isa = PBXBuildFile; fileRef = 185437381691429F000240E9 /* triangular.png */; };
+		1854373E1691429F000240E9 /* triangular-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 185437391691429F000240E9 /* triangular-pad.png */; };
+		1854373F1691429F000240E9 /* triangular-pad-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 1854373A1691429F000240E9 /* triangular-pad-hd.png */; };
+		185437401691429F000240E9 /* triangular-large.png in Resources */ = {isa = PBXBuildFile; fileRef = 1854373B1691429F000240E9 /* triangular-large.png */; };
+		185437411691429F000240E9 /* triangular-large-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 1854373C1691429F000240E9 /* triangular-large-hd.png */; };
+		1854374316914A6B000240E9 /* back-button-pressed-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 1854374216914A6A000240E9 /* back-button-pressed-hd.png */; };
+		1854374516914A8D000240E9 /* back-button-pressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 1854374416914A8C000240E9 /* back-button-pressed.png */; };
+		18543747169156E8000240E9 /* reveal-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 18543746169156E7000240E9 /* reveal-hd.png */; };
+		18543749169156FB000240E9 /* comment-region-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 18543748169156FB000240E9 /* comment-region-hd.png */; };
+		1854374B16919842000240E9 /* reveal-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 1854374A16919841000240E9 /* reveal-hd.png */; };
 		185BF458164373460044214A /* back-button-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 185BF445164373460044214A /* back-button-pad.png */; };
 		185BF459164373460044214A /* next-button-pressed-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 185BF446164373460044214A /* next-button-pressed-pad.png */; };
 		185BF45A164373460044214A /* prev-button-pressed-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 185BF447164373460044214A /* prev-button-pressed-pad.png */; };
@@ -1802,6 +1814,20 @@
 		18543722168B467F000240E9 /* SGFParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SGFParser.m; sourceTree = "<group>"; };
 		1854372A168C623D000240E9 /* comment-background-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "comment-background-hd.png"; sourceTree = "<group>"; };
 		1854372C168D4DF3000240E9 /* comment-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "comment-background.png"; sourceTree = "<group>"; };
+		1854372E168D7F8F000240E9 /* EZShape.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZShape.h; sourceTree = "<group>"; };
+		1854372F168D7F90000240E9 /* EZShape.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZShape.m; sourceTree = "<group>"; };
+		18543731168D91DD000240E9 /* EZShapeMarkAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZShapeMarkAction.h; sourceTree = "<group>"; };
+		18543732168D91DF000240E9 /* EZShapeMarkAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZShapeMarkAction.m; sourceTree = "<group>"; };
+		185437381691429F000240E9 /* triangular.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = triangular.png; path = ../../../icons/weiqi/triangular.png; sourceTree = "<group>"; };
+		185437391691429F000240E9 /* triangular-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "triangular-pad.png"; path = "../../../icons/weiqi/triangular-pad.png"; sourceTree = "<group>"; };
+		1854373A1691429F000240E9 /* triangular-pad-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "triangular-pad-hd.png"; path = "../../../icons/weiqi/triangular-pad-hd.png"; sourceTree = "<group>"; };
+		1854373B1691429F000240E9 /* triangular-large.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "triangular-large.png"; path = "../../../icons/weiqi/triangular-large.png"; sourceTree = "<group>"; };
+		1854373C1691429F000240E9 /* triangular-large-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "triangular-large-hd.png"; path = "../../../icons/weiqi/triangular-large-hd.png"; sourceTree = "<group>"; };
+		1854374216914A6A000240E9 /* back-button-pressed-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "back-button-pressed-hd.png"; path = "../../../icons/weiqi/back-button-pressed-hd.png"; sourceTree = "<group>"; };
+		1854374416914A8C000240E9 /* back-button-pressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "back-button-pressed.png"; path = "../../../icons/weiqi/back-button-pressed.png"; sourceTree = "<group>"; };
+		18543746169156E7000240E9 /* reveal-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "reveal-hd.png"; path = "../../../icons/weiqi/reveal-hd.png"; sourceTree = "<group>"; };
+		18543748169156FB000240E9 /* comment-region-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "comment-region-hd.png"; path = "../../../icons/weiqi/comment-region-hd.png"; sourceTree = "<group>"; };
+		1854374A16919841000240E9 /* reveal-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "reveal-hd.png"; path = "../../../icons/weiqi/reveal-hd.png"; sourceTree = "<group>"; };
 		185BF445164373460044214A /* back-button-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "back-button-pad.png"; path = "../../../icons/weiqi/back-button-pad.png"; sourceTree = "<group>"; };
 		185BF446164373460044214A /* next-button-pressed-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "next-button-pressed-pad.png"; path = "../../../icons/weiqi/next-button-pressed-pad.png"; sourceTree = "<group>"; };
 		185BF447164373460044214A /* prev-button-pressed-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "prev-button-pressed-pad.png"; path = "../../../icons/weiqi/prev-button-pressed-pad.png"; sourceTree = "<group>"; };
@@ -3528,6 +3554,8 @@
 				1893AB7C16801DED0056067B /* EZSpecificChessEditor.m */,
 				18E80FCE1689B228002C2D24 /* EZBoardSnapshot.h */,
 				18E80FCF1689B228002C2D24 /* EZBoardSnapshot.m */,
+				1854372E168D7F8F000240E9 /* EZShape.h */,
+				1854372F168D7F90000240E9 /* EZShape.m */,
 			);
 			name = Boards;
 			sourceTree = "<group>";
@@ -3549,6 +3577,14 @@
 		18451DE41609CBA800BF530C /* images */ = {
 			isa = PBXGroup;
 			children = (
+				1854374A16919841000240E9 /* reveal-hd.png */,
+				18543748169156FB000240E9 /* comment-region-hd.png */,
+				18543746169156E7000240E9 /* reveal-hd.png */,
+				185437381691429F000240E9 /* triangular.png */,
+				185437391691429F000240E9 /* triangular-pad.png */,
+				1854373A1691429F000240E9 /* triangular-pad-hd.png */,
+				1854373B1691429F000240E9 /* triangular-large.png */,
+				1854373C1691429F000240E9 /* triangular-large-hd.png */,
 				1854372C168D4DF3000240E9 /* comment-background.png */,
 				1854372A168C623D000240E9 /* comment-background-hd.png */,
 				1893AB7E16806A8C0056067B /* board-move-sign.png */,
@@ -3590,7 +3626,9 @@
 				1816456016624A9300E627F8 /* white-button-large.png */,
 				1816455E16624A7F00E627F8 /* white-button.png */,
 				1893A45116773A030056067B /* lock.png */,
+				1854374416914A8C000240E9 /* back-button-pressed.png */,
 				1816455C16624A7500E627F8 /* black-button.png */,
+				1854374216914A6A000240E9 /* back-button-pressed-hd.png */,
 				1816454C166244A500E627F8 /* message-region.png */,
 				1893A45316773A0D0056067B /* lock-hd.png */,
 				1816454A1662449600E627F8 /* back-button.png */,
@@ -3850,6 +3888,8 @@
 				18E80FCC1689B202002C2D24 /* EZStackPopAction.m */,
 				18E80FD1168AB533002C2D24 /* EZGameVO.h */,
 				18E80FD2168AB535002C2D24 /* EZGameVO.m */,
+				18543731168D91DD000240E9 /* EZShapeMarkAction.h */,
+				18543732168D91DF000240E9 /* EZShapeMarkAction.m */,
 			);
 			name = Actions;
 			sourceTree = "<group>";
@@ -6074,6 +6114,16 @@
 				18E80FB116898C2B002C2D24 /* test.sgf in Resources */,
 				1854372B168C623D000240E9 /* comment-background-hd.png in Resources */,
 				1854372D168D4DF3000240E9 /* comment-background.png in Resources */,
+				1854373D1691429F000240E9 /* triangular.png in Resources */,
+				1854373E1691429F000240E9 /* triangular-pad.png in Resources */,
+				1854373F1691429F000240E9 /* triangular-pad-hd.png in Resources */,
+				185437401691429F000240E9 /* triangular-large.png in Resources */,
+				185437411691429F000240E9 /* triangular-large-hd.png in Resources */,
+				1854374316914A6B000240E9 /* back-button-pressed-hd.png in Resources */,
+				1854374516914A8D000240E9 /* back-button-pressed.png in Resources */,
+				18543747169156E8000240E9 /* reveal-hd.png in Resources */,
+				18543749169156FB000240E9 /* comment-region-hd.png in Resources */,
+				1854374B16919842000240E9 /* reveal-hd.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6305,6 +6355,8 @@
 				18543727168B467F000240E9 /* SGFParser.ym in Sources */,
 				18543728168B467F000240E9 /* EZParserStatus.m in Sources */,
 				18543729168B467F000240E9 /* SGFParser.m in Sources */,
+				18543730168D7F91000240E9 /* EZShape.m in Sources */,
+				18543733168D91E0000240E9 /* EZShapeMarkAction.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

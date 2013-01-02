@@ -56,6 +56,7 @@
 #import "EZChessNode.h"
 #import "EZSGFItem.h"
 #import "EZSGFHelper.h"
+#import "EZShape.h"
 
 
 static NSInteger releaseCount;
@@ -263,6 +264,16 @@ static NSInteger releaseCount;
     //[EZTestSuites testSubRangeOfString];
     //[EZTestSuites testNodeToAction];
     //[EZTestSuites testReadFileToEpisode];
+    //[EZTestSuites testGenerateTriangle];
+}
+
++ (void) testGenerateTriangle
+{
+    NSArray* points = [EZShape calculateTriangle:CGRectMake(2, 2, 10, 10)];
+    
+    for(NSValue* nv in points){
+        EZDEBUG(@"Point is:%@", NSStringFromCGPoint([nv CGPointValue]));
+    }
 }
 
 + (void) testReadFileToEpisode

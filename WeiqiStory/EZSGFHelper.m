@@ -22,6 +22,7 @@
 #import "EZSGFItem.h"
 #import "EZChessNode.h"
 #import "SGFParser.h"
+#import "EZShapeMarkAction.h"
 
 @implementation EZSGFHelper
 
@@ -91,13 +92,10 @@
         action.text = [item.properties lastObject];
         res = action;
     }else if([@"TR" isEqualToString:item.name]){
-        EZMarkAction* action = [[EZMarkAction alloc] init];
-        NSMutableArray* marks = [[NSMutableArray alloc] initWithCapacity:item.properties.count];
-        for(NSString* str in item.properties){
-            [marks addObject:[[EZChessMark alloc] initWithType:kShapeMark text:item.name coord:[self stringToCoord:item.properties.lastObject]]];
-        }
-        action.marks =  marks;
-        res = action;
+        EZShapeMarkAction* sma = [[EZShapeMarkAction alloc] init];
+        sma.shapeType = kTriangler;
+        sma.coords = [self itemToCoord:item];
+        res = sma;
     }
     else if([@"LB" isEqualToString:item.name]){
         EZMarkAction* action = [[EZMarkAction alloc] init];
