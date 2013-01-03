@@ -28,6 +28,7 @@
 #import "EZShape.h"
 #import "EZFileUtil.h"
 #import "EZExtender.h"
+#import "EZBackground.h"
 
 
 //Only 2 status.
@@ -332,6 +333,7 @@ typedef enum {
 //Large size or smaller size.
 //Based on the number of characters.
 //I will adjust both the text size and the Comment Region size to reflect this needs
+
 - (void) adjustSizeByCharNumber:(NSString*)strs;
 {
     EZDEBUG(@"Adjust the comment region by the char counts:%i", strs.length);
@@ -389,18 +391,20 @@ typedef enum {
     
     [self showCommentArea:nil completeBlock:^(){
         [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionCurveEaseIn animations:^(){
-            //[weakSelf.textView setPosition:ccp(-weakSelf.textView.bounds.size.width, orgPos.y)];
-            //weakSelf.textView.center = ccp(-weakSelf.textView.bounds.size.width/2, orgPos.y);
+            [weakSelf.textView setPosition:ccp(-weakSelf.textView.bounds.size.width, orgPos.y)];
+            weakSelf.textView.center = ccp(-weakSelf.textView.bounds.size.width/2, orgPos.y);
             weakSelf.textView.alpha = 0.0;
         
         } completion:^(BOOL completed){
             [weakSelf.textView stringByEvaluatingJavaScriptFromString:formatedStr];
-            //weakSelf.textView.center = ccp(weakSelf.textView.bounds.size.width , orgPos.y);
+            weakSelf.textView.center = ccp(weakSelf.textView.bounds.size.width , orgPos.y);
             [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionCurveEaseOut animations:^(){
-                //weakSelf.textView.center = ccp(orgPos.x, orgPos.y);
+                weakSelf.textView.center = ccp(orgPos.x, orgPos.y);
                 weakSelf.textView.alpha = 1.0;
                 
-            } completion:nil];
+            } completion:^(BOOL completed){
+                
+            }];
         }];
     
     }];
@@ -444,8 +448,11 @@ typedef enum {
 
 - (void) nextAction:(id)sender
 {
-    EZDEBUG(@"Next clicked,Current action number:%i", self.player.currentAction);
-    [self.player next];
+    //EZDEBUG(@"Next clicked,Current action number:%i", self.player.currentAction);
+    //[self.player next];
+    EZDEBUG(@"Change the size");
+    _stretched.frame = CGRectMake(0,200, _stretched.bounds.size.width, 280);
+    EZDEBUG(@"After the strecth:%@", NSStringFromCGRect(_stretched.bounds));
 }
 
 - (void) prevAction:(id)sender
@@ -467,6 +474,7 @@ typedef enum {
 
 - (void) addTextShower
 {
+    [self addTestStepBackAndForth];
     //_textView = [[UITextView alloc] initWithFrame:CGRectMake(0, 60, 100, 100)];
     _textView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, 200, 80)];
     _textView.backgroundColor = [UIColor clearColor];
@@ -476,13 +484,14 @@ typedef enum {
     //_textView.layer.cornerRadius = 10;
     //_textView.layer.masksToBounds = true;
     
-    _largeCommentBackground = [self loadCommentRegionFile:@"large-comment-region.png"];
-    _smallCommentBackground = [self loadCommentRegionFile:@"comment-region.png"];
-
+    _commentBackground = [[EZBackground alloc]initWithHeader:@"comment-region-header.png" body:@"comment-region-body.png" tail:@"comment-region-tail.png"];
     
+    //Test auto resize
+    //UIImageView* testRegion = [[UIImageView alloc] initWithImage:[EZFileUtil imageFromFile:@"comment-region.png" scale:[UIScreen mainScreen].scale]];
     
-    _commentBackground = _smallCommentBackground;
-
+    //testRegion.frame = CGRectMake(0, 200, 300, 500);
+    //[[CCDirector sharedDirector].view addSubview:testRegion];
+    
     _textView.center =  ccp(_commentBackground.bounds.size.width/2, _commentBackground.bounds.size.height/2);
     
     
@@ -518,19 +527,19 @@ typedef enum {
 - (void) addTestStepBackAndForth
 {
     UIButton* nextButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    nextButton.frame = CGRectMake(200, 0, 88, 44);
-    [nextButton setTitle:@"Next Action" forState:UIControlStateNormal];
+    nextButton.frame = CGRectMake(200, 400, 88, 44);
+    [nextButton setTitle:@"ChangeSize" forState:UIControlStateNormal];
     [nextButton addTarget:self action:@selector(nextAction:) forControlEvents:UIControlEventTouchUpInside|UIControlEventTouchUpOutside];
     
-    
+    /**
     UIButton* prevButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     prevButton.frame = CGRectMake(40, 0, 88, 44);
     [prevButton setTitle:@"Prev Action" forState:UIControlStateNormal];
     [prevButton addTarget:self action:@selector(prevAction:) forControlEvents:UIControlEventTouchUpInside|UIControlEventTouchUpOutside];
-    
+    **/
     
     [[CCDirector sharedDirector].view addSubview:nextButton];
-    [[CCDirector sharedDirector].view addSubview:prevButton];
+    //[[CCDirector sharedDirector].view addSubview:prevButton];
     
 }
 

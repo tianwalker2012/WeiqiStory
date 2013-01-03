@@ -267,6 +267,10 @@
 		1854375116956131000240E9 /* comment-region.png in Resources */ = {isa = PBXBuildFile; fileRef = 1854375016956130000240E9 /* comment-region.png */; };
 		185437541695613F000240E9 /* large-comment-region-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 185437521695613C000240E9 /* large-comment-region-hd.png */; };
 		185437551695613F000240E9 /* large-comment-region.png in Resources */ = {isa = PBXBuildFile; fileRef = 185437531695613E000240E9 /* large-comment-region.png */; };
+		18543759169570A6000240E9 /* EZBackground.m in Sources */ = {isa = PBXBuildFile; fileRef = 18543758169570A6000240E9 /* EZBackground.m */; };
+		1854375B16958A11000240E9 /* comment-region-body-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 1854375A16958A10000240E9 /* comment-region-body-hd.png */; };
+		1854375D16958A19000240E9 /* comment-region-header-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 1854375C16958A18000240E9 /* comment-region-header-hd.png */; };
+		1854375F16958A27000240E9 /* comment-region-tail-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 1854375E16958A26000240E9 /* comment-region-tail-hd.png */; };
 		185BF458164373460044214A /* back-button-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 185BF445164373460044214A /* back-button-pad.png */; };
 		185BF459164373460044214A /* next-button-pressed-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 185BF446164373460044214A /* next-button-pressed-pad.png */; };
 		185BF45A164373460044214A /* prev-button-pressed-pad.png in Resources */ = {isa = PBXBuildFile; fileRef = 185BF447164373460044214A /* prev-button-pressed-pad.png */; };
@@ -1838,6 +1842,11 @@
 		1854375016956130000240E9 /* comment-region.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "comment-region.png"; path = "../../../icons/weiqi/comment-region.png"; sourceTree = "<group>"; };
 		185437521695613C000240E9 /* large-comment-region-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "large-comment-region-hd.png"; path = "../../../icons/weiqi/large-comment-region-hd.png"; sourceTree = "<group>"; };
 		185437531695613E000240E9 /* large-comment-region.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "large-comment-region.png"; path = "../../../icons/weiqi/large-comment-region.png"; sourceTree = "<group>"; };
+		18543757169570A6000240E9 /* EZBackground.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EZBackground.h; sourceTree = "<group>"; };
+		18543758169570A6000240E9 /* EZBackground.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EZBackground.m; sourceTree = "<group>"; };
+		1854375A16958A10000240E9 /* comment-region-body-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "comment-region-body-hd.png"; path = "../../../icons/weiqi/comment-region-body-hd.png"; sourceTree = "<group>"; };
+		1854375C16958A18000240E9 /* comment-region-header-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "comment-region-header-hd.png"; path = "../../../icons/weiqi/comment-region-header-hd.png"; sourceTree = "<group>"; };
+		1854375E16958A26000240E9 /* comment-region-tail-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "comment-region-tail-hd.png"; path = "../../../icons/weiqi/comment-region-tail-hd.png"; sourceTree = "<group>"; };
 		185BF445164373460044214A /* back-button-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "back-button-pad.png"; path = "../../../icons/weiqi/back-button-pad.png"; sourceTree = "<group>"; };
 		185BF446164373460044214A /* next-button-pressed-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "next-button-pressed-pad.png"; path = "../../../icons/weiqi/next-button-pressed-pad.png"; sourceTree = "<group>"; };
 		185BF447164373460044214A /* prev-button-pressed-pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "prev-button-pressed-pad.png"; path = "../../../icons/weiqi/prev-button-pressed-pad.png"; sourceTree = "<group>"; };
@@ -3587,7 +3596,10 @@
 		18451DE41609CBA800BF530C /* images */ = {
 			isa = PBXGroup;
 			children = (
+				1854375C16958A18000240E9 /* comment-region-header-hd.png */,
+				1854375A16958A10000240E9 /* comment-region-body-hd.png */,
 				1854375016956130000240E9 /* comment-region.png */,
+				1854375E16958A26000240E9 /* comment-region-tail-hd.png */,
 				185437521695613C000240E9 /* large-comment-region-hd.png */,
 				185437531695613E000240E9 /* large-comment-region.png */,
 				1854374E1695611A000240E9 /* reveal.png */,
@@ -4834,6 +4846,8 @@
 				18C3114816523DFE007F3990 /* EZEpisodeEditor.m */,
 				18888D61166C52E3006CDEB4 /* EZViewGesturer.h */,
 				18888D62166C52E3006CDEB4 /* EZViewGesturer.m */,
+				18543757169570A6000240E9 /* EZBackground.h */,
+				18543758169570A6000240E9 /* EZBackground.m */,
 			);
 			name = "Custom UI";
 			sourceTree = "<group>";
@@ -6144,6 +6158,9 @@
 				1854375116956131000240E9 /* comment-region.png in Resources */,
 				185437541695613F000240E9 /* large-comment-region-hd.png in Resources */,
 				185437551695613F000240E9 /* large-comment-region.png in Resources */,
+				1854375B16958A11000240E9 /* comment-region-body-hd.png in Resources */,
+				1854375D16958A19000240E9 /* comment-region-header-hd.png in Resources */,
+				1854375F16958A27000240E9 /* comment-region-tail-hd.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6377,6 +6394,7 @@
 				18543729168B467F000240E9 /* SGFParser.m in Sources */,
 				18543730168D7F91000240E9 /* EZShape.m in Sources */,
 				18543733168D91E0000240E9 /* EZShapeMarkAction.m in Sources */,
+				18543759169570A6000240E9 /* EZBackground.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
