@@ -38,15 +38,13 @@
     _header = [[UIImageView alloc] initWithImage:[EZFileUtil imageFromFile:header scale:[UIScreen mainScreen].scale]];
     [_header setPosition:ccp(0, 0)];
     
+    _tail = [[UIImageView alloc ] initWithImage:[EZFileUtil imageFromFile:tail scale:[UIScreen mainScreen].scale]];
+    [_tail setPosition:ccp(0, _body.bounds.size.height - _tail.bounds.size.height)];
     //assume the body occupy the whole view
     _body = [[UIImageView alloc] initWithImage:[EZFileUtil imageFromFile:body scale:[UIScreen mainScreen].scale]];
     self.frame = CGRectMake(0, 0, _body.bounds.size.width, _header.bounds.size.height+_body.bounds.size.height+_tail.bounds.size.height);
 
     [_body setPosition:ccp(0, _header.bounds.size.height)];
-    
-    
-    _tail = [[UIImageView alloc ] initWithImage:[EZFileUtil imageFromFile:tail scale:[UIScreen mainScreen].scale]];
-    [_tail setPosition:ccp(0, _body.bounds.size.height - _tail.bounds.size.height)];
     [self addSubview:_body];
     [self addSubview:_header];
     [self addSubview:_tail];

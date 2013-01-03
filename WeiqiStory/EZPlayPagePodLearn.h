@@ -20,6 +20,9 @@
 @class EZFlexibleResizeBoard;
 @class EZBackground;
 
+#define MaxCommentHeight 160
+
+#define MinCommentHeight 90
 
 @interface EZPlayPagePodLearn : EZCommonPlayPage<EZCommentShower>
 

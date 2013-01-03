@@ -333,49 +333,6 @@ typedef enum {
 //Large size or smaller size.
 //Based on the number of characters.
 //I will adjust both the text size and the Comment Region size to reflect this needs
-
-- (void) adjustSizeByCharNumber:(NSString*)strs;
-{
-    EZDEBUG(@"Adjust the comment region by the char counts:%i", strs.length);
-    if(strs.length > 5){
-        if(_commentBackground == _smallCommentBackground){
-            [self switchCommentRegion:YES];
-        }else{
-            EZDEBUG(@"already large Board, let's stick with it");
-        }
-        
-    }else{
-        if(_commentBackground == _largeCommentBackground){
-            [self switchCommentRegion:NO];
-        }else{
-            EZDEBUG(@"already small Board, let's stick with it");
-        }
-        
-    }
-}
-
-- (void) switchCommentRegion:(BOOL)smallToBig
-{
-    EZDEBUG(@"switch comment region:%@", smallToBig?@"SmallToBig":@"BigToSmall");
-     [_commentBackground removeFromSuperview];
-    if(smallToBig){
-        _commentBackground = _largeCommentBackground;
-    }else{
-        _commentBackground = _smallCommentBackground;
-    }
-    //Add animation later, if the region visible, I prefer the iterative way.
-    //My favoriate way is iterativ way
-    
-    [_textView removeFromSuperview];
-    [_textView setFrame:CGRectMake(0, 0, _textView.frame.size.width, _commentBackground.bounds.size.height)];
-    
-    _textView.center = ccp(_commentBackground.bounds.size.width/2, _commentBackground.bounds.size.height/2);
-    
-    [_commentBackground addSubview:_textView];
-    [[CCDirector sharedDirector].view addSubview:_commentBackground];
-    //We will ask the comment animation to show the comment
-    _isCommentShowing = false;
-}
 //I may need add the animation later, now keep it simple and stupid.
 //Let's fix the drag issue, why sometime I will have an empty.
 - (void) showComment:(NSString*)comment
@@ -384,7 +341,6 @@ typedef enum {
     __weak EZPlayPagePodLearn* weakSelf = self;
     CGPoint orgPos = _textView.center;
     EZDEBUG(@"Original position:%@, center:%@", NSStringFromCGPoint(orgPos), NSStringFromCGPoint(_textView.center));
-    [self adjustSizeByCharNumber:comment];
     
     NSString* formatedStr =[NSString stringWithFormat: @"document.getElementById('test').innerHTML = '%@'", comment];
     
@@ -403,7 +359,15 @@ typedef enum {
                 weakSelf.textView.alpha = 1.0;
                 
             } completion:^(BOOL completed){
-                
+                EZDEBUG(@"Add another animation");
+                [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionCurveEaseIn animations:^(){
+                    if(comment.length > 5){
+                        weakSelf.commentBackground.frame = CGRectMake(weakSelf.commentBackground.frame.origin.x, weakSelf.commentBackground.frame.origin.y, weakSelf.commentBackground.frame.size.width, MaxCommentHeight);
+                    }else{
+                        weakSelf.commentBackground.frame = CGRectMake(weakSelf.commentBackground.frame.origin.x, weakSelf.commentBackground.frame.origin.y, weakSelf.commentBackground.frame.size.width, MinCommentHeight);
+                    }
+                    [weakSelf.revealButton setPosition:ccp(60+ _commentBackground.bounds.size.width/2, weakSelf.commentBackground.bounds.size.height-30)];
+                } completion:nil];
             }];
         }];
     
