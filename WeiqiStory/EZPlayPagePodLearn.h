@@ -84,6 +84,13 @@
 
 @property (nonatomic, strong) UIImageView* commentBackground;
 
+//Why do I do this?
+//I want the comment region to load faster
+//The textView width should be the same with the commentbackground are used currently.
+@property (nonatomic, strong) UIImageView* largeCommentBackground;
+
+@property (nonatomic, strong) UIImageView* smallCommentBackground;
+
 @property (nonatomic, strong) UIButton* revealButton;
 
 @property (nonatomic, assign) BOOL isCommentShowing;

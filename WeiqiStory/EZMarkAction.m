@@ -33,10 +33,9 @@
 //For the subclass, override this method.
 - (void) actionBody:(EZActionPlayer*)player
 {
-    for(EZChessMark* mark in _marks){
-        EZDEBUG(@"Add mark get called, character:%@", mark.text);
-        [player.board putCharMark:mark.text fontSize:mark.fontSize coord:mark.coord animAction:false];
-    }
+    EZDEBUG(@"Will display:%i marks", _marks.count);
+    [player.board putMarks:_marks];
+    
 }
 
 

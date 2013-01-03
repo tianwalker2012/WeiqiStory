@@ -309,47 +309,97 @@ typedef enum {
      ];
 
 }
+
+//I only call this method once,
+//I assume replace the javascript will be faster than this method.
+- (void) loadUIWebView
+{
+    NSString* basicFormat = @"<html><head>\
+    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\
+    <style type='text/css'>\
+    body {font-family:Adobe Kaiti Std; \
+    color: white;\
+    back-ground-color: transparent;\
+    }\
+    div {font-size:18px; padding:2px; line-height:20px; letter-spacing:－2px;}\
+    </style>\
+    </head><body><div id='test'></div></body></html>";
+    NSString *path = [[NSBundle mainBundle] bundlePath];
+    [_textView loadHTMLString:basicFormat baseURL:[NSURL fileURLWithPath:path]];
+}
+
+//Current implmentation will consider 2 size
+//Large size or smaller size.
+//Based on the number of characters.
+//I will adjust both the text size and the Comment Region size to reflect this needs
+- (void) adjustSizeByCharNumber:(NSString*)strs;
+{
+    EZDEBUG(@"Adjust the comment region by the char counts:%i", strs.length);
+    if(strs.length > 5){
+        if(_commentBackground == _smallCommentBackground){
+            [self switchCommentRegion:YES];
+        }else{
+            EZDEBUG(@"already large Board, let's stick with it");
+        }
+        
+    }else{
+        if(_commentBackground == _largeCommentBackground){
+            [self switchCommentRegion:NO];
+        }else{
+            EZDEBUG(@"already small Board, let's stick with it");
+        }
+        
+    }
+}
+
+- (void) switchCommentRegion:(BOOL)smallToBig
+{
+    EZDEBUG(@"switch comment region:%@", smallToBig?@"SmallToBig":@"BigToSmall");
+     [_commentBackground removeFromSuperview];
+    if(smallToBig){
+        _commentBackground = _largeCommentBackground;
+    }else{
+        _commentBackground = _smallCommentBackground;
+    }
+    //Add animation later, if the region visible, I prefer the iterative way.
+    //My favoriate way is iterativ way
+    
+    [_textView removeFromSuperview];
+    [_textView setFrame:CGRectMake(0, 0, _textView.frame.size.width, _commentBackground.bounds.size.height)];
+    
+    _textView.center = ccp(_commentBackground.bounds.size.width/2, _commentBackground.bounds.size.height/2);
+    
+    [_commentBackground addSubview:_textView];
+    [[CCDirector sharedDirector].view addSubview:_commentBackground];
+    //We will ask the comment animation to show the comment
+    _isCommentShowing = false;
+}
 //I may need add the animation later, now keep it simple and stupid.
 //Let's fix the drag issue, why sometime I will have an empty.
 - (void) showComment:(NSString*)comment
 {
     EZDEBUG(@"showComment");
-    NSString* basicFormat = @"<html><head>\
-    <style type='text/css'>\
-    body {font-family:Adobe Kaiti Std; \
-        color: white;\
-        back-ground-color: transparent;\
-    }\
-    div {font-size:18px; padding:2px; line-height:20px; letter-spacing:－2px;}\
-    </style>\
-    </head><body><div>%@</div></body></html>";
-    NSString* formatedStr = [NSString stringWithFormat:basicFormat, comment];
-    NSString *path = [[NSBundle mainBundle] bundlePath];
-        
     __weak EZPlayPagePodLearn* weakSelf = self;
-    /**
-    [self hideCommentArea:^(){
-        [weakSelf.textView loadHTMLString:formatedStr baseURL:[NSURL fileURLWithPath:path]];
-    } completeBlock:^(){
-        [weakSelf showCommentArea:nil completeBlock:nil];
-    }];
-     **/
     CGPoint orgPos = _textView.center;
     EZDEBUG(@"Original position:%@, center:%@", NSStringFromCGPoint(orgPos), NSStringFromCGPoint(_textView.center));
-    [weakSelf.textView loadHTMLString:formatedStr baseURL:[NSURL fileURLWithPath:path]];
+    [self adjustSizeByCharNumber:comment];
+    
+    NSString* formatedStr =[NSString stringWithFormat: @"document.getElementById('test').innerHTML = '%@'", comment];
+    
+    
     [self showCommentArea:nil completeBlock:^(){
         [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionCurveEaseIn animations:^(){
             //[weakSelf.textView setPosition:ccp(-weakSelf.textView.bounds.size.width, orgPos.y)];
-            weakSelf.textView.center = ccp(-weakSelf.textView.bounds.size.width/2, orgPos.y);
+            //weakSelf.textView.center = ccp(-weakSelf.textView.bounds.size.width/2, orgPos.y);
             weakSelf.textView.alpha = 0.0;
         
         } completion:^(BOOL completed){
-            CGSize winSize = [CCDirector sharedDirector].winSize;
-            weakSelf.textView.center = ccp(weakSelf.textView.bounds.size.width , orgPos.y);
+            [weakSelf.textView stringByEvaluatingJavaScriptFromString:formatedStr];
+            //weakSelf.textView.center = ccp(weakSelf.textView.bounds.size.width , orgPos.y);
             [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionCurveEaseOut animations:^(){
-                weakSelf.textView.center = ccp(orgPos.x, orgPos.y);
+                //weakSelf.textView.center = ccp(orgPos.x, orgPos.y);
                 weakSelf.textView.alpha = 1.0;
-                [weakSelf.textView stringByEvaluatingJavaScriptFromString:@"'哈哈'"];
+                
             } completion:nil];
         }];
     
@@ -404,33 +454,40 @@ typedef enum {
     [self.player undoOneStep];
 }
 
+- (UIImageView*) loadCommentRegionFile:(NSString*)fileName
+{
+    UIImageView* res = [[UIImageView alloc]initWithImage:[EZFileUtil imageFromFile:fileName scale:[UIScreen mainScreen].scale]];
+    res.layer.cornerRadius = 10;
+    res.layer.masksToBounds = true;
+    [res.layer setShadowOffset:CGSizeMake(3.0, 3.0)];
+    res.userInteractionEnabled = true;
+    [res setPosition:ccp(72, -res.bounds.size.height)];
+    return res;
+}
+
 - (void) addTextShower
 {
     //_textView = [[UITextView alloc] initWithFrame:CGRectMake(0, 60, 100, 100)];
     _textView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, 200, 80)];
     _textView.backgroundColor = [UIColor clearColor];
     _textView.opaque = NO;
+    [self loadUIWebView];
     //_textView.font = [UIFont fontWithName:@"Adobe Kaiti Std" size:20];
     //_textView.layer.cornerRadius = 10;
     //_textView.layer.masksToBounds = true;
     
-    _commentBackground =[[UIImageView alloc]initWithImage:[EZFileUtil imageFromFile:@"comment-region.png" scale:[UIScreen mainScreen].scale]];
-    _commentBackground.clipsToBounds = true;
+    _largeCommentBackground = [self loadCommentRegionFile:@"large-comment-region.png"];
+    _smallCommentBackground = [self loadCommentRegionFile:@"comment-region.png"];
+
     
-    //_commentBackground.layer.cornerRadius = 10;
-    //_commentBackground.layer.masksToBounds = true;
+    
+    _commentBackground = _smallCommentBackground;
+
     _textView.center =  ccp(_commentBackground.bounds.size.width/2, _commentBackground.bounds.size.height/2);
     
     
     [_commentBackground addSubview:_textView];
     
-    [_commentBackground setPosition:ccp(72, -_commentBackground.bounds.size.height)];
-    
-    [_commentBackground.layer setShadowColor:[UIColor blackColor].CGColor];
-    [_commentBackground.layer setShadowOpacity:0.8];
-    [_commentBackground.layer setShadowRadius:3.0];
-    [_commentBackground.layer setShadowOffset:CGSizeMake(3.0, 3.0)];
-    _commentBackground.userInteractionEnabled = true;
     
     _revealButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [_revealButton setImage:[EZFileUtil imageFromFile:@"reveal.png" scale:[UIScreen mainScreen].scale] forState:UIControlStateNormal];
@@ -440,7 +497,7 @@ typedef enum {
     [_revealButton addTarget:self action:@selector(revealClicked:) forControlEvents:UIControlEventTouchUpInside];
     [[CCDirector sharedDirector].view addSubview:_commentBackground];
     [[CCDirector sharedDirector].view addSubview:_revealButton];
-    
+ 
     //[[CCDirector sharedDirector].view addSubview:reveal];
     
 }
@@ -636,6 +693,9 @@ typedef enum {
 {
     [self createMainLayout:epv];
     [self addChild:_mainLayout z:10];
+    
+    EZDEBUG(@"Show a mark");
+    [_chessBoard putCharMark:@"F" fontSize:30 coord:[[EZCoord alloc] init:15 y:8] animAction:nil];
     //[_mainFlexBoard setBasicPatterns:epv.basicPattern i];
     [_mainFlexBoard calculateRegionForPattern:epv.basicPattern isPlant:NO];
 }
@@ -672,10 +732,25 @@ typedef enum {
     //_resizeBoard.contentSize = _resizeBoard.orgBoard.contentSize;
     //_flexibleBoard.basicPatterns = epv.basicPattern;
     _mainFlexBoard.anchorPoint = ccp(0.5, 0.5);
+    //fix for the chessman cut problem.
+    //The simplest solution should be increase the skirt of the board, in the meanwhile
+    //cut the inner of the frame. 
     _mainFlexBoard.position = ccp(320/2, 244-2);
     
     //[self addChild:chessBoard2];
+    //Progress Bar test
     self.player = [[EZActionPlayer alloc] initWithActions:epv.actions chessBoard:_chessBoard inMainBundle:epv.inMainBundle];
+    
+    EZChessBoard* backBoard = [[EZChessBoard alloc] initWithFile:@"chess-board.png" touchRect:CGRectMake(13, 13, 271, 271) rows:19 cols:19];
+    
+    backBoard.anchorPoint = ccp(0.5, 0.5);
+    backBoard.position = ccp(0, 244);
+    backBoard.touchEnabled = false;
+    
+    //[self addChild:backBoard z:100];
+    EZActionPlayer* backPlayer = [[EZActionPlayer alloc] initWithActions:epv.actions chessBoard:backBoard inMainBundle:epv.inMainBundle];
+    backPlayer.textShower = self;
+    //End of progress bar test
     
     self.player.textShower = self;
     //[player2 forwardFrom:0 to:epv.actions.count];
@@ -707,7 +782,13 @@ typedef enum {
         //The bug maybe here. mean I play from this place to next one
         [weakSelf.player pause];
         [_playButton setNormalSpriteFrame:weakSelf.playImg.displayFrame];
-        [weakSelf.player forwardFrom:prv to:cur];
+        [_chessBoard cleanAll];
+        [weakSelf.player forwardFrom:0 to:cur];
+        //[weakSelf.player forwardFrom:prv to:cur];
+        
+        //[backBoard cleanAll];
+        //[backPlayer forwardFrom:0 to:cur];
+        
     }];
     
     [self.player.stepCompletionBlocks addObject:^(id sender){

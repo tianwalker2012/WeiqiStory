@@ -158,11 +158,25 @@
 
 
 //Simplest case, make sure things work as expected
-
+//This is the thing, you could visualize and improve it on daily basis.
+//Focus on it and improve it on daily basis. Only turn yourself into a creator is a life you
+//could find peace and happiness in the end. 
 - (void) putMark:(CCNode*)mark coord:(EZCoord*)coord animAction:(CCAction*)action
 {
+    
+    NSMutableArray* marks = [coordToMarks objectForKey:coord.getKey];
+    if(!marks){
+        marks = [[NSMutableArray alloc] init];
+        [coordToMarks setValue:marks forKey:coord.getKey];
+    }
+    //EZDEBUG(@"coordMarks size:%i, object pointer:%i, marks size:%i",coordToMarks.count, (int)coordToMarks, marks.count);
+    EZChessMark* chessMark = [[EZChessMark alloc] initWithNode:mark coord:coord];
+    chessMark.mark = mark;
+    [marks addObject:chessMark];
+    [_allMarks addObject:chessMark];
     CGPoint pt = [boardStatus bcToPoint:coord];
     [mark setPosition:pt];
+    
     //[mark setPosition:ccp(200, 200)];
     EZDEBUG(@"mark point:%@, mark position:%@", NSStringFromCGPoint(pt), NSStringFromCGPoint(mark.position));
     //[self addChild:]
@@ -204,18 +218,27 @@
 
 - (void) putMark:(EZChessMark*) mark animate:(id)anim
 {
-    CCLabelTTF*  markText = nil;
-    CGFloat fontSize = mark.fontSize;
-    if(fontSize <= 0){
-        fontSize = 30.0;
-    }
-    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone){
-        markText = [CCLabelTTF labelWithString:mark.text fontName:@"Arial" fontSize:fontSize*.05];
-    }else{
-        markText = [CCLabelTTF labelWithString:mark.text fontName:@"Arial" fontSize:fontSize];
+    CCNode* markNode = mark.mark;
+    if(markNode == nil){
+        CCLabelTTF*  markText = nil;
+        //This will make sure the font size not larger than the actual chess man,
+        //I should take the scale into account or what?
+        CGFloat fontSize = _estimatedChessmanSize.width;
+        //if(fontSize <= 0){
+        //    fontSize = 30.0;
+        //}
+        //How to make the mark size meet the size of the chess man?
+        
+        markText = [CCLabelTTF labelWithString:mark.text fontName:@"Arial" fontSize:fontSize*0.9];
+    
+        //markText = [CCLabelTTF labelWithString:mark.text fontName:@"Arial" fontSize:fontSize];
+        
+    
+        markText.color = ChessMarkColor;
+        markNode = markText;
+        mark.mark = markNode;
     }
     
-    markText.color = ChessMarkColor;
     NSMutableArray* marks = [coordToMarks objectForKey:mark.coord.getKey];
     if(!marks){
         marks = [[NSMutableArray alloc] init];
@@ -226,10 +249,11 @@
     [marks addObject:mark];
     [_allMarks addObject:mark];
     CGPoint pt = [boardStatus bcToPoint:mark.coord];
-    [markText setPosition:pt];
-    [self addChild:markText z:MarkZOrder+marks.count];
+    [markNode setPosition:pt];
+    [self addChild:markNode z:MarkZOrder+marks.count];
+    EZDEBUG(@"Add markNode:%@, to coord:%@, ZOrder:%i, FontSize:%i, point:%@", markNode, mark.coord, MarkZOrder+marks.count, mark.fontSize, NSStringFromCGPoint(pt));
     if(anim){
-        [markText runAction:anim];
+        [markNode runAction:anim];
     }
 
 }
