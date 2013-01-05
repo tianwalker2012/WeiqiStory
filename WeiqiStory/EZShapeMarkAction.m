@@ -9,6 +9,7 @@
 #import "EZShapeMarkAction.h"
 #import "EZActionPlayer.h"
 #import "EZChessBoard.h"
+#import "EZChessMark.h"
 
 @implementation EZShapeMarkAction
 
@@ -35,13 +36,15 @@
         //EZShape* shape = [[EZShape alloc] init];
         EZChessBoard* chessBoard = (EZChessBoard*)player.board;
         
-        EZDEBUG(@"Chessboard is large:%@", chessBoard.isLargeBoard?@"Yes":@"No");
-        CCSprite* shape = [CCSprite spriteWithFile:chessBoard.isLargeBoard?@"triangular-large.png": @"triangular.png"];
+        EZChessMark* mark = [[EZChessMark alloc] initWithType:kTriangleMark coord:coord];
+        [chessBoard putMark:mark animate:nil];
+        //EZDEBUG(@"Chessboard is large:%@", chessBoard.isLargeBoard?@"Yes":@"No");
+        //CCSprite* shape = [CCSprite spriteWithFile:chessBoard.isLargeBoard?@"triangular-large.png": @"triangular.png"];
         
         //EZChessBoard* chessBoard = (EZChessBoard*)player.board;
         //shape.contentSize = chessBoard.estimatedChessmanSize;
-        EZDEBUG(@"Will draw shape:%i, at position:%@, contentSize:%@", _shapeType, coord, NSStringFromCGSize(shape.contentSize));
-        [chessBoard putMark:shape coord:coord animAction:nil];
+        //EZDEBUG(@"Will draw shape:%i, at position:%@, contentSize:%@", _shapeType, coord, NSStringFromCGSize(shape.contentSize));
+        //[chessBoard putMark:shape coord:coord animAction:nil];
     
         
         /**

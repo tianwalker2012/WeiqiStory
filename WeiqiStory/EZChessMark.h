@@ -18,7 +18,9 @@
 
 typedef enum {
     kTextMark,
-    kShapeMark
+    kTriangleMark,
+    kCycleMark,
+    kRectangleMark
 } EZChessMarkType;
 
 @class EZCoord;
@@ -40,12 +42,15 @@ typedef enum {
 
 - (id) initWithText:(NSString*)text fontSize:(NSInteger)fontSize coord:(EZCoord*)coord;
 
-- (id) initWithType:(EZChessMarkType)type text:(NSString*)text coord:(EZCoord*)coord;
+//This was added for the sake of Triangular and Rectangular and other shape types
+- (id) initWithType:(EZChessMarkType)type coord:(EZCoord *)coord;
 
 - (NSDictionary*) toDict;
 
 - (id) initWithDict:(NSDictionary*)dict;
 
-
+//Only clone the properties, so that I will not copy the node, to fix the bug of chessMark shared among boards
+//Now, let's use it.
+- (id) clone;
 
 @end

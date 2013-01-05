@@ -239,6 +239,7 @@ typedef enum {
     //Make sure, it get removed from the event chains
     //chessBoard2.touchEnabled = false;
     //}
+    [MobClick endLogPageView:@"EZPlayPagePodLearn"];
     [super onExit];
 }
 
@@ -513,8 +514,9 @@ typedef enum {
 {
     self = [super initWithPos:pos];
     if(self){
+        [MobClick beginLogPageView:@"EZPlayPagePodLearn"];
         //[self addTestStepBackAndForth];
-        [self addTextShower];
+        //[self addTextShower];
         
         //Test code
         //[self showComment:@"我爱大大棒棒糖"];
@@ -668,7 +670,7 @@ typedef enum {
     [self addChild:_mainLayout z:10];
     
     EZDEBUG(@"Show a mark");
-    [_chessBoard putCharMark:@"F" fontSize:30 coord:[[EZCoord alloc] init:15 y:8] animAction:nil];
+    //[_chessBoard putCharMark:@"F" fontSize:30 coord:[[EZCoord alloc] init:15 y:8] animAction:nil];
     //[_mainFlexBoard setBasicPatterns:epv.basicPattern i];
     [_mainFlexBoard calculateRegionForPattern:epv.basicPattern isPlant:NO];
 }
@@ -754,8 +756,8 @@ typedef enum {
         //pause the player, no harm will be done
         //The bug maybe here. mean I play from this place to next one
         [weakSelf.player pause];
-        [_playButton setNormalSpriteFrame:weakSelf.playImg.displayFrame];
-        [_chessBoard cleanAll];
+        [weakSelf.playButton setNormalSpriteFrame:weakSelf.playImg.displayFrame];
+        [weakSelf.chessBoard cleanAll];
         [weakSelf.player forwardFrom:0 to:cur];
         //[weakSelf.player forwardFrom:prv to:cur];
         

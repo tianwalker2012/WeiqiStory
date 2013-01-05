@@ -10,8 +10,28 @@
 #import "EZConstants.h"
 #import "cocos2d.h"
 #import "EZLRUMap.h"
+#import "EZEpisodeVO.h"
+#import "EZImageView.h"
 
 @implementation EZFileUtil
+
++ (void) removeFile:(NSString*)file dirType:(NSSearchPathDirectory)type
+{
+    NSFileManager* fileManager = [NSFileManager defaultManager];
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(type, NSUserDomainMask, YES);
+    NSString *cachePath = [paths objectAtIndex:0]; //Get the docs directory
+    NSString *fullName = [cachePath stringByAppendingPathComponent:file];
+    
+    //EZDEBUG(@"FullName exist:%@",[fileManager fileExistsAtPath:fullName]?@"Yes":@"NO");
+    //Add the file name
+    //EZDEBUG(@"dirPath count:%i, first one:%@, fullPath:%@",paths.count, cachePath, fullName);
+    NSError* err = nil;
+    [fileManager removeItemAtPath:fullName error:&err];
+    if(err){
+        EZDEBUG(@"failed to delete files, the error:%@", err);
+    }
+}
 
 //Will list all file under the specified directory
 + (NSArray*) listAllFiles:(NSSearchPathDirectory)type
@@ -41,7 +61,7 @@
 
 + (void) removeAllFileWithSuffix:(NSString*)suffix
 {
-    NSArray* urls = [EZFileUtil listAllFiles:NSDocumentDirectory];
+    NSArray* urls = [EZFileUtil listAllFiles:NSCachesDirectory];
     NSFileManager* fileMgr = [NSFileManager defaultManager];
     NSError* error = nil;
     for(NSURL* url in urls){
@@ -64,6 +84,13 @@
 + (void) removeAllAudioFiles
 {
     [EZFileUtil removeAllFileWithSuffix:@"caf"];
+}
+
+//We will clean the image cache
++ (void) cleanImageCache
+{
+    [imageCaches removeAllObjects];
+    
 }
 
 + (void) deleteFile:(NSString*)files
@@ -112,10 +139,11 @@
     return res;
 }
 
+
 + (void) storeImageFile:(UIImage*)image file:(NSString*)file
 {
     NSData *pngData = UIImagePNGRepresentation(image);
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
     NSString *documentsPath = [paths objectAtIndex:0]; //Get the docs directory
     NSString *filePath = [documentsPath stringByAppendingPathComponent:file]; //Add the file name
     EZDEBUG(@"Full path will be stored:%@", filePath);
@@ -135,16 +163,34 @@
     }
     
     
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
     NSString *documentsPath = [paths objectAtIndex:0]; //Get the docs directory
     NSString *filePath = [documentsPath stringByAppendingPathComponent:file]; //Add the file name
-    EZDEBUG(@"The full path will read from:%@", filePath);
+
     NSData *pngData = [NSData dataWithContentsOfFile:filePath];
+    //EZDEBUG(@"The full path will read from:%@, pngData length:%i", filePath, pngData.length);
+    if(pngData.length == 0){
+        return nil;
+    }
     UIImage* tmpImg = [UIImage imageWithData:pngData];
     image = [UIImage imageWithCGImage:tmpImg.CGImage scale:[UIScreen mainScreen].scale orientation:UIImageOrientationUp];
     [imageCaches setObject:image forKey:file];
     return image;
 
+}
+
+
+//Newly added method, later, this will be used.
++ (UIImage*) pattenImageForEpisode:(EZEpisodeVO*)epv
+{
+    UIImage* res = [self imageFromDocument:epv.thumbNailFile scale:[UIScreen mainScreen].scale];
+    if(res == nil){
+        //EZDEBUG(@"Failed to read from directoy");
+        res = [EZImageView generateSmallBoard:epv.basicPattern];
+        //EZDEBUG(@"start store files");
+        [self storeImageFile:res file:epv.thumbNailFile];
+    }
+    return res;
 }
 
 + (UIImage*) imageFromDocument:(NSString *)file

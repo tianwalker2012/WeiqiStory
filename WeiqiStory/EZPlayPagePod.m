@@ -21,6 +21,7 @@
 #import "EZEpisode.h"
 #import "EZCoreAccessor.h"
 #import "EZFlexibleBoard.h"
+#import "MobClick.h"
 
 
 //Only 2 status.
@@ -223,6 +224,7 @@ typedef enum {
         //Make sure, it get removed from the event chains
         //chessBoard2.touchEnabled = false;
     //}
+    [MobClick endLogPageView:@"EZPlayPagePod"];
     [super onExit];
 }
 
@@ -234,6 +236,7 @@ typedef enum {
 {
     self = [super initWithPos:pos];
     if(self){
+        [MobClick beginLogPageView:@"EZPlayPagePod"];
         //timer = [[CCTimer alloc] initWithTarget:self selector:@selector(generatedBubble) interval:1 repeat:kCCRepeatForever delay:1];
         self.currentEpisodePos = pos;
         __weak EZPlayPagePod* weakSelf = self;
@@ -443,10 +446,14 @@ typedef enum {
     //progressNob.position = ccp(294, 59);
     EZProgressBar* myBar = [[EZProgressBar alloc] initWithNob:progressNob bar:progressBar maxValue:epv.actions.count changedBlock:^(NSInteger prv, NSInteger cur) {
         EZDEBUG(@"Player2 Nob position changed from:%i to %i", prv, cur);
+        //pause the player, no harm will be dont
+        [MobClick event:@"progress_dragged" label:[NSString stringWithFormat:@"from:%i to %i",prv, cur]];
         //pause the player, no harm will be done
+        //The bug maybe here. mean I play from this place to next one
         [weakSelf.player pause];
         [playButton setNormalSpriteFrame:weakSelf.playImg.displayFrame];
-        [weakSelf.player forwardFrom:prv to:cur];
+        [weakSelf.chessBoard cleanAll];
+        [weakSelf.player forwardFrom:0 to:cur];
     }];
     
     [self.player.stepCompletionBlocks addObject:^(id sender){

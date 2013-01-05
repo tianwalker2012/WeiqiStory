@@ -216,10 +216,15 @@
     }
 }
 
+//Do it on iterative basis
+//why do we need the chessNode in the mark any way?
 - (void) putMark:(EZChessMark*) mark animate:(id)anim
 {
     CCNode* markNode = mark.mark;
-    if(markNode == nil){
+    
+    //Why do mark clone? so that the mark belong to different board will not interfer with each other
+    mark = [mark clone];
+    if(mark.type == kTextMark){
         CCLabelTTF*  markText = nil;
         //This will make sure the font size not larger than the actual chess man,
         //I should take the scale into account or what?
@@ -237,6 +242,9 @@
         markText.color = ChessMarkColor;
         markNode = markText;
         mark.mark = markNode;
+    }else if(mark.type == kTriangleMark){
+        markNode = [CCSprite spriteWithFile:_isLargeBoard?@"triangular-large.png": @"triangular.png"];
+        mark.mark = markNode;
     }
     
     NSMutableArray* marks = [coordToMarks objectForKey:mark.coord.getKey];
@@ -251,7 +259,7 @@
     CGPoint pt = [boardStatus bcToPoint:mark.coord];
     [markNode setPosition:pt];
     [self addChild:markNode z:MarkZOrder+marks.count];
-    EZDEBUG(@"Add markNode:%@, to coord:%@, ZOrder:%i, FontSize:%i, point:%@", markNode, mark.coord, MarkZOrder+marks.count, mark.fontSize, NSStringFromCGPoint(pt));
+    //EZDEBUG(@"Add markNode:%@, to coord:%@, ZOrder:%i, FontSize:%i, point:%@", markNode, mark.coord, MarkZOrder+marks.count, mark.fontSize, NSStringFromCGPoint(pt));
     if(anim){
         [markNode runAction:anim];
     }

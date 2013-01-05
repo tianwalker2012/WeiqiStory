@@ -11,6 +11,7 @@
 //Why do we need this class?
 //To provide the @2x kind of facility to the image file.
 @class EZLRUMap;
+@class EZEpisodeVO;
 //Why do we need maps?
 //So that we could pervent to read the file again and again.
 static EZLRUMap* imageCaches;
@@ -30,6 +31,11 @@ static EZLRUMap* imageCaches;
 //It is to remove all the audio file on the iPad
 //So I could use the directory space for other purpose.
 + (void) removeAllAudioFiles;
+
+//Will clean all the caches, now for the test purpose.
++ (void) cleanImageCache;
+
++ (void) removeFile:(NSString*)file dirType:(NSSearchPathDirectory)type;
 
 + (void) removeAllFileWithSuffix:(NSString*)suffix;
 
@@ -51,6 +57,8 @@ static EZLRUMap* imageCaches;
 + (UIImage*) imageFromDocument:(NSString *)file scale:(CGFloat)scale;
 
 + (UIImage*) imageFromDocument:(NSString *)file;
+
++ (UIImage*) pattenImageForEpisode:(EZEpisodeVO*)epv;
 
 + (NSString*) changePostFix:(NSString*)org replace:(NSString*)replace;
 

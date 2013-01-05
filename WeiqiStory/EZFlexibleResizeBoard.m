@@ -186,6 +186,7 @@
         //Will back to the original size
         //Why? This is a convention. 
         _chessBoard.scale = _orgScale;
+        _lastCalculatedScale = _orgScale;
         return;
     }
     //EZDEBUG(@"CalculateRegion get called, thread stack is:%@", [NSThread callStackSymbols]);
@@ -225,10 +226,11 @@
     CGFloat scaleFactor = _visableSize.width/fWidth;
     EZDEBUG(@"Before scale:%@, scalaFactor:%f", NSStringFromCGRect(_chessBoard.boundingBox), scaleFactor);
     _chessBoard.scale = scaleFactor;
+    _lastCalculatedScale = scaleFactor;
     _chessBoard.position = ccp(orgX*scaleFactor, orgY*scaleFactor);
     
     //I will back to this scale once being recovered
-    _prevScale = _chessBoard.scale;
+    //_prevScale = _chessBoard.scale;
     
     EZDEBUG(@"After scale:%@", NSStringFromCGRect(_chessBoard.boundingBox));
     if(plant){
@@ -436,7 +438,7 @@
         EZDEBUG(@"quit enlarging board for the board already big enough");
         return;
     }
-    _prevScale = _chessBoard.scale;
+    //_prevScale = _chessBoard.scale;
     //CGFloat deltaX = (pt.x/_visableSize.width) * _largeSize.width - pt.x;
     
     //CGFloat deltaY = (pt.y/_visableSize.height) * _largeSize.height - pt.y;
@@ -588,9 +590,36 @@
 //Cool, Let's do it. 
 - (void) setBoardBack:(ccTime) time
 {
-    id animate = [CCScaleTo actionWithDuration:0.1 scale:_prevScale];
+    __weak EZFlexibleResizeBoard* weakSelf = self;
+    id animate =[CCSequence actions:[CCScaleTo actionWithDuration:0.1 scale:_lastCalculatedScale],[CCCallBlock actionWithBlock:^(){
+        [weakSelf adjustBoardToFit];
+    }],nil];
     [_chessBoard runAction:animate];
-    EZDEBUG(@"setBoardBack to scale:%f", _prevScale);
+
+    EZDEBUG(@"setBoardBack to scale:%f", _lastCalculatedScale);
+}
+
+//The purpose of this function call is to make the board will not show raw background.
+- (void) adjustBoardToFit
+{
+    [_chessBoard changeAnchor:ccp(0, 0)];
+    CGPoint org = _chessBoard.boundingBox.origin;
+    
+    if(org.x > 0){
+        org.x = 0;
+    }
+    if(org.y > 0){
+        org.y = 0;
+    }
+    
+    if((_chessBoard.boundingBox.size.width + org.x) < _visableSize.width){
+        org.x = _visableSize.width - _chessBoard.boundingBox.size.width;
+    }
+    
+    if((_chessBoard.boundingBox.size.height + org.y) < _visableSize.height){
+        org.y = _visableSize.height - _chessBoard.boundingBox.size.height;
+    }
+    _chessBoard.position = org;
 }
 //Standard touch event
 - (void)ccTouchesBegan:(NSSet *)orgTouches withEvent:(UIEvent *)event

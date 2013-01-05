@@ -195,7 +195,8 @@
         //if(epv.thumbNail == nil){
         //    epv.thumbNail = [EZImageView generateSmallBoard:epv.basicPattern];
         //}
-        UIImage* smallboard = [EZFileUtil imageFromDocument:epv.thumbNailFile scale:[[UIScreen mainScreen] scale]];
+        UIImage* smallboard = [EZFileUtil pattenImageForEpisode:epv
+                               ];
         
         EZDEBUG(@"The smallboard size is:%@", NSStringFromCGSize(smallboard.size));
         //smallboard.scale = [[UIScreen mainScreen] scale];

@@ -8,7 +8,6 @@
 
 #import "CCNode.h"
 #import <math.h>
-
 typedef enum {
     kShapeTriangle,
     kShapeCycle,

@@ -77,7 +77,7 @@
     //Clean the databases
     [EZCoreAccessor cleanClientDB];
     //Clean all the audio files
-    [EZFileUtil removeAllAudioFiles];
+    //[EZFileUtil removeAllAudioFiles];
     [EZFileUtil removeAllFileWithSuffix:@"png"];
     
     //The animation show that user can swipe the board, will last only 3 time]
@@ -177,12 +177,12 @@
     //[director_ pushScene:[EZChessPlay scene]];
 	//[director_ pushScene:[EZListTablePage scene]];
     //[director_ pushScene:[EZEffectTester scene]];
-    //[director_ pushScene:[EZHomePage scene]];
+    [director_ pushScene:[EZHomePage scene]];
     //[director_ pushScene:[EZLeakageMain node]];
     //[director_ pushScene:[EZListTablePagePod scene]];
     
-    EZEpisodeVO* epv = [EZSGFHelper readSGF:@"1001r"];
-    [director_ pushScene:[[[EZPlayPagePodLearn alloc] initWithEpisode:epv currentPos:2] createScene]];
+    //EZEpisodeVO* epv = [EZSGFHelper readSGF:@"1001r"];
+    //[director_ pushScene:[[[EZPlayPagePodLearn alloc] initWithEpisode:epv currentPos:2] createScene]];
     
     //EZDEBUG(@"view class:%@, multiple Touch enabled:%i", [[CCDirector sharedDirector].view class], [CCDirector sharedDirector].view.multipleTouchEnabled);
     //[director_ pushScene:[EZEnlargeTester node]];

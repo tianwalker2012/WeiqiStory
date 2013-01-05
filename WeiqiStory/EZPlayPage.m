@@ -174,6 +174,7 @@ typedef enum {
 
 - (void) onExit
 {
+    [MobClick endLogPageView:@"EZPlayPage"];
     [super onExit];
     if(_chessBoard2.touchEnabled){
         //Make sure, it get removed from the event chains
@@ -203,6 +204,7 @@ typedef enum {
     self = [super initWithPos:pos];
     if(self){
         //timer = [[CCTimer alloc] initWithTarget:self selector:@selector(generatedBubble) interval:1 repeat:kCCRepeatForever delay:1];
+        [MobClick beginLogPageView:@"EZPlayPage"];
         __weak EZPlayPage* weakSelf = self;
         [self scheduleBlock:^(){
             [EZBubble generatedBubble:weakSelf z:9];
@@ -336,9 +338,13 @@ typedef enum {
             EZDEBUG(@"Player2 Nob position changed from:%i to %i", prv, cur);
             //pause the player, no harm will be done
             [MobClick event:@"progress_dragged" label:[NSString stringWithFormat:@"from:%i to %i",prv, cur]];
+            //pause the player, no harm will be done
+            //The bug maybe here. mean I play from this place to next one
             [weakSelf.player pause];
-            [weakPlay setNormalSpriteFrame:weakSelf.playImg.displayFrame];
-            [weakSelf.player forwardFrom:prv to:cur];
+            [playButton setNormalSpriteFrame:weakSelf.playImg.displayFrame];
+            [weakSelf.chessBoard cleanAll];
+            [weakSelf.player forwardFrom:0 to:cur];
+
             
         }];
         

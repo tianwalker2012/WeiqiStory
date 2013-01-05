@@ -120,7 +120,6 @@ typedef enum {
 - (id)initWithFile:(NSString*)filename touchRect:(CGRect)rect rows:(NSInteger)rows cols:(NSInteger)cols;
 
 
-
 - (void) putChessman:(EZCoord*)coord animated:(BOOL)animated;
 
 - (void) putMarks:(NSArray*) marks;

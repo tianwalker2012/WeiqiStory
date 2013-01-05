@@ -114,7 +114,11 @@
 //This point is how much I shold intpret this event.
 @property (nonatomic, assign) CGPoint prevPoint;
 
-@property (nonatomic, assign) CGFloat prevScale;
+//@property (nonatomic, assign) CGFloat prevScale;
+
+//I invent this for the purpose of multiple double click will mess up the scale, so the board will
+//not come back to it's state. So I will update the lastCalculatedScale after each update visible region.
+@property (nonatomic, assign) CGFloat lastCalculatedScale;
 
 @property (nonatomic, assign) BOOL touchEnabled;
 

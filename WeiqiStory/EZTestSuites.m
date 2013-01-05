@@ -265,6 +265,30 @@ static NSInteger releaseCount;
     //[EZTestSuites testNodeToAction];
     //[EZTestSuites testReadFileToEpisode];
     //[EZTestSuites testGenerateTriangle];
+    //[EZTestSuites testCacheDelete];
+}
+
++ (void) testCacheDelete
+{
+    EZEpisodeVO* epv = [[EZEpisodeVO alloc] init];
+    epv.thumbNailFile = @"myPattern.png";
+    epv.basicPattern = @[[[EZCoord alloc] init:10 y:10]];
+    UIImage* pattenImg = [EZFileUtil pattenImageForEpisode:epv];
+    
+    
+    pattenImg = [EZFileUtil pattenImageForEpisode:epv];
+    
+    EZDEBUG(@"image is:%@", pattenImg);
+    
+    
+    [EZFileUtil cleanImageCache];
+    [EZFileUtil removeFile:epv.thumbNailFile dirType:NSCachesDirectory];
+    
+    
+    pattenImg = [EZFileUtil pattenImageForEpisode:epv];
+    EZDEBUG(@"image is:%@", pattenImg);
+    assert(false);
+    
 }
 
 + (void) testGenerateTriangle
@@ -714,6 +738,7 @@ static NSInteger releaseCount;
     NSFileManager* fileManager = [NSFileManager defaultManager];
     
     NSArray* arr = [[EZCoreAccessor getClientAccessor] fetchAll:[EZEpisode class] sortField:nil];
+    EZDEBUG(@"Total episode:%i", arr.count);
     
     NSInteger count = 0;
     NSInteger totalMissing = 0;
@@ -723,6 +748,7 @@ static NSInteger releaseCount;
         NSInteger missCount = 0;
         for(EZAudioFile* audioFile in ep.audioFiles){
             NSString* fullAudio = [EZFileUtil fileToAbosolute:audioFile.fileName];
+            fullAudio = [EZFileUtil changePostFix:fullAudio replace:@"mp3"];
             if(![fileManager fileExistsAtPath:fullAudio]){
                 
                 EZDEBUG(@"%@ not exist", audioFile.fileName);
@@ -741,7 +767,7 @@ static NSInteger releaseCount;
     }
     
     NSData* data = [NSKeyedArchiver archivedDataWithRootObject:completeFiles];
-    NSString* completeFileName = @"completefiles.ar";
+    NSString* completeFileName = @"modified.ar";
     NSURL* fileURL = [EZFileUtil fileToURL:completeFileName dirType:NSDocumentDirectory];
     [data writeToURL:fileURL atomically:YES];
     
